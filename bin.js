@@ -97,7 +97,7 @@ function build (version, cb) {
         if (/\.node$/i.test(files[i])) return cb(null, path.join(release, files[i]), files[i])
       }
 
-      cb(new Error('Could not find build in build/Release'))
+      cb(new Error('Could not find build in ' + release))
     })
   }
 }
