@@ -33,7 +33,13 @@ if (argv.help) {
 
 var targets = [].concat(argv.target)
 
-prebuild()
+prebuild(targets.shift(), function done (err, result) {
+  if (err) {
+    log.error(err.message)
+    process.exit(2)
+  }
+  if (targets.length) prebuild(targets.shift(), done)
+})
 
 function getAbi (version, cb) {
   version = version.replace('v', '')
@@ -102,9 +108,7 @@ function build (version, cb) {
   }
 }
 
-function prebuild () {
-  var v = targets.shift()
-  if (!v) return
+function prebuild (v, cb) {
   if (v[0] !== 'v') v = 'v' + v
   log.info('setup', 'Preparing to prebuild ' + pkg.name + '@' + pkg.version + ' for ' + v + ' on ' + argv.platform + '-' + argv.arch)
   build(v, function (err, filename) {
@@ -116,10 +120,11 @@ function prebuild () {
   })
 
   function pack (filename, abi) {
-    var tarPath = path.join('prebuilds', pkg.name + '-' + pkg.version + '-node-v' + abi + '-' + argv.platform + '-' + argv.arch + '.tar.gz')
+    var name = pkg.name + '-' + pkg.version + '-node-v' + abi + '-' + argv.platform + '-' + argv.arch + '.tar.gz'
+    var tarPath = path.join('prebuilds', name)
     fs.mkdir('prebuilds', function () {
       fs.stat(filename, function (err, st) {
-        if (err) return log.error(err.message)
+        if (err) return cb(err)
 
         var pack = tar.pack()
         var ws = fs.createWriteStream(tarPath)
@@ -137,7 +142,7 @@ function prebuild () {
 
         pack.pipe(zlib.createGzip()).pipe(ws).on('close', function () {
           log.info('package', 'Prebuild written to ' + tarPath)
-          prebuild()
+          cb(null, {path: tarPath, name: name, abi: abi, version: v, platform: argv.platform, arch: argv.arch})
         })
       })
     })
