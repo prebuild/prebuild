@@ -13,6 +13,12 @@ log.heading = 'prebuild'
 var setupLog = log.info.bind(log, 'setup')
 
 var NODE_GYP = path.join(process.env.HOME || process.env.USERPROFILE, '.node-gyp')
+
+if (!fs.existsSync('package.json')) {
+  log.error('No package.json found. Aborting...')
+  process.exit(1)
+}
+
 var pkg = require(path.resolve('package.json'))
 
 var argv = minimist(process.argv, {
@@ -121,8 +127,8 @@ function prebuild () {
           name: filename,
           size: st.size,
           mode: st.mode,
-          gid: process.getgid(),
-          uid: process.getuid()
+          gid: st.gid,
+          uid: st.uid
         })
 
         fs.createReadStream(filename).pipe(stream).on('finish', function () {
