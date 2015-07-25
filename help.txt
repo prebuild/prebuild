@@ -1,0 +1,4 @@
+prebuild [options]
+
+  --target, -t  [version]  (version to prebuild against)
+  --arch, -a    [arch]     (use this architecture)

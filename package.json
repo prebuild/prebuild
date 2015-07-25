@@ -1,0 +1,27 @@
+{
+  "name": "prebuild",
+  "version": "0.0.0",
+  "description": "WIP - nothing to see here",
+  "main": "index.js",
+  "dependencies": {
+    "minimist": "^1.1.2",
+    "node-gyp-install": "^1.4.0",
+    "node-pre-gyp": "^0.6.8",
+    "npmlog": "^1.2.1",
+    "tar-stream": "^1.2.1"
+  },
+  "devDependencies": {},
+  "bin": {
+    "prebuild": "./bin.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mafintosh/prebuild.git"
+  },
+  "author": "Mathias Buus (@mafintosh)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mafintosh/prebuild/issues"
+  },
+  "homepage": "https://github.com/mafintosh/prebuild"
+}
