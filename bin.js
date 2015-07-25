@@ -12,7 +12,7 @@ var fs = require('fs')
 log.heading = 'prebuild'
 var setupLog = log.info.bind(log, 'setup')
 
-var NODE_GYP = path.join(process.env.HOME || process.env.USER_PROFILE, '.node-gyp')
+var NODE_GYP = path.join(process.env.HOME || process.env.USERPROFILE, '.node-gyp')
 var pkg = require(path.resolve('package.json'))
 
 var argv = minimist(process.argv, {
