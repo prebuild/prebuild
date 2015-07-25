@@ -117,7 +117,7 @@ function prebuild (v, cb) {
   })
 
   function pack (filename, abi) {
-    var name = pkg.name + '-' + pkg.version + '-node-v' + abi + '-' + rc.platform + '-' + rc.arch + '.tar.gz'
+    var name = pkg.name + '-v' + pkg.version + '-node-v' + abi + '-' + rc.platform + '-' + rc.arch + '.tar.gz'
     var tarPath = path.join('prebuilds', name)
     fs.mkdir('prebuilds', function () {
       fs.stat(filename, function (err, st) {
