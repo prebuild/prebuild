@@ -6,7 +6,7 @@
   "dependencies": {
     "minimist": "^1.1.2",
     "node-gyp": "^2.0.2",
-    "node-gyp-install": "^1.4.0",
+    "node-gyp-install": "^1.4.3",
     "npmlog": "^1.2.1",
     "rc": "^1.0.3",
     "tar-stream": "^1.2.1"
