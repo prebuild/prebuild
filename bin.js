@@ -3,11 +3,11 @@
 var gyp = require('node-gyp')()
 var path = require('path')
 var install = require('node-gyp-install')
-var minimist = require('minimist')
 var log = require('npmlog')
 var zlib = require('zlib')
 var tar = require('tar-stream')
 var fs = require('fs')
+var rc = require('./rc')
 
 log.heading = 'prebuild'
 var setupLog = log.info.bind(log, 'setup')
@@ -21,17 +21,12 @@ if (!fs.existsSync('package.json')) {
 
 var pkg = require(path.resolve('package.json'))
 
-var argv = minimist(process.argv, {
-  alias: {target: 't', help: 'h', arch: 'a', platform: 'p'},
-  default: {target: process.version, arch: process.arch, platform: process.platform}
-})
-
-if (argv.help) {
+if (rc.help) {
   console.error(fs.readFileSync(path.join(__dirname, 'help.txt'), 'utf-8'))
   process.exit(0)
 }
 
-var targets = [].concat(argv.target)
+var targets = [].concat(rc.target)
 
 prebuild(targets.shift(), function done (err, result) {
   if (err) {
@@ -76,7 +71,7 @@ function build (version, cb) {
   })
 
   function runGyp () {
-    gyp.parseArgv(['node', 'index.js', 'rebuild', '--target=' + version, '--target_arch=' + argv.arch])
+    gyp.parseArgv(['node', 'index.js', 'rebuild', '--target=' + version, '--target_arch=' + rc.arch])
     gyp.commands.rebuild(gyp.todo.shift().args, function run (err) {
       if (err) return cb(err)
       if (!gyp.todo.length) return done()
@@ -110,7 +105,7 @@ function build (version, cb) {
 
 function prebuild (v, cb) {
   if (v[0] !== 'v') v = 'v' + v
-  log.info('setup', 'Preparing to prebuild ' + pkg.name + '@' + pkg.version + ' for ' + v + ' on ' + argv.platform + '-' + argv.arch)
+  log.info('setup', 'Preparing to prebuild ' + pkg.name + '@' + pkg.version + ' for ' + v + ' on ' + rc.platform + '-' + rc.arch)
   build(v, function (err, filename) {
     if (err) return log.error(err.message)
     getAbi(v, function (err, abi) {
@@ -120,7 +115,7 @@ function prebuild (v, cb) {
   })
 
   function pack (filename, abi) {
-    var name = pkg.name + '-' + pkg.version + '-node-v' + abi + '-' + argv.platform + '-' + argv.arch + '.tar.gz'
+    var name = pkg.name + '-' + pkg.version + '-node-v' + abi + '-' + rc.platform + '-' + rc.arch + '.tar.gz'
     var tarPath = path.join('prebuilds', name)
     fs.mkdir('prebuilds', function () {
       fs.stat(filename, function (err, st) {
@@ -142,7 +137,7 @@ function prebuild (v, cb) {
 
         pack.pipe(zlib.createGzip()).pipe(ws).on('close', function () {
           log.info('package', 'Prebuild written to ' + tarPath)
-          cb(null, {path: tarPath, name: name, abi: abi, version: v, platform: argv.platform, arch: argv.arch})
+          cb(null, {path: tarPath, name: name, abi: abi, version: v, platform: rc.platform, arch: rc.arch})
         })
       })
     })

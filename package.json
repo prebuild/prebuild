@@ -8,6 +8,7 @@
     "node-gyp": "^2.0.2",
     "node-gyp-install": "^1.4.0",
     "npmlog": "^1.2.1",
+    "rc": "^1.0.3",
     "tar-stream": "^1.2.1"
   },
   "devDependencies": {},
