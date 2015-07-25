@@ -70,7 +70,7 @@ function build (version, cb) {
   })
 
   function runGyp () {
-    gyp.parseArgv(['node', 'index.js', 'rebuild', '--target=' + version, '--target_arch=ia32'])
+    gyp.parseArgv(['node', 'index.js', 'rebuild', '--target=' + version, '--target_arch=' + argv.arch])
     gyp.commands.rebuild(gyp.todo.shift().args, function run (err) {
       if (err) return cb(err)
       if (!gyp.todo.length) return done()
