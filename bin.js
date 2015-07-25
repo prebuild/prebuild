@@ -44,7 +44,9 @@ function getAbi (version, cb) {
     fs.readFile(path.join(NODE_GYP, version, 'src/node.h'), 'utf-8', function (err, b) {
       if (err && err.code === 'ENOENT') retry()
       if (err) return cb(err)
-      cb(null, parse(a) || parse(b))
+      var abi = parse(a) || parse(b)
+      if (!abi) return cb(new Error('Could not detect abi for ' + version))
+      cb(null, abi)
     })
   })
 
@@ -56,7 +58,7 @@ function getAbi (version, cb) {
   }
 
   function parse (file) {
-    var res = file.match(/#define\s+NODE_MODULE_VERSION\s+(\d+)/)
+    var res = file.match(/#define\s+NODE_MODULE_VERSION\s+\(?(\d+)/)
     return res && res[1]
   }
 }
