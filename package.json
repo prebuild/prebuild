@@ -1,7 +1,7 @@
 {
   "name": "prebuild",
   "version": "0.0.0",
-  "description": "WIP - nothing to see here",
+  "description": "A command line tool for easily doing prebuilds for multiple version of node/iojs on a specific platform",
   "main": "index.js",
   "dependencies": {
     "minimist": "^1.1.2",

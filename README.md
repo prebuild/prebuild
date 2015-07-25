@@ -1,6 +1,6 @@
 # prebuild
 
-A command line tools for easily doing prebuilds for multiple version of node/iojs on a specific platform
+A command line tool for easily doing prebuilds for multiple version of node/iojs on a specific platform
 
 ```
 npm install -g prebuild
