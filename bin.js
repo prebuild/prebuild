@@ -10,6 +10,8 @@ var fs = require('fs')
 var rc = require('./rc')
 
 log.heading = 'prebuild'
+if (process.env.npm_config_loglevel) log.level = process.env.npm_config_loglevel
+
 var setupLog = log.info.bind(log, 'setup')
 
 var NODE_GYP = path.join(process.env.HOME || process.env.USERPROFILE, '.node-gyp')
@@ -107,7 +109,7 @@ function build (version, cb) {
 
 function prebuild (v, cb) {
   if (v[0] !== 'v') v = 'v' + v
-  log.info('setup', 'Preparing to prebuild ' + pkg.name + '@' + pkg.version + ' for ' + v + ' on ' + rc.platform + '-' + rc.arch)
+  setupLog('Preparing to prebuild ' + pkg.name + '@' + pkg.version + ' for ' + v + ' on ' + rc.platform + '-' + rc.arch)
   build(v, function (err, filename) {
     if (err) return log.error(err.message)
     getAbi(v, function (err, abi) {
