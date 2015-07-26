@@ -1,4 +1,6 @@
 prebuild [options]
 
-  --target, -t  [version]  (version to prebuild against)
-  --arch, -a    [arch]     (use this architecture)
+  --path,     -p  [path]      (make a prebuild here)
+  --target,   -t  [version]   (version to prebuild against)
+  --upload,   -u  [gh-token]  (upload prebuilds to github)
+  --download, -d              (download prebuilds from github)

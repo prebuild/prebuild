@@ -4,6 +4,7 @@
   "description": "A command line tool for easily doing prebuilds for multiple version of node/iojs on a specific platform",
   "main": "index.js",
   "dependencies": {
+    "ghreleases": "^1.0.2",
     "github-from-package": "0.0.0",
     "minimist": "^1.1.2",
     "node-gyp": "^2.0.2",

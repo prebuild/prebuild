@@ -11,8 +11,16 @@ var fs = require('fs')
 var pump = require('pump')
 var request = require('request')
 var github = require('github-from-package')
+var ghreleases = require('ghreleases')
 var os = require('os')
 var rc = require('./rc')
+
+if (rc.path) process.chdir(rc.path)
+
+if (rc.version) {
+  console.log(require('./package.json').version)
+  process.exit(0)
+}
 
 var HOME = process.env.HOME || process.env.USERPROFILE
 var NODE_GYP = path.join(HOME, '.node-gyp')
@@ -22,7 +30,7 @@ log.heading = 'prebuild'
 if (process.env.npm_config_loglevel) log.level = process.env.npm_config_loglevel
 
 if (!fs.existsSync('package.json')) {
-  log.error('No package.json found. Aborting...')
+  log.error('setup', 'No package.json found. Aborting...')
   process.exit(1)
 }
 
@@ -33,20 +41,45 @@ if (rc.help) {
   process.exit(0)
 }
 
-if (rc._[2] === 'install') return installPrebuild()
+if (rc.download) return downloadPrebuild()
 
 var targets = [].concat(rc.target)
 var buildLog = log.info.bind(log, 'build')
+var files = []
 
 prebuild(targets.shift(), function done (err, result) {
-  if (err) {
-    log.error(err.message)
-    process.exit(2)
-  }
-  if (targets.length) prebuild(targets.shift(), done)
+  if (err) return onbuilderror(err)
+
+  files.push(result.path)
+  if (targets.length) return prebuild(targets.shift(), done)
+  if (!rc.upload) return
+
+  var url = github(pkg)
+  if (err) return onbuilderror(new Error('package.json is missing a repository field'))
+
+  buildLog('Uploading prebuilds to Github releases')
+  var user = url.split('/')[3]
+  var repo = url.split('/')[4]
+  var auth = {user: 'x-oauth', token: rc.upload}
+  var tag = 'v' + pkg.version
+
+  ghreleases.getByTag(auth, user, repo, tag, function (err, release) {
+    if (err) return onbuilderror(err)
+
+    files = files.filter(function (file) {
+      return !release.assets.some(function (asset) {
+        return asset.name === path.basename(file)
+      })
+    })
+
+    ghreleases.uploadAssets(auth, user, repo, 'tags/' + tag, files, function (err) {
+      if (err) return onbuilderror(err)
+      buildLog('Uploaded ' + files.length + ' new prebuild(s) to Github')
+    })
+  })
 })
 
-function installPrebuild () {
+function downloadPrebuild () {
   var name = pkg.name + '-v' + pkg.version + '-node-v' + process.versions.modules + '-' + rc.platform + '-' + rc.arch + '.tar.gz'
   var url = github(pkg) + '/releases/download/v' + pkg.version + '/' + name
   var cache = path.join(NPM_CACHE, url.replace(/[^a-zA-Z0-9.]+/g, '-'))
@@ -84,7 +117,7 @@ function installPrebuild () {
     log.info('install', 'Could not install prebuild. Falling back to compilation')
     runGyp(process.version, function (err) {
       if (err) {
-        log.error(err.message)
+        log.error('install', err.message)
         process.exit(1)
       }
     })
@@ -165,7 +198,7 @@ function prebuild (v, cb) {
   if (v[0] !== 'v') v = 'v' + v
   buildLog('Preparing to prebuild ' + pkg.name + '@' + pkg.version + ' for ' + v + ' on ' + rc.platform + '-' + rc.arch)
   getAbi(v, function (err, abi) {
-    if (err) return log.error(err.message)
+    if (err) return log.error('build', err.message)
     var tarPath = getTarPath(abi)
     var next = function (err) {
       if (err) return cb(err)
@@ -209,6 +242,11 @@ function prebuild (v, cb) {
       })
     })
   }
+}
+
+function onbuilderror (err) {
+  log.error('build', err.message)
+  process.exit(2)
 }
 
 function getTarPath (abi) {

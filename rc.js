@@ -9,7 +9,10 @@ module.exports = require('rc')('prebuild', {
     target: 't',
     help: 'h',
     arch: 'a',
-    platform: 'p',
-    force: 'f'
+    path: 'p',
+    force: 'f',
+    version: 'v',
+    upload: 'u',
+    download: 'd'
   }
 }))
