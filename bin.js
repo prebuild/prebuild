@@ -118,8 +118,8 @@ function prebuild (v, cb) {
       cb(null, { path: tarPath, abi: abi, version: v, platform: rc.platform, arch: rc.arch})
     }
     fs.stat(tarPath, function (err, st) {
-      if (!err) {
-        log.info('prebuild', tarPath + ' exists, skipping build')
+      if (!err && !rc.force) {
+        log.info('package', tarPath + ' exists, skipping build')
         return next()
       }
       build(v, function (err, filename) {

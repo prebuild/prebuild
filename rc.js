@@ -9,6 +9,7 @@ module.exports = require('rc')('prebuild', {
     target: 't',
     help: 'h',
     arch: 'a',
-    platform: 'p'
+    platform: 'p',
+    force: 'f'
   }
 }))
