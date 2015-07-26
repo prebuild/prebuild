@@ -148,10 +148,10 @@ function downloadPrebuild () {
 function getAbi (version, cb) {
   version = version.replace('v', '')
   fs.readFile(path.join(NODE_GYP, version, 'src/node_version.h'), 'utf-8', function (err, a) {
-    if (err && err.code === 'ENOENT') retry()
+    if (err && err.code === 'ENOENT') return retry()
     if (err) return cb(err)
     fs.readFile(path.join(NODE_GYP, version, 'src/node.h'), 'utf-8', function (err, b) {
-      if (err && err.code === 'ENOENT') retry()
+      if (err && err.code === 'ENOENT') return retry()
       if (err) return cb(err)
       var abi = parse(a) || parse(b)
       if (!abi) return cb(new Error('Could not detect abi for ' + version))
