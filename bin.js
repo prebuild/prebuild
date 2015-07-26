@@ -42,7 +42,7 @@ if (rc.help) {
   process.exit(0)
 }
 
-if (rc.compile) return runGyp()
+if (rc.compile) return build(process.version, onbuilderror)
 if (rc.download) return downloadPrebuild()
 
 var targets = [].concat(rc.target)
@@ -173,8 +173,6 @@ function getAbi (version, cb) {
 }
 
 function runGyp (version, cb) {
-  if (!version) version = process.version
-  if (!cb) cb = function () {}
   if (!rc.preinstall) return run()
 
   proc.spawn(rc.preinstall, {stdio: 'inherit'}).on('exit', function (code) {
@@ -277,6 +275,7 @@ function prebuild (v, cb) {
 }
 
 function onbuilderror (err) {
+  if (!err) return
   log.error('build', err.message)
   process.exit(2)
 }
