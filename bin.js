@@ -110,9 +110,9 @@ function build (version, cb) {
 function prebuild (v, cb) {
   if (v[0] !== 'v') v = 'v' + v
   setupLog('Preparing to prebuild ' + pkg.name + '@' + pkg.version + ' for ' + v + ' on ' + rc.platform + '-' + rc.arch)
-  build(v, function (err, filename) {
+  getAbi(v, function (err, abi) {
     if (err) return log.error(err.message)
-    getAbi(v, function (err, abi) {
+    build(v, function (err, filename) {
       if (err) return log.error(err.message)
       pack(filename, abi)
     })
