@@ -13,6 +13,9 @@ module.exports = require('rc')('prebuild', {
     force: 'f',
     version: 'v',
     upload: 'u',
-    download: 'd'
+    download: 'd',
+    'build-from-source': 'compile',
+    compile: 'c',
+    preinstall: 'i'
   }
 }))

@@ -13,6 +13,7 @@ var request = require('request')
 var github = require('github-from-package')
 var ghreleases = require('ghreleases')
 var os = require('os')
+var proc = require('child_process')
 var rc = require('./rc')
 
 if (rc.path) process.chdir(rc.path)
@@ -41,6 +42,7 @@ if (rc.help) {
   process.exit(0)
 }
 
+if (rc.compile) return runGyp()
 if (rc.download) return downloadPrebuild()
 
 var targets = [].concat(rc.target)
@@ -171,13 +173,24 @@ function getAbi (version, cb) {
 }
 
 function runGyp (version, cb) {
-  gyp.parseArgv(['node', 'index.js', 'rebuild', '--target=' + version, '--target_arch=' + rc.arch])
-  gyp.commands.rebuild(gyp.todo.shift().args, function run (err) {
-    if (err) return cb(err)
-    if (!gyp.todo.length) return cb()
-    if (gyp.todo[0].name === 'configure') configurePreGyp()
-    gyp.commands[gyp.todo[0].name](gyp.todo.shift().args, run)
+  if (!version) version = process.version
+  if (!cb) cb = function () {}
+  if (!rc.preinstall) return run()
+
+  proc.spawn(rc.preinstall, {stdio: 'inherit'}).on('exit', function (code) {
+    if (code) process.exit(code)
+    run()
   })
+
+  function run () {
+    gyp.parseArgv(['node', 'index.js', 'rebuild', '--target=' + version, '--target_arch=' + rc.arch])
+    gyp.commands.rebuild(gyp.todo.shift().args, function run (err) {
+      if (err) return cb(err)
+      if (!gyp.todo.length) return cb()
+      if (gyp.todo[0].name === 'configure') configurePreGyp()
+      gyp.commands[gyp.todo[0].name](gyp.todo.shift().args, run)
+    })
+  }
 }
 
 function configurePreGyp () {
