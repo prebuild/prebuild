@@ -4,11 +4,15 @@
   "description": "A command line tool for easily doing prebuilds for multiple version of node/iojs on a specific platform",
   "main": "index.js",
   "dependencies": {
+    "github-from-package": "0.0.0",
     "minimist": "^1.1.2",
     "node-gyp": "^2.0.2",
     "node-gyp-install": "^1.4.3",
     "npmlog": "^1.2.1",
+    "pump": "^1.0.0",
     "rc": "^1.0.3",
+    "request": "^2.60.0",
+    "tar-fs": "^1.7.0",
     "tar-stream": "^1.2.1"
   },
   "devDependencies": {},

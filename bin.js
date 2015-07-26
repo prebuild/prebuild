@@ -6,15 +6,20 @@ var install = require('node-gyp-install')
 var log = require('npmlog')
 var zlib = require('zlib')
 var tar = require('tar-stream')
+var tfs = require('tar-fs')
 var fs = require('fs')
+var pump = require('pump')
+var request = require('request')
+var github = require('github-from-package')
+var os = require('os')
 var rc = require('./rc')
+
+var HOME = process.env.HOME || process.env.USERPROFILE
+var NODE_GYP = path.join(HOME, '.node-gyp')
+var NPM_CACHE = path.join(HOME, '.npm/_prebuilds')
 
 log.heading = 'prebuild'
 if (process.env.npm_config_loglevel) log.level = process.env.npm_config_loglevel
-
-var setupLog = log.info.bind(log, 'setup')
-
-var NODE_GYP = path.join(process.env.HOME || process.env.USERPROFILE, '.node-gyp')
 
 if (!fs.existsSync('package.json')) {
   log.error('No package.json found. Aborting...')
@@ -28,7 +33,10 @@ if (rc.help) {
   process.exit(0)
 }
 
+if (rc._[2] === 'install') return installPrebuild()
+
 var targets = [].concat(rc.target)
+var buildLog = log.info.bind(log, 'build')
 
 prebuild(targets.shift(), function done (err, result) {
   if (err) {
@@ -37,6 +45,51 @@ prebuild(targets.shift(), function done (err, result) {
   }
   if (targets.length) prebuild(targets.shift(), done)
 })
+
+function installPrebuild () {
+  var name = pkg.name + '-v' + pkg.version + '-node-v' + process.versions.modules + '-' + rc.platform + '-' + rc.arch + '.tar.gz'
+  var url = github(pkg) + '/releases/download/v' + pkg.version + '/' + name
+  var cache = path.join(NPM_CACHE, url.replace(/[^a-zA-Z0-9.]+/g, '-'))
+  var tmp = path.join(os.tmpdir(), 'prebuild-' + name + '.' + process.pid + '-' + Math.random().toString(16).slice(2))
+
+  fs.exists(cache, function (exists) {
+    if (exists) return unpack()
+
+    var req = request(url)
+
+    log.http('request', 'GET ' + url)
+    req.on('response', function (res) {
+      log.http(res.statusCode, url)
+    })
+
+    fs.mkdir(NPM_CACHE, function () {
+      pump(req, fs.createWriteStream(tmp), function (err) {
+        if (err) return compile()
+        fs.rename(tmp, cache, function (err) {
+          if (err) return compile()
+          unpack()
+        })
+      })
+    })
+  })
+
+  function unpack () {
+    pump(fs.createReadStream(cache), zlib.createGunzip(), tfs.extract('.'), function (err) {
+      if (err) return compile()
+      log.info('install', 'Prebuild successfully installed!')
+    })
+  }
+
+  function compile () {
+    log.info('install', 'Could not install prebuild. Falling back to compilation')
+    runGyp(process.version, function (err) {
+      if (err) {
+        log.error(err.message)
+        process.exit(1)
+      }
+    })
+  }
+}
 
 function getAbi (version, cb) {
   version = version.replace('v', '')
@@ -53,7 +106,7 @@ function getAbi (version, cb) {
   })
 
   function retry () {
-    install({log: setupLog, version: version, force: true}, function (err) {
+    install({log: buildLog, version: version, force: true}, function (err) {
       if (err) return cb(err)
       getAbi(version, cb)
     })
@@ -65,34 +118,35 @@ function getAbi (version, cb) {
   }
 }
 
+function runGyp (version, cb) {
+  gyp.parseArgv(['node', 'index.js', 'rebuild', '--target=' + version, '--target_arch=' + rc.arch])
+  gyp.commands.rebuild(gyp.todo.shift().args, function run (err) {
+    if (err) return cb(err)
+    if (!gyp.todo.length) return cb()
+    if (gyp.todo[0].name === 'configure') configurePreGyp()
+    gyp.commands[gyp.todo[0].name](gyp.todo.shift().args, run)
+  })
+}
+
+function configurePreGyp () {
+  if (pkg.binary && pkg.binary.module_name) {
+    gyp.todo[0].args.push('-Dmodule_name=' + pkg.binary.module_name)
+  }
+  if (pkg.binary && pkg.binary.module_path) {
+    gyp.todo[0].args.push('-Dmodule_path=' + pkg.binary.module_path)
+  }
+}
 
 function build (version, cb) {
-  var release = 'build/Release'
+  var release = (pkg.binary && pkg.binary.module_path) || 'build/Release'
 
-  install({log: setupLog, version: version}, function (err) {
+  install({log: buildLog, version: version}, function (err) {
     if (err) return cb(err)
-    runGyp()
-  })
-
-  function runGyp () {
-    gyp.parseArgv(['node', 'index.js', 'rebuild', '--target=' + version, '--target_arch=' + rc.arch])
-    gyp.commands.rebuild(gyp.todo.shift().args, function run (err) {
+    runGyp(version, function (err) {
       if (err) return cb(err)
-      if (!gyp.todo.length) return done()
-      if (gyp.todo[0].name === 'configure') configurePreGyp()
-      gyp.commands[gyp.todo[0].name](gyp.todo.shift().args, run)
+      done()
     })
-  }
-
-  function configurePreGyp () {
-    if (pkg.binary && pkg.binary.module_name) {
-      gyp.todo[0].args.push('-Dmodule_name=' + pkg.binary.module_name)
-    }
-    if (pkg.binary && pkg.binary.module_path) {
-      release = pkg.binary.module_path
-      gyp.todo[0].args.push('-Dmodule_path=' + pkg.binary.module_path)
-    }
-  }
+  })
 
   function done () {
     fs.readdir(release, function (err, files) {
@@ -109,7 +163,7 @@ function build (version, cb) {
 
 function prebuild (v, cb) {
   if (v[0] !== 'v') v = 'v' + v
-  setupLog('Preparing to prebuild ' + pkg.name + '@' + pkg.version + ' for ' + v + ' on ' + rc.platform + '-' + rc.arch)
+  buildLog('Preparing to prebuild ' + pkg.name + '@' + pkg.version + ' for ' + v + ' on ' + rc.platform + '-' + rc.arch)
   getAbi(v, function (err, abi) {
     if (err) return log.error(err.message)
     var tarPath = getTarPath(abi)
@@ -119,7 +173,7 @@ function prebuild (v, cb) {
     }
     fs.stat(tarPath, function (err, st) {
       if (!err && !rc.force) {
-        log.info('package', tarPath + ' exists, skipping build')
+        buildLog(tarPath + ' exists, skipping build')
         return next()
       }
       build(v, function (err, filename) {
@@ -149,7 +203,7 @@ function prebuild (v, cb) {
         })
 
         pack.pipe(zlib.createGzip()).pipe(ws).on('close', function () {
-          log.info('package', 'Prebuild written to ' + tarPath)
+          buildLog('Prebuild written to ' + tarPath)
           cb()
         })
       })
