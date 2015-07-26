@@ -20,6 +20,6 @@ module.exports = require('rc')('prebuild', {
   },
   default: {
     // this is hackish - whats the correct way of doing this?
-    compile: (process.env.npm_config_argv && process.env.npm_config_argv.indexOf('--build-from-source') > -1)
+    compile: !!process.env.prebuild_compile || (process.env.npm_config_argv && process.env.npm_config_argv.indexOf('--build-from-source') > -1)
   }
 }))
