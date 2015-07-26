@@ -86,6 +86,7 @@ function downloadPrebuild () {
   var url = github(pkg) + '/releases/download/v' + pkg.version + '/' + name
   var cache = path.join(NPM_CACHE, url.replace(/[^a-zA-Z0-9.]+/g, '-'))
   var tmp = path.join(os.tmpdir(), 'prebuild-' + name + '.' + process.pid + '-' + Math.random().toString(16).slice(2))
+  var binaryName
 
   fs.exists(cache, function (exists) {
     if (exists) return unpack()
@@ -112,9 +113,21 @@ function downloadPrebuild () {
     })
   })
 
+  function updateName (entry) {
+    if (/\.node$/i.test(entry.name)) binaryName = entry.name
+  }
+
   function unpack () {
-    pump(fs.createReadStream(cache), zlib.createGunzip(), tfs.extract('.'), function (err) {
+    pump(fs.createReadStream(cache), zlib.createGunzip(), tfs.extract('.').on('entry', updateName), function (err) {
       if (err) return compile()
+      if (binaryName) {
+        try {
+          require(path.resolve(binaryName))
+        } catch (err) {
+          log.info('install', 'Could not load binary module')
+          return compile()
+        }
+      }
       log.info('install', 'Prebuild successfully installed!')
     })
   }
