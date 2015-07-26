@@ -119,7 +119,7 @@ function prebuild (v, cb) {
     }
     fs.stat(tarPath, function (err, st) {
       if (!err) {
-        log.info(tarPath + ' exists, skipping build')
+        log.info('prebuild', tarPath + ' exists, skipping build')
         return next()
       }
       build(v, function (err, filename) {
