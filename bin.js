@@ -63,18 +63,20 @@ prebuild(targets.shift(), function done (err, result) {
   var auth = {user: 'x-oauth', token: rc.upload}
   var tag = 'v' + pkg.version
 
-  ghreleases.getByTag(auth, user, repo, tag, function (err, release) {
-    if (err) return onbuilderror(err)
-
-    files = files.filter(function (file) {
-      return !release.assets.some(function (asset) {
-        return asset.name === path.basename(file)
-      })
-    })
-
-    ghreleases.uploadAssets(auth, user, repo, 'tags/' + tag, files, function (err) {
+  ghreleases.create(auth, user, repo, {tag_name: tag}, function () {
+    ghreleases.getByTag(auth, user, repo, tag, function (err, release) {
       if (err) return onbuilderror(err)
-      buildLog('Uploaded ' + files.length + ' new prebuild(s) to Github')
+
+      files = files.filter(function (file) {
+        return !release.assets.some(function (asset) {
+          return asset.name === path.basename(file)
+        })
+      })
+
+      ghreleases.uploadAssets(auth, user, repo, 'tags/' + tag, files, function (err) {
+        if (err) return onbuilderror(err)
+        buildLog('Uploaded ' + files.length + ' new prebuild(s) to Github')
+      })
     })
   })
 })
