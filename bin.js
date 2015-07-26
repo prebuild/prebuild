@@ -89,15 +89,19 @@ function downloadPrebuild () {
     if (exists) return unpack()
 
     var req = request(url)
+    var status = 0
 
     log.http('request', 'GET ' + url)
     req.on('response', function (res) {
+      status = res.statusCode
       log.http(res.statusCode, url)
     })
 
     fs.mkdir(NPM_CACHE, function () {
       pump(req, fs.createWriteStream(tmp), function (err) {
         if (err) return compile()
+        if (status !== 200) return fs.unlink(tmp, compile)
+
         fs.rename(tmp, cache, function (err) {
           if (err) return compile()
           unpack()
