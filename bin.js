@@ -110,17 +110,26 @@ function build (version, cb) {
 function prebuild (v, cb) {
   if (v[0] !== 'v') v = 'v' + v
   setupLog('Preparing to prebuild ' + pkg.name + '@' + pkg.version + ' for ' + v + ' on ' + rc.platform + '-' + rc.arch)
-  build(v, function (err, filename) {
+  getAbi(v, function (err, abi) {
     if (err) return log.error(err.message)
-    getAbi(v, function (err, abi) {
-      if (err) return log.error(err.message)
-      pack(filename, abi)
+    var tarPath = getTarPath(abi)
+    var next = function (err) {
+      if (err) return cb(err)
+      cb(null, { path: tarPath, abi: abi, version: v, platform: rc.platform, arch: rc.arch})
+    }
+    fs.stat(tarPath, function (err, st) {
+      if (!err) {
+        log.info('prebuild', tarPath + ' exists, skipping build')
+        return next()
+      }
+      build(v, function (err, filename) {
+        if (err) return cb(err)
+        pack(filename, tarPath, next)
+      })
     })
   })
 
-  function pack (filename, abi) {
-    var name = pkg.name + '-v' + pkg.version + '-node-v' + abi + '-' + rc.platform + '-' + rc.arch + '.tar.gz'
-    var tarPath = path.join('prebuilds', name)
+  function pack (filename, tarPath, cb) {
     fs.mkdir('prebuilds', function () {
       fs.stat(filename, function (err, st) {
         if (err) return cb(err)
@@ -141,9 +150,14 @@ function prebuild (v, cb) {
 
         pack.pipe(zlib.createGzip()).pipe(ws).on('close', function () {
           log.info('package', 'Prebuild written to ' + tarPath)
-          cb(null, {path: tarPath, name: name, abi: abi, version: v, platform: rc.platform, arch: rc.arch})
+          cb()
         })
       })
     })
   }
+}
+
+function getTarPath (abi) {
+  var name = pkg.name + '-v' + pkg.version + '-node-v' + abi + '-' + rc.platform + '-' + rc.arch + '.tar.gz'
+  return path.join('prebuilds', name)
 }
