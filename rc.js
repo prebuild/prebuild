@@ -4,7 +4,7 @@ module.exports = require('rc')('prebuild', {
   target: process.version,
   arch: process.arch,
   platform: process.platform,
-  compile: (process.env.npm_config_argv && process.env.npm_config_argv.indexOf('--build-from-source') > -1)
+  compile: !!(process.env.npm_config_argv && process.env.npm_config_argv.indexOf('--build-from-source') > -1)
 }, minimist(process.argv, {
   alias: {
     target: 't',
