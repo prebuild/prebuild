@@ -120,7 +120,7 @@ function downloadPrebuild () {
   }
 
   function unpack () {
-    pump(fs.createReadStream(cache), zlib.createGunzip(), tfs.extract('.').on('entry', updateName), function (err) {
+    pump(fs.createReadStream(cache), zlib.createGunzip(), tfs.extract('.', {readable: true, writable: true}).on('entry', updateName), function (err) {
       if (err) return compile()
       if (binaryName) {
         try {
@@ -255,7 +255,7 @@ function prebuild (v, cb) {
         var pack = tar.pack()
         var ws = fs.createWriteStream(tarPath)
         var stream = pack.entry({
-          name: filename,
+          name: filename.replace(/\\/g, '/').replace(/:/g, '_'),
           size: st.size,
           mode: st.mode | 0444 | 0222,
           gid: st.gid,
