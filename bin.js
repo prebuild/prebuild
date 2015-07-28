@@ -252,7 +252,7 @@ function prebuild (v, cb) {
       fs.stat(filename, function (err, st) {
         if (err) return cb(err)
 
-        var pack = tar.pack()
+        var pack = tar.pack({readable: true, writable: true})
         var ws = fs.createWriteStream(tarPath)
         var stream = pack.entry({
           name: filename,
