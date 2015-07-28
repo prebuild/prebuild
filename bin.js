@@ -136,7 +136,7 @@ function downloadPrebuild () {
 
   function compile () {
     log.info('install', 'Could not install prebuild. Falling back to compilation')
-    runGyp(process.version, function (err) {
+    build(process.version, function (err) {
       if (err) {
         log.error('install', err.message)
         process.exit(1)
