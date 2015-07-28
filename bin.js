@@ -182,7 +182,7 @@ function runGyp (version, cb) {
 
   function run () {
     gyp.parseArgv(['node', 'index.js', 'rebuild', '--target=' + version, '--target_arch=' + rc.arch])
-    if (rc.verbose) log.loglevel = undefined
+    if (rc.verbose) log.level = undefined
     gyp.commands.rebuild(gyp.todo.shift().args, function run (err) {
       if (err) return cb(err)
       if (!gyp.todo.length) return cb()
