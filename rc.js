@@ -4,7 +4,8 @@ module.exports = require('rc')('prebuild', {
   target: process.version,
   arch: process.arch,
   platform: process.platform,
-  compile: !!(process.env.npm_config_argv && process.env.npm_config_argv.indexOf('--build-from-source') > -1)
+  compile: npmConfig('--build-from-source'),
+  force: npmConfig('--force')
 }, minimist(process.argv, {
   alias: {
     target: 't',
@@ -20,3 +21,7 @@ module.exports = require('rc')('prebuild', {
     preinstall: 'i'
   }
 }))
+
+function npmConfig (argv) {
+  return !!(process.env.npm_config_argv && process.env.npm_config_argv.indexOf(argv) > -1)
+}
