@@ -6,3 +6,4 @@ prebuild [options]
   --download,   -d              (download prebuilds from github)
   --preinstall, -i  [script]    (run this script before prebuilding)
   --compile,    -c              (compile your project using node-gyp)
+  --verbose                     (log verbosely)
