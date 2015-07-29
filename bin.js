@@ -24,8 +24,9 @@ if (rc.version) {
 }
 
 var HOME = process.env.HOME || process.env.USERPROFILE
+var NPM = process.env.APPDATA ? path.join(process.env.APPDATA, 'npm-cache') : path.join(HOME, '.npm')
 var NODE_GYP = path.join(HOME, '.node-gyp')
-var NPM_CACHE = path.join(HOME, '.npm/_prebuilds')
+var NPM_CACHE = path.join(NPM, '_prebuilds')
 
 log.heading = 'prebuild'
 if (process.env.npm_config_loglevel && !rc.verbose) log.level = process.env.npm_config_loglevel
