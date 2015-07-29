@@ -12,7 +12,6 @@ var pump = require('pump')
 var request = require('request')
 var github = require('github-from-package')
 var ghreleases = require('ghreleases')
-var os = require('os')
 var proc = require('child_process')
 var mv = require('mv')
 var rc = require('./rc')
@@ -89,7 +88,7 @@ function downloadPrebuild () {
   var name = pkg.name + '-v' + pkg.version + '-node-v' + process.versions.modules + '-' + rc.platform + '-' + rc.arch + '.tar.gz'
   var url = github(pkg) + '/releases/download/v' + pkg.version + '/' + name
   var cache = path.join(NPM_CACHE, url.replace(/[^a-zA-Z0-9.]+/g, '-'))
-  var tmp = path.join(os.tmpdir(), 'prebuild-' + name + '.' + process.pid + '-' + Math.random().toString(16).slice(2))
+  var tmp = cache + '.' + process.pid + '-' + Math.random().toString(16).slice(2) + '.tmp'
   var binaryName
 
   fs.exists(cache, function (exists) {
@@ -112,7 +111,7 @@ function downloadPrebuild () {
         }
         if (status !== 200) return fs.unlink(tmp, compile)
 
-        mv(tmp, cache, function (err) {
+        fs.rename(tmp, cache, function (err) {
           if (err) {
             log.warn('rename', err.message)
             return compile()
