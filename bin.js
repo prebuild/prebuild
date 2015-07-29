@@ -57,7 +57,7 @@ prebuild(targets.shift(), function done (err, result) {
   if (!rc.upload) return
 
   var url = github(pkg)
-  if (err) return onbuilderror(new Error('package.json is missing a repository field'))
+  if (!url) return onbuilderror(new Error('package.json is missing a repository field'))
 
   buildLog('Uploading prebuilds to Github releases')
   var user = url.split('/')[3]
@@ -104,17 +104,12 @@ function downloadPrebuild () {
 
     fs.mkdir(NPM_CACHE, function () {
       pump(req, fs.createWriteStream(tmp), function (err) {
-        if (err) {
-          log.warn('pump', err.message)
-          return compile()
-        }
+        if (err) return compile(err)
+
         if (status !== 200) return fs.unlink(tmp, compile)
 
         fs.rename(tmp, cache, function (err) {
-          if (err) {
-            log.warn('rename', err.message)
-            return compile()
-          }
+          if (err) return compile(err)
           unpack()
         })
       })
@@ -127,27 +122,22 @@ function downloadPrebuild () {
 
   function unpack () {
     pump(fs.createReadStream(cache), zlib.createGunzip(), tfs.extract('.', {readable: true, writable: true}).on('entry', updateName), function (err) {
-      if (err) return compile()
+      if (err) return compile(err)
       if (binaryName) {
         try {
           require(path.resolve(binaryName))
         } catch (err) {
-          log.info('install', 'Could not load binary module')
-          return compile()
+          return compile(err)
         }
       }
       log.info('install', 'Prebuild successfully installed!')
     })
   }
 
-  function compile () {
+  function compile (err) {
+    if (err) log.warn('install', err.message)
     log.info('install', 'Could not install prebuild. Falling back to compilation')
-    build(process.version, function (err) {
-      if (err) {
-        log.error('install', err.message)
-        process.exit(1)
-      }
-    })
+    build(process.version, onbuilderror)
   }
 }
 
