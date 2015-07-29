@@ -57,7 +57,7 @@ prebuild(targets.shift(), function done (err, result) {
   if (!rc.upload) return
 
   var url = github(pkg)
-  if (err) return onbuilderror(new Error('package.json is missing a repository field'))
+  if (!url) return onbuilderror(new Error('package.json is missing a repository field'))
 
   buildLog('Uploading prebuilds to Github releases')
   var user = url.split('/')[3]
