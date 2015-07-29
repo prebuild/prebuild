@@ -13,7 +13,6 @@ var request = require('request')
 var github = require('github-from-package')
 var ghreleases = require('ghreleases')
 var proc = require('child_process')
-var mv = require('mv')
 var rc = require('./rc')
 
 if (rc.path) process.chdir(rc.path)
