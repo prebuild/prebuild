@@ -7,6 +7,7 @@
     "ghreleases": "^1.0.2",
     "github-from-package": "0.0.0",
     "minimist": "^1.1.2",
+    "mv": "^2.1.1",
     "node-gyp": "^2.0.2",
     "node-gyp-install": "^1.4.3",
     "npmlog": "^1.2.1",

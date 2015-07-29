@@ -14,6 +14,7 @@ var github = require('github-from-package')
 var ghreleases = require('ghreleases')
 var os = require('os')
 var proc = require('child_process')
+var mv = require('mv')
 var rc = require('./rc')
 
 if (rc.path) process.chdir(rc.path)
@@ -105,11 +106,17 @@ function downloadPrebuild () {
 
     fs.mkdir(NPM_CACHE, function () {
       pump(req, fs.createWriteStream(tmp), function (err) {
-        if (err) return compile()
+        if (err) {
+          log.warn('pump', err.message)
+          return compile()
+        }
         if (status !== 200) return fs.unlink(tmp, compile)
 
-        fs.rename(tmp, cache, function (err) {
-          if (err) return compile()
+        mv(tmp, cache, function (err) {
+          if (err) {
+            log.warn('rename', err.message)
+            return compile()
+          }
           unpack()
         })
       })
