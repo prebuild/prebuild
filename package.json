@@ -3,6 +3,9 @@
   "version": "2.2.10",
   "description": "A command line tool for easily doing prebuilds for multiple version of node/iojs on a specific platform",
   "main": "index.js",
+  "scripts": {
+    "test": "tape test/*-test.js"
+  },
   "dependencies": {
     "ghreleases": "^1.0.2",
     "github-from-package": "0.0.0",
@@ -16,7 +19,9 @@
     "tar-fs": "^1.7.0",
     "tar-stream": "^1.2.1"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "tape": "^4.0.1"
+  },
   "bin": {
     "prebuild": "./bin.js"
   },
