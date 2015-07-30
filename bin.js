@@ -84,8 +84,7 @@ prebuild(targets.shift(), function done (err, result) {
 })
 
 function downloadPrebuild () {
-  var name = pkg.name + '-v' + pkg.version + '-node-v' + process.versions.modules + '-' + rc.platform + '-' + rc.arch + '.tar.gz'
-  var url = github(pkg) + '/releases/download/v' + pkg.version + '/' + name
+  var url = getDownloadUrl()
   var cache = path.join(NPM_CACHE, url.replace(/[^a-zA-Z0-9.]+/g, '-'))
   var tmp = cache + '.' + process.pid + '-' + Math.random().toString(16).slice(2) + '.tmp'
   var binaryName
@@ -115,6 +114,46 @@ function downloadPrebuild () {
       })
     })
   })
+
+  function getDownloadUrl () {
+    return expand(urlTemplate(), {
+      name: pkg.name,
+      package_name: pkg.name,
+      version: pkg.version,
+      major: pkg.version.split('.')[0],
+      minor: pkg.version.split('.')[1],
+      patch: pkg.version.split('.')[2],
+      prerelease: pkg.version.split('-')[1],
+      build: pkg.version.split('+')[1],
+      abi: process.versions.modules,
+      node_abi: process.versions.modules,
+      platform: rc.platform,
+      arch: rc.arch,
+      configuration: (rc.debug ? 'Debug' : 'Release'),
+      module_name: pkg.binary && pkg.binary.module_name
+    })
+  }
+
+  function expand (template, values) {
+    Object.keys(values).forEach(function (key) {
+      var regexp = new RegExp('\{' + key + '\}', 'g')
+      template = template.replace(regexp, values[key])
+    })
+    return template
+  }
+
+  function urlTemplate () {
+    if (typeof rc.download == 'string') return rc.download
+    var packageName = '{name}-v{version}-node-v{abi}-{platform}-{arch}.tar.gz'
+    if (rc.download === true && !pkg.binary) {
+      return github(pkg) + '/releases/download/v{version}/' + packageName
+    }
+    if (pkg.binary) {
+      var host = pkg.binary.host + '/'
+      if (pkg.binary.remote_path) host += pkg.binary.remote_path + '/'
+      return host + (pkg.binary.package_name || packageName)
+    }
+  }
 
   function updateName (entry) {
     if (/\.node$/i.test(entry.name)) binaryName = entry.name
