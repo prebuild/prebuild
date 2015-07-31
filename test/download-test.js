@@ -1,0 +1,264 @@
+var test = require('tape')
+var fs = require('fs')
+var rm = require('rimraf')
+var path = require('path')
+var download = require('../download')
+var util = require('../util')
+var pkg = require('a-native-module/package')
+var request = require('request')
+var http = require('http')
+
+var build = path.join(__dirname, 'build')
+var unpacked = path.join(build, 'Release/leveldown.node')
+
+test('downloading from GitHub, not cached', function (t) {
+  t.plan(19)
+  rm.sync(build)
+  rm.sync(util.prebuildCache())
+
+  var requestCount = 0
+  var opts = {
+    pkg: pkg,
+    rc: {platform: process.platform, arch: process.arch, path: __dirname},
+    log: {
+      http: function (type, message) {
+        if (requestCount++ === 0) {
+          t.equal(type, 'request', 'http request')
+          t.equal(message, 'GET ' + downloadUrl)
+        }
+        else {
+          t.equal(type, 200, 'status code logged')
+          t.equal(message, downloadUrl)
+        }
+      },
+      info: function (type, message) {
+        t.equal(type, 'unpack', 'required module successfully')
+        t.equal(message, 'required ' + unpacked + ' successfully')
+      }
+    }
+  }
+
+  var downloadUrl = util.getDownloadUrl(opts)
+  var cachedPrebuild = util.cachedPrebuild(downloadUrl)
+  var tempFile
+
+  var _exists = fs.exists.bind(fs)
+  fs.exists = function (path, cb) {
+    t.equal(path, cachedPrebuild, 'fs.exists called')
+    _exists(path, function (exists) {
+      t.equal(exists, false, 'prebuild should not be cached')
+      cb(exists)
+    })
+  }
+
+  var mkdirCount = 0
+  var _mkdir = fs.mkdir.bind(fs)
+  fs.mkdir = function () {
+    var args = [].slice.call(arguments)
+    if (mkdirCount++ === 0) {
+      t.equal(args[0], util.prebuildCache(), 'fs.mkdir called for prebuildCache')
+    }
+    _mkdir.apply(fs, arguments)
+  }
+
+  var writeStreamCount = 0
+  var _createWriteStream = fs.createWriteStream.bind(fs)
+  fs.createWriteStream = function (path) {
+    if (writeStreamCount++ === 0) {
+      tempFile = path
+      t.ok(/\.tmp$/i.test(path), 'this is the temporary file')
+    }
+    else {
+      t.ok(/\.node$/i.test(path), 'this is the unpacked file')
+    }
+    return _createWriteStream(path)
+  }
+
+  var _createReadStream = fs.createReadStream.bind(fs)
+  fs.createReadStream = function (path) {
+    t.equal(path, cachedPrebuild, 'createReadStream called for cachedPrebuild')
+    return _createReadStream(path)
+  }
+
+  var _get = request.get.bind(request)
+  request.get = function (url) {
+    t.equal(url, downloadUrl, 'correct url')
+    return _get(url)
+  }
+
+  t.equal(fs.existsSync(build), false, 'no build folder')
+
+  download(opts, function (err) {
+    t.error(err, 'no error')
+    t.equal(fs.existsSync(util.prebuildCache()), true, 'prebuildCache created')
+    t.equal(fs.existsSync(cachedPrebuild), true, 'prebuild was cached')
+    t.equal(fs.existsSync(unpacked), true, unpacked + ' should exist')
+    t.equal(fs.existsSync(tempFile), false, 'temp file should be gone')
+    fs.exists = _exists
+    fs.mkdir = _mkdir
+    fs.createWriteStream = _createWriteStream
+    fs.createReadStream = _createReadStream
+    request.get = _get
+  })
+})
+
+test('cached prebuild', function (t) {
+  t.plan(9)
+  rm.sync(build)
+
+  var opts = {
+    pkg: pkg,
+    rc: {platform: process.platform, arch: process.arch, path: __dirname},
+    log: {
+      info: function (type, message) {
+        t.equal(type, 'unpack', 'required module successfully')
+        t.equal(message, 'required ' + unpacked + ' successfully')
+      }
+    }
+  }
+
+  var downloadUrl = util.getDownloadUrl(opts)
+  var cachedPrebuild = util.cachedPrebuild(downloadUrl)
+
+  var _exists = fs.exists.bind(fs)
+  fs.exists = function (path, cb) {
+    t.equal(path, cachedPrebuild, 'fs.exists called')
+    _exists(path, function (exists) {
+      t.equal(exists, true, 'prebuild should be cached')
+      cb(exists)
+    })
+  }
+
+  var _createWriteStream = fs.createWriteStream.bind(fs)
+  fs.createWriteStream = function (path) {
+    t.ok(/\.node$/i.test(path), 'this is the unpacked file')
+    return _createWriteStream(path)
+  }
+
+  var _createReadStream = fs.createReadStream.bind(fs)
+  fs.createReadStream = function (path) {
+    t.equal(path, cachedPrebuild, 'createReadStream called for cachedPrebuild')
+    return _createReadStream(path)
+  }
+
+  t.equal(fs.existsSync(build), false, 'no build folder')
+
+  download(opts, function (err) {
+    t.error(err, 'no error')
+    t.equal(fs.existsSync(unpacked), true, unpacked + ' should exist')
+    fs.createReadStream = _createReadStream
+    fs.createWriteStream = _createWriteStream
+    fs.exists = _exists
+  })
+})
+
+test('missing .node file in .tar.gz should fail', function (t) {
+  t.plan(2)
+
+  var opts = {
+    pkg: pkg,
+    rc: {platform: process.platform, arch: process.arch, path: __dirname},
+    updateName: function (entry) {
+      t.ok(/\.node$/i.test(entry.name), 'should match but we pretend it does not')
+    }
+  }
+
+  var downloadUrl = util.getDownloadUrl(opts)
+  var cachedPrebuild = util.cachedPrebuild(downloadUrl)
+
+  download(opts, function (err) {
+    t.equal(err.message, 'Missing .node file in archive', 'correct error message')
+    t.end()
+  })
+})
+
+test('non existing host should fail with no dangling temp file', function (t) {
+  t.plan(7)
+
+  var opts = {
+    pkg: pkg,
+    rc: {platform: process.platform, arch: process.arch},
+    log: {
+      http: function (type, message) {
+        t.equal(type, 'request', 'http request')
+        t.equal(message, 'GET ' + downloadUrl)
+      }
+    }
+  }
+  opts.pkg.binary = {
+    host: 'https://foo.bar.baz'
+  }
+
+  var downloadUrl = util.getDownloadUrl(opts)
+  var cachedPrebuild = util.cachedPrebuild(downloadUrl)
+  var tempFile
+
+  var _createWriteStream = fs.createWriteStream.bind(fs)
+  fs.createWriteStream = function (path) {
+    tempFile = path
+    t.ok(/\.tmp$/i.test(path), 'this is the temporary file')
+    return _createWriteStream(path)
+  }
+
+  t.equal(fs.existsSync(cachedPrebuild), false, 'nothing cached')
+
+  download(opts, function (err) {
+    t.ok(err, 'should error')
+    t.equal(fs.existsSync(tempFile), false, 'no dangling temp file')
+    t.equal(fs.existsSync(cachedPrebuild), false, 'nothing cached')
+    fs.createWriteStream = _createWriteStream
+  })
+})
+
+test('existing host but invalid url should fail with no dangling temp file', function (t) {
+  t.plan(9)
+
+  var requestCount = 0
+  var opts = {
+    pkg: pkg,
+    rc: {platform: process.platform, arch: process.arch},
+    log: {
+      http: function (type, message) {
+        if (requestCount++ === 0) {
+          t.equal(type, 'request', 'http request')
+          t.equal(message, 'GET ' + downloadUrl)
+        }
+        else {
+          t.equal(type, 404, 'invalid resource')
+          t.equal(message, downloadUrl)
+        }
+      }
+    }
+  }
+  opts.pkg.binary = {
+    host: 'http://localhost:8888',
+    remote_path: 'prebuilds',
+    package_name: 'woohooo-{abi}'
+  }
+
+  var downloadUrl = util.getDownloadUrl(opts)
+  var cachedPrebuild = util.cachedPrebuild(downloadUrl)
+  var tempFile
+
+  var _createWriteStream = fs.createWriteStream.bind(fs)
+  fs.createWriteStream = function (path) {
+    tempFile = path
+    t.ok(/\.tmp$/i.test(path), 'this is the temporary file')
+    return _createWriteStream(path)
+  }
+
+  var server = http.createServer(function (req, res) {
+    t.equal(req.url, '/prebuilds/woohooo-' + process.versions.modules, 'correct url')
+    res.statusCode = 404
+    res.end('nope')
+  }).listen(8888, function () {
+    download(opts, function (err) {
+      t.ok(err, 'should error')
+      t.equal(fs.existsSync(tempFile), false, 'no dangling temp file')
+      t.equal(fs.existsSync(cachedPrebuild), false, 'nothing cached')
+      t.end()
+      fs.createWriteStream = _createWriteStream
+      server.unref()
+    })
+  })
+})
