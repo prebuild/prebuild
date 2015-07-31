@@ -1,10 +1,11 @@
 prebuild [options]
 
-  --path,       -p  [path]      (make a prebuild here)
-  --target,     -t  [version]   (version to prebuild against)
+  --path,       -p  path        (make a prebuild here)
+  --target,     -t  version     (version to prebuild against)
   --upload,     -u  [gh-token]  (upload prebuilds to github)
-  --download,   -d              (download prebuilds from github)
-  --preinstall, -i  [script]    (run this script before prebuilding)
+  --download,   -d  [url]       (download prebuilds, no url means github)
+  --preinstall, -i  script      (run this script before prebuilding)
   --compile,    -c              (compile your project using node-gyp)
   --debug                       (set Debug or Release configuration)
   --verbose                     (log verbosely)
+  --version                     (print prebuild version and exit)
