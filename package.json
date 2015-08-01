@@ -12,7 +12,7 @@
     "home-dir": "^1.0.0",
     "minimist": "^1.1.2",
     "node-gyp": "^2.0.2",
-    "node-gyp-install": "^1.4.3",
+    "node-gyp-install": "^2.0.1",
     "npmlog": "^1.2.1",
     "pump": "^1.0.0",
     "rc": "^1.0.3",

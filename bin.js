@@ -104,7 +104,7 @@ function getAbi (version, cb) {
   })
 
   function retry () {
-    install({log: buildLog, version: version, force: true}, function (err) {
+    install({log: log, version: version, force: true}, function (err) {
       if (err) return cb(err)
       getAbi(version, cb)
     })
@@ -148,7 +148,7 @@ function configurePreGyp () {
 function build (version, cb) {
   var release = (pkg.binary && pkg.binary.module_path) || 'build/Release'
 
-  install({log: buildLog, version: version}, function (err) {
+  install({log: log, version: version}, function (err) {
     if (err) return cb(err)
     runGyp(version, function (err) {
       if (err) return cb(err)
