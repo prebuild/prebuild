@@ -6,6 +6,8 @@ A command line tool for easily doing prebuilds for multiple version of node/iojs
 $ npm install -g prebuild
 ```
 
+[![build status](http://img.shields.io/travis/mafintosh/prebuild.svg?style=flat)](http://travis-ci.org/mafintosh/prebuild)
+
 ## Features
 
 * Builds native modules for any version of node/iojs, without having to switch between different versions of node/iojs to do so. This works by only downloading the correct headers and telling `node-gyp` to use those instead of the ones installed on your system.
