@@ -1,6 +1,6 @@
 var path = require('path')
 var fs = require('fs')
-var request = require('request')
+var get = require('simple-get')
 var pump = require('pump')
 var tfs = require('tar-fs')
 var zlib = require('zlib')
@@ -18,29 +18,26 @@ function downloadPrebuild (opts, cb) {
   fs.exists(cachedPrebuild, function (exists) {
     if (exists) return unpack()
 
-    var req = request.get(downloadUrl)
-    var status = 0
-
     log.http('request', 'GET ' + downloadUrl)
-    req.on('response', function (res) {
-      status = res.statusCode
+    get(downloadUrl, function (err, res) {
+      if (err) return onerror(err)
       log.http(res.statusCode, downloadUrl)
-    })
-
-    fs.mkdir(util.prebuildCache(), function () {
-      pump(req, fs.createWriteStream(tempFile), function (err) {
-        if (err || status !== 200) {
-          return fs.unlink(tempFile, function () {
-            cb(err || new Error('Failed to download prebuild'))
+      fs.mkdir(util.prebuildCache(), function () {
+        pump(res, fs.createWriteStream(tempFile), function (err) {
+          if (err || res.statusCode !== 200) return onerror(err)
+          fs.rename(tempFile, cachedPrebuild, function (err) {
+            if (err) return cb(err)
+            unpack()
           })
-        }
-
-        fs.rename(tempFile, cachedPrebuild, function (err) {
-          if (err) return cb(err)
-          unpack()
         })
       })
     })
+
+    function onerror (err) {
+      fs.unlink(tempFile, function () {
+        cb(err || new Error('Failed to download prebuild'))
+      })
+    }
   })
 
   function unpack () {
@@ -54,7 +51,7 @@ function downloadPrebuild (opts, cb) {
       if (err) return cb(err)
       if (binaryName) {
         try {
-          var resolved = path.resolve(rc.path, binaryName)
+          var resolved = path.resolve(rc.path || '.', binaryName)
           require(resolved)
           log.info('unpack', 'required ' + resolved + ' successfully')
         } catch (err) {
