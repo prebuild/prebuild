@@ -5,7 +5,8 @@ module.exports = require('rc')('prebuild', {
   arch: process.arch,
   platform: process.platform,
   compile: npmConfig('--build-from-source'),
-  force: npmConfig('--force')
+  force: npmConfig('--force'),
+  path: '.'
 }, minimist(process.argv, {
   alias: {
     target: 't',

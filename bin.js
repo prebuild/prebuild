@@ -6,14 +6,13 @@ var install = require('node-gyp-install')
 var log = require('npmlog')
 var zlib = require('zlib')
 var tar = require('tar-stream')
-var tfs = require('tar-fs')
 var fs = require('fs')
-var pump = require('pump')
-var request = require('request')
 var github = require('github-from-package')
 var ghreleases = require('ghreleases')
 var proc = require('child_process')
+
 var rc = require('./rc')
+var downloadPrebuild = require('./download')
 
 if (rc.path) process.chdir(rc.path)
 
@@ -23,9 +22,7 @@ if (rc.version) {
 }
 
 var HOME = process.env.HOME || process.env.USERPROFILE
-var NPM = process.env.APPDATA ? path.join(process.env.APPDATA, 'npm-cache') : path.join(HOME, '.npm')
 var NODE_GYP = path.join(HOME, '.node-gyp')
-var NPM_CACHE = path.join(NPM, '_prebuilds')
 
 log.heading = 'prebuild'
 if (process.env.npm_config_loglevel && !rc.verbose) log.level = process.env.npm_config_loglevel
@@ -43,7 +40,16 @@ if (rc.help) {
 }
 
 if (rc.compile) return build(process.version, onbuilderror)
-if (rc.download) return downloadPrebuild()
+if (rc.download) {
+  return downloadPrebuild({pkg: pkg, rc: rc, log: log}, function (err) {
+    if (err) {
+      log.warn('install', err.message)
+      log.info('install', 'Falling back to compilation')
+      return build(process.version, onbuilderror)
+    }
+    log.info('install', 'Prebuild successfully installed!')
+  })
+}
 
 var targets = [].concat(rc.target)
 var buildLog = log.info.bind(log, 'build')
@@ -82,103 +88,6 @@ prebuild(targets.shift(), function done (err, result) {
     })
   })
 })
-
-function downloadPrebuild () {
-  var url = getDownloadUrl()
-  var cache = path.join(NPM_CACHE, url.replace(/[^a-zA-Z0-9.]+/g, '-'))
-  var tmp = cache + '.' + process.pid + '-' + Math.random().toString(16).slice(2) + '.tmp'
-  var binaryName
-
-  fs.exists(cache, function (exists) {
-    if (exists) return unpack()
-
-    var req = request(url)
-    var status = 0
-
-    log.http('request', 'GET ' + url)
-    req.on('response', function (res) {
-      status = res.statusCode
-      log.http(res.statusCode, url)
-    })
-
-    fs.mkdir(NPM_CACHE, function () {
-      pump(req, fs.createWriteStream(tmp), function (err) {
-        if (err) return compile(err)
-
-        if (status !== 200) return fs.unlink(tmp, compile)
-
-        fs.rename(tmp, cache, function (err) {
-          if (err) return compile(err)
-          unpack()
-        })
-      })
-    })
-  })
-
-  function getDownloadUrl () {
-    return expand(urlTemplate(), {
-      name: pkg.name,
-      package_name: pkg.name,
-      version: pkg.version,
-      major: pkg.version.split('.')[0],
-      minor: pkg.version.split('.')[1],
-      patch: pkg.version.split('.')[2],
-      prerelease: pkg.version.split('-')[1],
-      build: pkg.version.split('+')[1],
-      abi: process.versions.modules,
-      node_abi: process.versions.modules,
-      platform: rc.platform,
-      arch: rc.arch,
-      configuration: (rc.debug ? 'Debug' : 'Release'),
-      module_name: pkg.binary && pkg.binary.module_name
-    })
-  }
-
-  function expand (template, values) {
-    Object.keys(values).forEach(function (key) {
-      var regexp = new RegExp('\{' + key + '\}', 'g')
-      template = template.replace(regexp, values[key])
-    })
-    return template
-  }
-
-  function urlTemplate () {
-    if (typeof rc.download == 'string') return rc.download
-    var packageName = '{name}-v{version}-node-v{abi}-{platform}-{arch}.tar.gz'
-    if (rc.download === true && !pkg.binary) {
-      return github(pkg) + '/releases/download/v{version}/' + packageName
-    }
-    if (pkg.binary) {
-      var host = pkg.binary.host + '/'
-      if (pkg.binary.remote_path) host += pkg.binary.remote_path + '/'
-      return host + (pkg.binary.package_name || packageName)
-    }
-  }
-
-  function updateName (entry) {
-    if (/\.node$/i.test(entry.name)) binaryName = entry.name
-  }
-
-  function unpack () {
-    pump(fs.createReadStream(cache), zlib.createGunzip(), tfs.extract('.', {readable: true, writable: true}).on('entry', updateName), function (err) {
-      if (err) return compile(err)
-      if (binaryName) {
-        try {
-          require(path.resolve(binaryName))
-        } catch (err) {
-          return compile(err)
-        }
-      }
-      log.info('install', 'Prebuild successfully installed!')
-    })
-  }
-
-  function compile (err) {
-    if (err) log.warn('install', err.message)
-    log.info('install', 'Could not install prebuild. Falling back to compilation')
-    build(process.version, onbuilderror)
-  }
-}
 
 function getAbi (version, cb) {
   version = version.replace('v', '')
