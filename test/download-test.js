@@ -5,8 +5,8 @@ var path = require('path')
 var download = require('../download')
 var util = require('../util')
 var pkg = require('a-native-module/package')
-var request = require('request')
 var http = require('http')
+var https = require('https')
 
 var build = path.join(__dirname, 'build')
 var unpacked = path.join(build, 'Release/leveldown.node')
@@ -80,10 +80,11 @@ test('downloading from GitHub, not cached', function (t) {
     return _createReadStream(path)
   }
 
-  var _get = request.get.bind(request)
-  request.get = function (url) {
-    t.equal(url, downloadUrl, 'correct url')
-    return _get(url)
+  var _request = https.request
+  https.request = function (opts) {
+    https.request = _request
+    t.equal('https://' + opts.hostname + opts.path, downloadUrl, 'correct url')
+    return _request.apply(https, arguments)
   }
 
   t.equal(fs.existsSync(build), false, 'no build folder')
@@ -98,7 +99,7 @@ test('downloading from GitHub, not cached', function (t) {
     fs.mkdir = _mkdir
     fs.createWriteStream = _createWriteStream
     fs.createReadStream = _createReadStream
-    request.get = _get
+    https.request = _request
   })
 })
 
@@ -173,7 +174,7 @@ test('missing .node file in .tar.gz should fail', function (t) {
 })
 
 test('non existing host should fail with no dangling temp file', function (t) {
-  t.plan(7)
+  t.plan(5)
 
   var opts = {
     pkg: pkg,
@@ -191,12 +192,10 @@ test('non existing host should fail with no dangling temp file', function (t) {
 
   var downloadUrl = util.getDownloadUrl(opts)
   var cachedPrebuild = util.cachedPrebuild(downloadUrl)
-  var tempFile
 
   var _createWriteStream = fs.createWriteStream.bind(fs)
   fs.createWriteStream = function (path) {
-    tempFile = path
-    t.ok(/\.tmp$/i.test(path), 'this is the temporary file')
+    t.ok(false, 'no temporary file should be written')
     return _createWriteStream(path)
   }
 
@@ -204,7 +203,6 @@ test('non existing host should fail with no dangling temp file', function (t) {
 
   download(opts, function (err) {
     t.ok(err, 'should error')
-    t.equal(fs.existsSync(tempFile), false, 'no dangling temp file')
     t.equal(fs.existsSync(cachedPrebuild), false, 'nothing cached')
     fs.createWriteStream = _createWriteStream
   })
@@ -219,6 +217,7 @@ test('existing host but invalid url should fail with no dangling temp file', fun
     rc: {platform: process.platform, arch: process.arch},
     log: {
       http: function (type, message) {
+        if (requestCount >= 2) return
         if (requestCount++ === 0) {
           t.equal(type, 'request', 'http request')
           t.equal(message, 'GET ' + downloadUrl)
