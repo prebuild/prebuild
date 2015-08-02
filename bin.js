@@ -34,7 +34,11 @@ if (rc.help) {
   process.exit(0)
 }
 
-if (rc.compile) return build(process.version, onbuilderror)
+var buildLog = log.info.bind(log, 'build')
+var opts = {pkg: pkg, rc: rc, log: log, buildLog: buildLog}
+
+if (rc.compile) return build(opts, process.version, onbuilderror)
+
 if (rc.download) {
   return download({pkg: pkg, rc: rc, log: log}, function (err) {
     if (err) {
@@ -47,7 +51,6 @@ if (rc.download) {
 }
 
 var targets = [].concat(rc.target)
-var buildLog = log.info.bind(log, 'build')
 var files = []
 
 var done = after(targets.length, function (err) {
@@ -62,7 +65,6 @@ var done = after(targets.length, function (err) {
   })
 })
 
-var opts = {pkg: pkg, rc: rc, log: log, buildLog: buildLog}
 targets.forEach(function (target) {
   prebuild(opts, target, function (err, tarGz) {
     if (err) return done(err)
