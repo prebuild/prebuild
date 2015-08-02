@@ -3,7 +3,6 @@
 var path = require('path')
 var log = require('npmlog')
 var fs = require('fs')
-var github = require('github-from-package')
 var async = require('async')
 
 var rc = require('./rc')
@@ -60,10 +59,8 @@ async.eachSeries([].concat(rc.target), function (target, next) {
 }, function (err) {
   if (err) return onbuilderror(err)
   if (!rc.upload) return
-  var url = github(pkg)
-  if (!url) return onbuilderror(new Error('package.json is missing a repository field'))
   buildLog('Uploading prebuilds to Github releases')
-  upload({pkg: pkg, rc: rc, url: url, files: files}, function (err) {
+  upload({pkg: pkg, rc: rc, files: files}, function (err) {
     if (err) return onbuilderror(err)
     buildLog('Uploaded ' + files.length + ' new prebuild(s) to Github')
   })
