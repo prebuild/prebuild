@@ -4,7 +4,7 @@ var path = require('path')
 var log = require('npmlog')
 var fs = require('fs')
 var github = require('github-from-package')
-var after = require('after')
+var async = require('async')
 
 var rc = require('./rc')
 var download = require('./download')
@@ -50,10 +50,14 @@ if (rc.download) {
   })
 }
 
-var targets = [].concat(rc.target)
 var files = []
-
-var done = after(targets.length, function (err) {
+async.eachSeries([].concat(rc.target), function (target, next) {
+  prebuild(opts, target, function (err, tarGz) {
+    if (err) return next(err)
+    files.push(tarGz)
+    next()
+  })
+}, function (err) {
   if (err) return onbuilderror(err)
   if (!rc.upload) return
   var url = github(pkg)
@@ -62,14 +66,6 @@ var done = after(targets.length, function (err) {
   upload({pkg: pkg, rc: rc, url: url, files: files}, function (err) {
     if (err) return onbuilderror(err)
     buildLog('Uploaded ' + files.length + ' new prebuild(s) to Github')
-  })
-})
-
-targets.forEach(function (target) {
-  prebuild(opts, target, function (err, tarGz) {
-    if (err) return done(err)
-    files.push(tarGz)
-    done()
   })
 })
 
