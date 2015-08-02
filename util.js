@@ -76,7 +76,7 @@ function getTarPath (opts, abi) {
 
 // TODO test
 function readGypFile (version, file, cb) {
-  fs.readFile(path.join(nodeGypPath(), version, file, 'utf-8', cb))
+  fs.readFile(path.join(nodeGypPath(), version, file), 'utf-8', cb)
 }
 
 function nodeGypPath () {
