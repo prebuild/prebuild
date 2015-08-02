@@ -1,7 +1,7 @@
 var path = require('path')
 var fs = require('fs')
 var install = require('node-gyp-install')
-var gyp = require('node-gyp')()
+var nodeGyp = require('node-gyp')()
 var spawn = require('child_process').spawn
 
 function build (opts, version, cb) {
@@ -30,6 +30,7 @@ function build (opts, version, cb) {
 }
 
 function runGyp (opts, version, cb) {
+  var gyp = opts.gyp || nodeGyp
   if (!opts.rc.preinstall) return run()
 
   spawn(opts.rc.preinstall, {stdio: 'inherit'}).on('exit', function (code) {
@@ -43,13 +44,13 @@ function runGyp (opts, version, cb) {
     gyp.commands.rebuild(gyp.todo.shift().args, function run (err) {
       if (err) return cb(err)
       if (!gyp.todo.length) return cb()
-      if (gyp.todo[0].name === 'configure') configurePreGyp(opts)
+      if (gyp.todo[0].name === 'configure') configurePreGyp(gyp, opts)
       gyp.commands[gyp.todo[0].name](gyp.todo.shift().args, run)
     })
   }
 }
 
-function configurePreGyp (opts) {
+function configurePreGyp (gyp, opts) {
   var binary = opts.pkg.binary
   if (binary && binary.module_name) {
     gyp.todo[0].args.push('-Dmodule_name=' + binary.module_name)
