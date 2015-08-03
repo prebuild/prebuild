@@ -6,6 +6,7 @@ function upload (opts, cb) {
   var pkg = opts.pkg
   var rc = opts.rc
   var files = opts.files
+  var gh = opts.gh || ghreleases
 
   var url = github(pkg)
   if (!url) return process.nextTick(function () {
@@ -17,8 +18,8 @@ function upload (opts, cb) {
   var auth = {user: 'x-oauth', token: rc.upload}
   var tag = 'v' + pkg.version
 
-  ghreleases.create(auth, user, repo, {tag_name: tag}, function () {
-    ghreleases.getByTag(auth, user, repo, tag, function (err, release) {
+  gh.create(auth, user, repo, {tag_name: tag}, function () {
+    gh.getByTag(auth, user, repo, tag, function (err, release) {
       if (err) return cb(err)
 
       files = files.filter(function (file) {
@@ -27,7 +28,7 @@ function upload (opts, cb) {
         })
       })
 
-      ghreleases.uploadAssets(auth, user, repo, 'tags/' + tag, files, cb)
+      gh.uploadAssets(auth, user, repo, 'tags/' + tag, files, cb)
     })
   })
 
