@@ -19,7 +19,7 @@ function downloadPrebuild (opts, cb) {
     if (exists) return unpack()
 
     log.http('request', 'GET ' + downloadUrl)
-    get(downloadUrl, function (err, res) {
+    var req = get(downloadUrl, function (err, res) {
       if (err) return onerror(err)
       log.http(res.statusCode, downloadUrl)
       fs.mkdir(util.prebuildCache(), function () {
@@ -31,6 +31,10 @@ function downloadPrebuild (opts, cb) {
           })
         })
       })
+    })
+
+    req.setTimeout(30 * 1000, function () {
+      req.abort()
     })
 
     function onerror (err) {
