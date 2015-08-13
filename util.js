@@ -1,3 +1,4 @@
+var fs = require('fs')
 var path = require('path')
 var github = require('github-from-package')
 var home = require('home-dir')
@@ -61,9 +62,32 @@ function tempFile (cached) {
   return cached + '.' + process.pid + '-' + Math.random().toString(16).slice(2) + '.tmp'
 }
 
+// TODO test
+function getTarPath (opts, abi) {
+  return path.join('prebuilds', [
+    opts.pkg.name,
+    '-v', opts.pkg.version,
+    '-node-v', abi,
+    '-', opts.rc.platform,
+    '-', opts.rc.arch,
+    '.tar.gz'
+  ].join(''))
+}
+
+// TODO test
+function readGypFile (version, file, cb) {
+  fs.readFile(path.join(nodeGypPath(), version, file), 'utf-8', cb)
+}
+
+function nodeGypPath () {
+  return path.join(home(), '.node-gyp')
+}
+
 exports.getDownloadUrl = getDownloadUrl
 exports.expandTemplate = expandTemplate
 exports.urlTemplate = urlTemplate
 exports.cachedPrebuild = cachedPrebuild
 exports.prebuildCache = prebuildCache
 exports.tempFile = tempFile
+exports.getTarPath = getTarPath
+exports.readGypFile = readGypFile

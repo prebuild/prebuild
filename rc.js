@@ -26,3 +26,7 @@ module.exports = require('rc')('prebuild', {
 function npmConfig (argv) {
   return !!(process.env.npm_config_argv && process.env.npm_config_argv.indexOf(argv) > -1)
 }
+
+if (!module.parent) {
+  console.log('%j', module.exports)
+}
