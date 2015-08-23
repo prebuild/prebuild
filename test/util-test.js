@@ -113,16 +113,6 @@ test('urlTemplate() with pkg.binary cleans up leading ./ or / and trailing /', f
   t.end()
 })
 
-test('expandTemplate() expands placeholders in template string', function (t) {
-  var t1 = '{wooohooo}---{noooo}'
-  var e1 = util.expandTemplate(t1, {wooohooo: 'hello', noooo: 'world'})
-  t.equal(e1, 'hello---world')
-  var t2 = '{foo}/{foo}/{bar}/{bar}'
-  var e2 = util.expandTemplate(t2, {foo: 'bar', bar: 'foo'})
-  t.equal(e2, 'bar/bar/foo/foo', 'expands multiple placeholders')
-  t.end()
-})
-
 test('getDownloadUrl() expands template to correct values', function (t) {
   var abi = process.versions.modules
   var o1 = {
