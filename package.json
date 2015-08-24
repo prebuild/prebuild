@@ -7,6 +7,7 @@
   },
   "dependencies": {
     "async": "^1.4.0",
+    "expand-template": "^1.0.0",
     "ghreleases": "^1.0.2",
     "github-from-package": "0.0.0",
     "home-dir": "^1.0.0",

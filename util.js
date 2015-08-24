@@ -2,6 +2,7 @@ var fs = require('fs')
 var path = require('path')
 var github = require('github-from-package')
 var home = require('home-dir')
+var expandTemplate = require('expand-template')()
 
 function getDownloadUrl (opts) {
   return expandTemplate(urlTemplate(opts), {
@@ -20,14 +21,6 @@ function getDownloadUrl (opts) {
     configuration: (opts.rc.debug ? 'Debug' : 'Release'),
     module_name: opts.pkg.binary && opts.pkg.binary.module_name
   })
-}
-
-function expandTemplate (template, values) {
-  Object.keys(values).forEach(function (key) {
-    var regexp = new RegExp('\{' + key + '\}', 'g')
-    template = template.replace(regexp, values[key])
-  })
-  return template
 }
 
 function urlTemplate (opts) {
@@ -84,7 +77,6 @@ function nodeGypPath () {
 }
 
 exports.getDownloadUrl = getDownloadUrl
-exports.expandTemplate = expandTemplate
 exports.urlTemplate = urlTemplate
 exports.cachedPrebuild = cachedPrebuild
 exports.prebuildCache = prebuildCache
