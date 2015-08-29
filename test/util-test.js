@@ -154,3 +154,48 @@ test('getDownloadUrl() expands template to correct values', function (t) {
   t.equal(url2, 'https://foo.com/a-native-module-a-native-module-x.y.z+beta77-x-y-z+beta77-beta77-' + abi + '-' + abi + '-coolplatform-futureplatform-Debug-a-native-module-bindings', 'weird url but testing everything is propagated, with build and Debug')
   t.end()
 })
+
+test('getTarPath based on package.json and rc config', function (t) {
+  var opts = {
+    pkg: {
+      name: 'foo',
+      version: 'X.Y.Z'
+    },
+    rc: {
+      platform: 'fakeos',
+      arch: 'x64'
+    }
+  }
+  var tarPath = util.getTarPath(opts, 314)
+  t.equal(tarPath, 'prebuilds/foo-vX.Y.Z-node-v314-fakeos-x64.tar.gz', 'correct tar path')
+  t.end()
+})
+
+test('readGypFile reads file based on correct version', function (t) {
+  var v = 'X.Y.Z'
+  var file = 'src/node_version.h'
+  var _readFile = fs.readFile
+  fs.readFile = function (fpath, encoding, cb) {
+    t.equal(fpath, home() + '/.node-gyp/' + v + '/' + file, 'corect file name')
+    cb()
+  }
+  util.readGypFile(v, file, function (err, data) {
+    fs.readFile = _readFile
+    t.end()
+  })
+})
+
+test('readGypFile errors if fs.readFile errors', function (t) {
+  var v = 'X.Y.Z'
+  var file = 'src/node_version.h'
+  var _readFile = fs.readFile
+  var error = new Error('sorry dude, no such file')
+  fs.readFile = function (fpath, encoding, cb) {
+    process.nextTick(cb.bind(null, error))
+  }
+  util.readGypFile(v, file, function (err, data) {
+    fs.readFile = _readFile
+    t.deepEqual(err, error, 'expected error')
+    t.end()
+  })
+})

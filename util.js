@@ -55,7 +55,6 @@ function tempFile (cached) {
   return cached + '.' + process.pid + '-' + Math.random().toString(16).slice(2) + '.tmp'
 }
 
-// TODO test
 function getTarPath (opts, abi) {
   return path.join('prebuilds', [
     opts.pkg.name,
@@ -67,7 +66,6 @@ function getTarPath (opts, abi) {
   ].join(''))
 }
 
-// TODO test
 function readGypFile (version, file, cb) {
   fs.readFile(path.join(nodeGypPath(), version, file), 'utf-8', cb)
 }
