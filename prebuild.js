@@ -1,11 +1,10 @@
 var fs = require('fs')
 var path = require('path')
-var tar = require('tar-stream')
-var zlib = require('zlib')
 var install = require('node-gyp-install')
 var getAbi = require('./abi')
 var getTarPath = require('./util').getTarPath
 var build = require('./build')
+var pack = require('./pack')
 
 function prebuild (opts, target, cb) {
   var pkg = opts.pkg
@@ -33,30 +32,6 @@ function prebuild (opts, target, cb) {
       })
     })
   })
-
-  function pack (filename, tarPath, cb) {
-    fs.mkdir('prebuilds', function () {
-      fs.stat(filename, function (err, st) {
-        if (err) return cb(err)
-
-        var pack = tar.pack()
-        var ws = fs.createWriteStream(tarPath)
-        var stream = pack.entry({
-          name: filename.replace(/\\/g, '/').replace(/:/g, '_'),
-          size: st.size,
-          mode: st.mode | 0444 | 0222,
-          gid: st.gid,
-          uid: st.uid
-        })
-
-        fs.createReadStream(filename).pipe(stream).on('finish', function () {
-          pack.finalize()
-        })
-
-        pack.pipe(zlib.createGzip()).pipe(ws).on('close', cb)
-      })
-    })
-  }
 }
 
 module.exports = prebuild
