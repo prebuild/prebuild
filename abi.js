@@ -5,7 +5,6 @@ function getAbi (opts, version, cb) {
   var log = opts.log
   var install = opts.install || nodeGypInstall
   version = version.replace('v', '')
-
   util.readGypFile(version, 'src/node_version.h', function (err, a) {
     if (err && err.code === 'ENOENT') return retry()
     if (err) return cb(err)
@@ -21,7 +20,7 @@ function getAbi (opts, version, cb) {
   function retry () {
     install({log: log, version: version, force: true}, function (err) {
       if (err) return cb(err)
-      getAbi(version, cb)
+      getAbi(opts, version, cb)
     })
   }
 
