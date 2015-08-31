@@ -1,12 +1,14 @@
 var fs = require('fs')
 var path = require('path')
 var install = require('node-gyp-install')
+var async = require('async')
 var getAbi = require('./abi')
 var getTarPath = require('./util').getTarPath
 var build = require('./build')
+var strip = require('./strip')
 var pack = require('./pack')
 
-function prebuild (opts, target, cb) {
+function prebuild (opts, target, callback) {
   var pkg = opts.pkg
   var rc = opts.rc
   var log = opts.log
@@ -20,15 +22,38 @@ function prebuild (opts, target, cb) {
     fs.stat(tarPath, function (err, st) {
       if (!err && !rc.force) {
         buildLog(tarPath + ' exists, skipping build')
-        return cb(null, tarPath)
+        return callback(null, tarPath)
       }
-      build(opts, target, function (err, filename) {
-        if (err) return cb(err)
-        pack(filename, tarPath, function (err) {
+      var tasks = [
+        function (cb) {
+          build(opts, target, function (err, filename) {
+            if (err) return cb(err)
+            cb(null, filename)
+          })
+        },
+        function (filename, cb) {
+          buildLog('Packing ' + filename + ' into ' + tarPath)
+          pack(filename, tarPath, function (err) {
+            if (err) return cb(err)
+            cb(null)
+          })
+        }
+      ]
+
+      if (rc.strip) tasks.splice(1, 0, function (filename, cb) {
+        buildLog('Stripping debug information from ' + filename)
+        strip(filename, function (err) {
           if (err) return cb(err)
-          buildLog('Prebuild written to ' + tarPath)
-          cb(null, tarPath)
+          cb(null, filename)
         })
+      })
+
+      // TODO if we can move out buildLog() to the caller, we can simply do
+      //async.waterfall(tasks, callback)
+      async.waterfall(tasks, function (err) {
+        if (err) return callback(err)
+        buildLog('Prebuild written to ' + tarPath)
+        callback(null, tarPath)
       })
     })
   })

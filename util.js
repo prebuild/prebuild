@@ -87,6 +87,10 @@ function spawn (cmd, args, cb) {
   })
 }
 
+function platform () {
+  return process.platform
+}
+
 exports.getDownloadUrl = getDownloadUrl
 exports.urlTemplate = urlTemplate
 exports.cachedPrebuild = cachedPrebuild
@@ -95,3 +99,4 @@ exports.tempFile = tempFile
 exports.getTarPath = getTarPath
 exports.readGypFile = readGypFile
 exports.spawn = spawn
+exports.platform = platform
