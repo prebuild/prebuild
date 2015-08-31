@@ -2,6 +2,7 @@ var fs = require('fs')
 var path = require('path')
 var github = require('github-from-package')
 var home = require('home-dir')
+var cp = require('child_process')
 var expandTemplate = require('expand-template')()
 
 function getDownloadUrl (opts) {
@@ -74,6 +75,18 @@ function nodeGypPath () {
   return path.join(home(), '.node-gyp')
 }
 
+function spawn (cmd, args, cb) {
+  args = args || []
+  if (typeof args == 'function') {
+    cb = args
+    args = []
+  }
+  return cp.spawn(cmd, args, {stdio: 'inherit'}).on('exit', function (code) {
+    if (code === 0) return cb()
+    cb(new Error(cmd + ' ' + args.join(' ') + ' failed with exit code ' + code))
+  })
+}
+
 exports.getDownloadUrl = getDownloadUrl
 exports.urlTemplate = urlTemplate
 exports.cachedPrebuild = cachedPrebuild
@@ -81,3 +94,4 @@ exports.prebuildCache = prebuildCache
 exports.tempFile = tempFile
 exports.getTarPath = getTarPath
 exports.readGypFile = readGypFile
+exports.spawn = spawn
