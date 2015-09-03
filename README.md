@@ -13,6 +13,7 @@ $ npm install -g prebuild
 * Builds native modules for any version of node/iojs, without having to switch between different versions of node/iojs to do so. This works by only downloading the correct headers and telling `node-gyp` to use those instead of the ones installed on your system.
 * Support for uploading (`--upload`) prebuilds to GitHub.
 * Support for downloading (`--download`) prebuilds from GitHub. You can also download from a host of your choice and you can customize the url format as you see fit.
+* Support for stripping (`--strip`) debug information.
 
 ## Building
 
@@ -113,6 +114,24 @@ target[] = 0.12.7
 target[] = 1.0.4
 target[] = 1.8.4
 target[] = 2.4.0
+```
+
+## Help
+
+```
+$ prebuild -h
+prebuild [options]
+
+  --path,       -p  path        (make a prebuild here)
+  --target,     -t  version     (version to prebuild against)
+  --upload,     -u  [gh-token]  (upload prebuilds to github)
+  --download,   -d  [url]       (download prebuilds, no url means github)
+  --preinstall, -i  script      (run this script before prebuilding)
+  --compile,    -c              (compile your project using node-gyp)
+  --strip                       (strip debug information)
+  --debug                       (set Debug or Release configuration)
+  --verbose                     (log verbosely)
+  --version                     (print prebuild version and exit)
 ```
 
 ## License

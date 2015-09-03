@@ -1,7 +1,11 @@
 var test = require('tape')
-var util = require('../util')
 var fs = require('fs')
 var home = require('home-dir')
+var cp = require('child_process')
+var EventEmitter = require('events').EventEmitter
+var util = require('../util')
+
+var spawn = util.spawn
 
 test('prebuildCache() for different environments', function (t) {
   var APPDATA = process.env.APPDATA = 'somepathhere'
@@ -198,4 +202,38 @@ test('readGypFile errors if fs.readFile errors', function (t) {
     t.deepEqual(err, error, 'expected error')
     t.end()
   })
+})
+
+test('no args default to empty array', function (t) {
+  cp.spawn = function (cmd, args, opts) {
+    t.equal(cmd, 'foo', 'correct command')
+    t.deepEqual(args, [], 'default args')
+    t.deepEqual(opts, {stdio: 'inherit'}, 'inherit stdio')
+    return {
+      on: function (id, cb) {
+        t.equal(id, 'exit', 'listener on exit event')
+        t.end()
+      }
+    }
+  }
+  spawn('foo')
+})
+
+test('callback fires with no error on exit code 0', function (t) {
+  cp.spawn = function (cmd, args, opts) {
+    t.deepEqual(args, ['arg1', 'arg2'], 'correct args')
+    return new EventEmitter()
+  }
+  spawn('foo', ['arg1', 'arg2'], function (err) {
+    t.error(err, 'no error')
+    t.end()
+  }).emit('exit', 0)
+})
+
+test('callback fires with error on non 0 exit code', function (t) {
+  cp.spawn = function () { return new EventEmitter() }
+  spawn('foo', ['arg1'], function (err) {
+    t.equal(err.message, 'foo arg1 failed with exit code 314', 'correct error')
+    t.end()
+  }).emit('exit', 314)
 })

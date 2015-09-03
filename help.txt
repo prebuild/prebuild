@@ -6,6 +6,7 @@ prebuild [options]
   --download,   -d  [url]       (download prebuilds, no url means github)
   --preinstall, -i  script      (run this script before prebuilding)
   --compile,    -c              (compile your project using node-gyp)
+  --strip                       (strip debug information)
   --debug                       (set Debug or Release configuration)
   --verbose                     (log verbosely)
   --version                     (print prebuild version and exit)

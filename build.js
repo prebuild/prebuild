@@ -2,7 +2,7 @@ var path = require('path')
 var fs = require('fs')
 var install = require('node-gyp-install')
 var nodeGyp = require('node-gyp')()
-var spawn = require('child_process').spawn
+var spawn = require('./util').spawn
 
 function build (opts, version, cb) {
   var binary = opts.pkg.binary
@@ -33,9 +33,9 @@ function runGyp (opts, version, cb) {
   var gyp = opts.gyp || nodeGyp
   if (!opts.rc.preinstall) return run()
 
-  spawn(opts.rc.preinstall, {stdio: 'inherit'}).on('exit', function (code) {
-    if (code === 0) return run()
-    cb(new Error('failed to run preinstall script with exit code ' + code))
+  spawn(opts.rc.preinstall, function (err) {
+    if (err) return cb(err)
+    run()
   })
 
   function run () {
