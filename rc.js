@@ -6,6 +6,7 @@ module.exports = require('rc')('prebuild', {
   platform: process.platform,
   compile: npmConfig('--build-from-source'),
   force: npmConfig('--force'),
+  debug: npmConfig('--debug'),
   path: '.'
 }, minimist(process.argv, {
   alias: {
