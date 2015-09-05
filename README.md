@@ -28,10 +28,10 @@ For more options run `prebuild --help`. The prebuilds created are compatible wit
 
 ## Uploading
 
-`prebuild` supports uploading prebuilds to Github releases. If the release doesn't exist, it will be created for you. To upload prebuilds simply add the `--upload [github-token]` option
+`prebuild` supports uploading prebuilds to GitHub releases. If the release doesn't exist, it will be created for you. To upload prebuilds simply add the `--upload <github-token>` option:
 
 ```
-$ prebuild -t v2.4.0 -t 0.12.7 -u put-your-github-personal-token-here
+$ prebuild -t v2.4.0 -t 0.12.7 -u <github-token>
 ```
 
 If you don't want to use the token on cli you can also stick that in e.g. `~/.prebuildrc`:
@@ -41,6 +41,8 @@ If you don't want to use the token on cli you can also stick that in e.g. `~/.pr
   "upload": "<github-token>"
 }
 ```
+
+See [this page](https://github.com/settings/tokens) for more information on how to create GitHub tokens.
 
 ## Downloading
 
