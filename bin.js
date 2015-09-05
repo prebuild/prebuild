@@ -43,7 +43,7 @@ if (rc.download) {
     if (err) {
       log.warn('install', err.message)
       log.info('install', 'Falling back to compilation')
-      return build(process.version, onbuilderror)
+      return build(opts, process.version, onbuilderror)
     }
     log.info('install', 'Prebuild successfully installed!')
   })
