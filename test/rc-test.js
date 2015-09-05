@@ -9,6 +9,7 @@ test('default config', function (t) {
   t.equal(rc.platform, process.platform, 'correct platform')
   t.equal(rc.compile, false, 'compile is explicit')
   t.equal(rc.force, false, 'force is explicit')
+  t.equal(rc.debug, false, 'debug not set')
   t.equal(rc.path, '.', 'correct path')
   t.equal(rc.help, undefined, 'help not set')
   t.equal(rc.upload, undefined, 'upload not set')
@@ -27,6 +28,7 @@ test('custom config and aliases', function (t) {
     '--download https://foo.bar',
     '--upload t00k3n',
     '--compile',
+    '--debug',
     '--force',
     '--version',
     '--help',
@@ -45,6 +47,7 @@ test('custom config and aliases', function (t) {
     t.equal(rc.upload, rc.u)
     t.equal(rc.compile, true, 'compile is set')
     t.equal(rc.compile, rc.c)
+    t.equal(rc.debug, true, 'debug is set')
     t.equal(rc.force, true, 'force is set')
     t.equal(rc.force, rc.f)
     t.equal(rc.version, true, 'version is set')

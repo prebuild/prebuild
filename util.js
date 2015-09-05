@@ -91,6 +91,12 @@ function platform () {
   return process.platform
 }
 
+function releaseFolder (opts) {
+  var type = (opts.rc.debug ? 'Debug' : 'Release')
+  var binary = opts.pkg.binary
+  return (binary && binary.module_path) || 'build/' + type
+}
+
 exports.getDownloadUrl = getDownloadUrl
 exports.urlTemplate = urlTemplate
 exports.cachedPrebuild = cachedPrebuild
@@ -100,3 +106,4 @@ exports.getTarPath = getTarPath
 exports.readGypFile = readGypFile
 exports.spawn = spawn
 exports.platform = platform
+exports.releaseFolder = releaseFolder

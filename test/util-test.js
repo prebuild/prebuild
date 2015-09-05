@@ -204,7 +204,7 @@ test('readGypFile errors if fs.readFile errors', function (t) {
   })
 })
 
-test('no args default to empty array', function (t) {
+test('spawn(): no args default to empty array', function (t) {
   cp.spawn = function (cmd, args, opts) {
     t.equal(cmd, 'foo', 'correct command')
     t.deepEqual(args, [], 'default args')
@@ -219,7 +219,7 @@ test('no args default to empty array', function (t) {
   spawn('foo')
 })
 
-test('callback fires with no error on exit code 0', function (t) {
+test('spawn(): callback fires with no error on exit code 0', function (t) {
   cp.spawn = function (cmd, args, opts) {
     t.deepEqual(args, ['arg1', 'arg2'], 'correct args')
     return new EventEmitter()
@@ -230,10 +230,28 @@ test('callback fires with no error on exit code 0', function (t) {
   }).emit('exit', 0)
 })
 
-test('callback fires with error on non 0 exit code', function (t) {
+test('spawn(): callback fires with error on non 0 exit code', function (t) {
   cp.spawn = function () { return new EventEmitter() }
   spawn('foo', ['arg1'], function (err) {
     t.equal(err.message, 'foo arg1 failed with exit code 314', 'correct error')
     t.end()
   }).emit('exit', 314)
+})
+
+test('releaseFolder(): depends on package.json and --debug', function (t) {
+  var folder = util.releaseFolder
+  t.equal(folder({rc: {}, pkg: {}}), 'build/Release', 'Release is default')
+  t.equal(folder({
+    rc: { debug: false },
+    pkg: {}
+  }), 'build/Release', 'Release is default')
+  t.equal(folder({
+    rc: { debug: true },
+    pkg: {}
+  }), 'build/Debug', 'Debug folder when --debug')
+  t.equal(folder({
+    rc: { debug: true },
+    pkg: { binary: {module_path: 'foo/bar' }}
+  }), 'foo/bar', 'using binary property from package.json')
+  t.end()
 })
