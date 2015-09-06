@@ -99,7 +99,6 @@ test('downloading from GitHub, not cached', function (t) {
     fs.mkdir = _mkdir
     fs.createWriteStream = _createWriteStream
     fs.createReadStream = _createReadStream
-    https.request = _request
   })
 })
 
@@ -208,8 +207,8 @@ test('non existing host should fail with no dangling temp file', function (t) {
   })
 })
 
-test('existing host but invalid url should fail with no dangling temp file', function (t) {
-  t.plan(9)
+test('existing host but invalid url should fail', function (t) {
+  t.plan(7)
 
   var requestCount = 0
   var opts = {
@@ -237,6 +236,38 @@ test('existing host but invalid url should fail with no dangling temp file', fun
 
   var downloadUrl = util.getDownloadUrl(opts)
   var cachedPrebuild = util.cachedPrebuild(downloadUrl)
+
+  var server = http.createServer(function (req, res) {
+    t.equal(req.url, '/prebuilds/woohooo-' + process.versions.modules, 'correct url')
+    res.statusCode = 404
+    res.end()
+  }).listen(8888, function () {
+    download(opts, function (err) {
+      t.equal(err.message, 'Invalid request 404', 'should error with statusCode')
+      t.equal(fs.existsSync(cachedPrebuild), false, 'nothing cached')
+      t.end()
+      server.unref()
+    })
+  })
+})
+
+test('error during download should fail with no dangling temp file', function (t) {
+  t.plan(7)
+
+  var downloadError = new Error('something went wrong during download')
+  var opts = {
+    pkg: pkg,
+    rc: {platform: process.platform, arch: process.arch},
+    log: {http: function () { }}
+  }
+  opts.pkg.binary = {
+    host: 'http://localhost:8889',
+    remote_path: 'prebuilds',
+    package_name: 'woohooo-{abi}'
+  }
+
+  var downloadUrl = util.getDownloadUrl(opts)
+  var cachedPrebuild = util.cachedPrebuild(downloadUrl)
   var tempFile
 
   var _createWriteStream = fs.createWriteStream.bind(fs)
@@ -246,13 +277,27 @@ test('existing host but invalid url should fail with no dangling temp file', fun
     return _createWriteStream(path)
   }
 
+  var _request = http.request
+  http.request = function (opts) {
+    http.request = _request
+    t.equal('http://' + opts.hostname + ':' + opts.port + opts.path, downloadUrl, 'correct url')
+    var wrapped = arguments[1]
+    arguments[1] = function (res) {
+      t.equal(res.statusCode, 200, 'correct statusCode')
+      // simulate error during download
+      setTimeout(function () { res.emit('error', downloadError) }, 10)
+      wrapped(res)
+    }
+    return _request.apply(http, arguments)
+  }
+
   var server = http.createServer(function (req, res) {
     t.equal(req.url, '/prebuilds/woohooo-' + process.versions.modules, 'correct url')
-    res.statusCode = 404
-    res.end('nope')
-  }).listen(8888, function () {
+    res.statusCode = 200
+    res.write('yep') // simulates hanging request
+  }).listen(8889, function () {
     download(opts, function (err) {
-      t.ok(err, 'should error')
+      t.equal(err.message, downloadError.message, 'correct error')
       t.equal(fs.existsSync(tempFile), false, 'no dangling temp file')
       t.equal(fs.existsSync(cachedPrebuild), false, 'nothing cached')
       t.end()

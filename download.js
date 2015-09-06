@@ -22,9 +22,11 @@ function downloadPrebuild (opts, cb) {
     var req = get(downloadUrl, function (err, res) {
       if (err) return onerror(err)
       log.http(res.statusCode, downloadUrl)
+      if (res.statusCode !== 200)
+        return onerror(new Error('Invalid request ' + res.statusCode))
       fs.mkdir(util.prebuildCache(), function () {
         pump(res, fs.createWriteStream(tempFile), function (err) {
-          if (err || res.statusCode !== 200) return onerror(err)
+          if (err) return onerror(err)
           fs.rename(tempFile, cachedPrebuild, function (err) {
             if (err) return cb(err)
             unpack()
