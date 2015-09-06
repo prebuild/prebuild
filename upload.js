@@ -22,13 +22,20 @@ function upload (opts, cb) {
     gh.getByTag(auth, user, repo, tag, function (err, release) {
       if (err) return cb(err)
 
-      files = files.filter(function (file) {
-        return !release.assets.some(function (asset) {
-          return asset.name === path.basename(file)
+      var assets = release.assets.map(function (asset) {
+        return asset.name
+      })
+
+      var filtered = files.filter(function (file) {
+        return !assets.some(function (asset) {
+          return asset === path.basename(file)
         })
       })
 
-      gh.uploadAssets(auth, user, repo, 'tags/' + tag, files, cb)
+      gh.uploadAssets(auth, user, repo, 'tags/' + tag, filtered, function (err) {
+        if (err) return cb(err)
+        cb(null, {new: filtered, old: assets})
+      })
     })
   })
 
