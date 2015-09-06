@@ -48,11 +48,12 @@ test('uploading to GitHub, upload fails if uploadAssets fails', function (t) {
 test('uploading to GitHub, only uploading not uploaded files', function (t) {
   var opts = basicSetup(t, [{name: 'foo.tar.gz' }, {name: 'baz.tar.gz' }])
   var error = new Error('uploadAssets failed miserably, buu huu')
-  opts.gh.uploadAssets = function (auth, user, repo, ref, _files, cb) {
-    t.deepEqual(_files, ['bar.tar.gz'], 'files are filtered correctly')
+  opts.gh.uploadAssets = function (auth, user, repo, ref, filtered, cb) {
     process.nextTick(cb)
   }
-  upload(opts, function (err) {
+  upload(opts, function (err, result) {
+    t.deepEqual(result.new, ['bar.tar.gz'], 'files are filtered correctly')
+    t.deepEqual(result.old, ['foo.tar.gz','baz.tar.gz'], 'files are filtered correctly')
     t.error(err, 'no error')
     t.end()
   })
