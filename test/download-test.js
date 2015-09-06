@@ -243,7 +243,7 @@ test('existing host but invalid url should fail', function (t) {
     res.end()
   }).listen(8888, function () {
     download(opts, function (err) {
-      t.equal(err.message, 'Invalid request 404', 'should error with statusCode')
+      t.equal(err.message, 'Prebuilt binaries for node version ' + process.version + ' are not available', 'correct error')
       t.equal(fs.existsSync(cachedPrebuild), false, 'nothing cached')
       t.end()
       server.unref()
@@ -284,7 +284,7 @@ test('error during download should fail with no dangling temp file', function (t
     var wrapped = arguments[1]
     arguments[1] = function (res) {
       t.equal(res.statusCode, 200, 'correct statusCode')
-      // simulate error during download
+      // simulates error during download
       setTimeout(function () { res.emit('error', downloadError) }, 10)
       wrapped(res)
     }
