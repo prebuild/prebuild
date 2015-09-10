@@ -42,7 +42,7 @@ if (rc.download) {
   return download({pkg: pkg, rc: rc, log: log}, function (err) {
     if (err) {
       log.warn('install', err.message)
-      log.info('install', 'Falling back to compilation')
+      log.info('install', 'We will now try to compile from source.')
       return build(opts, process.version, onbuilderror)
     }
     log.info('install', 'Prebuild successfully installed!')
