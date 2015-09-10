@@ -12,7 +12,6 @@ test('default config', function (t) {
   t.equal(rc.debug, false, 'debug not set')
   t.equal(rc.path, '.', 'correct path')
   t.equal(rc.help, undefined, 'help not set')
-  t.equal(rc.upload, undefined, 'upload not set')
   t.equal(rc.download, undefined, 'download not set')
   t.equal(rc.version, undefined, 'version not set')
   t.equal(rc.preinstall, undefined, 'preinstall not set')
