@@ -1,14 +1,14 @@
-var nodeGypInstall = require('node-gyp-install')
+var gypinstall = require('./gypinstall')
 var util = require('./util')
 
 function getAbi (opts, version, cb) {
   var log = opts.log
-  var install = opts.install || nodeGypInstall
+  var install = opts.install || gypinstall
   version = version.replace('v', '')
-  util.readGypFile(version, 'src/node_version.h', function (err, a) {
+  util.readGypFile(version, 'node_version.h', function (err, a) {
     if (err && err.code === 'ENOENT') return retry()
     if (err) return cb(err)
-    util.readGypFile(version, 'src/node.h', function (err, b) {
+    util.readGypFile(version, 'node.h', function (err, b) {
       if (err && err.code === 'ENOENT') return retry()
       if (err) return cb(err)
       var abi = parse(a) || parse(b)
@@ -18,7 +18,7 @@ function getAbi (opts, version, cb) {
   })
 
   function retry () {
-    install({log: log, version: version, force: true}, function (err) {
+    install({log: log, force: true}, version, function (err) {
       if (err) return cb(err)
       getAbi(opts, version, cb)
     })

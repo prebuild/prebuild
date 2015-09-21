@@ -1,6 +1,5 @@
 var fs = require('fs')
 var path = require('path')
-var install = require('node-gyp-install')
 var async = require('async')
 var getAbi = require('./abi')
 var getTarPath = require('./util').getTarPath

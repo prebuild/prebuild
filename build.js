@@ -1,16 +1,20 @@
 var path = require('path')
 var fs = require('fs')
-var install = require('node-gyp-install')
+var gypinstall = require('./gypinstall')
 var releaseFolder = require('./util').releaseFolder
 var runGyp = require('./gyp')
 
 function build (opts, version, cb) {
+  var log = opts.log;
   var release = releaseFolder(opts)
 
-  install({log: opts.log, version: version}, function (err) {
+  log.verbose('installing node-gyp headers')
+  gypinstall(opts, version, function (err) {
     if (err) return cb(err)
+    log.verbose('starting node-gyp process')
     runGyp(opts, version, function (err) {
       if (err) return cb(err)
+      log.verbose('done node-gyp\'ing')
       done()
     })
   })

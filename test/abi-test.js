@@ -9,11 +9,11 @@ test('src/node_version.h takes precedence over src/node.h', function (t) {
   util.readGypFile = function (version, file, cb) {
     t.equal(version, 'X.Y.Z', 'correct version, v stripped')
     if (readCount++ === 0) {
-      t.equal(file, 'src/node_version.h', 'correct file')
+      t.equal(file, 'node_version.h', 'correct file')
       process.nextTick(cb.bind(null, null, '#define NODE_MODULE_VERSION 666'))
     }
     else {
-      t.equal(file, 'src/node.h', 'correct file')
+      t.equal(file, 'node.h', 'correct file')
       process.nextTick(cb.bind(null, null, '#define NODE_MODULE_VERSION 314'))
     }
   }
@@ -70,8 +70,8 @@ test('missing src/node_version.h will run node-gyp-install and retry', function 
     }
   }
   var opts = {
-    install: function (o, cb) {
-      t.equal(o.version, 'X.Y.Z', 'correct version')
+    install: function (o, v, cb) {
+      t.equal(v, 'X.Y.Z', 'correct version')
       t.equal(o.force, true, 'forcing install')
       process.nextTick(cb)
     }
