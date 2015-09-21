@@ -40,6 +40,11 @@ test('gyp is invoked with correct arguments, release mode', function (t) {
         }
       },
       todo: [{ name: 'rebuild', args: ['--rebuildarg']}]
+    },
+    log: {
+      http: function () { },
+      info: function () { },
+      verbose: function () { }
     }
   }
   runGyp(opts, 'x.y.z', function (err) {
@@ -64,6 +69,11 @@ test('gyp is invoked with correct arguments, debug mode', function (t) {
         }
       },
       todo: [{ name: 'rebuild', args: ['--rebuildarg']}]
+    },
+    log: {
+      http: function () { },
+      info: function () { },
+      verbose: function () { }
     }
   }
   runGyp(opts, 'x.y.z')
@@ -79,6 +89,11 @@ test('--preinstall script is spawned, calls back with error if fails', function 
   var opts = {
     rc: {
       preinstall: 'somescript.sh'
+    },
+    log: {
+      http: function () { },
+      info: function () { },
+      verbose: function () { }
     }
   }
   runGyp(opts, 'x.y.z', function (err) {

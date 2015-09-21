@@ -1,9 +1,9 @@
-var nodeGypInstall = require('node-gyp-install')
+var gypinstall = require('./gypinstall')
 var util = require('./util')
 
 function getAbi (opts, version, cb) {
   var log = opts.log
-  var install = opts.install || nodeGypInstall
+  var install = opts.install || gypinstall
   version = version.replace('v', '')
   util.readGypFile(version, 'src/node_version.h', function (err, a) {
     if (err && err.code === 'ENOENT') return retry()

@@ -79,6 +79,6 @@ async.eachSeries([].concat(rc.target), function (target, next) {
 
 function onbuilderror (err) {
   if (!err) return
-  log.error('build', err.message)
+  log.error('build', err.stack)
   process.exit(2)
 }
