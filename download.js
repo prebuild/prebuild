@@ -9,41 +9,58 @@ var util = require('./util')
 function downloadPrebuild (opts, cb) {
   var downloadUrl = util.getDownloadUrl(opts)
   var cachedPrebuild = util.cachedPrebuild(downloadUrl)
+  var localPrebuild = util.localPrebuild(downloadUrl);
   var tempFile = util.tempFile(cachedPrebuild)
 
   var pkg = opts.pkg
   var rc = opts.rc
   var log = opts.log
 
-  fs.exists(cachedPrebuild, function (exists) {
-    if (exists) return unpack()
+  if (opts.nolocal) return download()
 
-    log.http('request', 'GET ' + downloadUrl)
-    var req = get(downloadUrl, function (err, res) {
-      if (err) return onerror(err)
-      log.http(res.statusCode, downloadUrl)
-      if (res.statusCode !== 200) return onerror()
-      fs.mkdir(util.prebuildCache(), function () {
-        pump(res, fs.createWriteStream(tempFile), function (err) {
-          if (err) return onerror(err)
-          fs.rename(tempFile, cachedPrebuild, function (err) {
-            if (err) return cb(err)
-            unpack()
+  log.info('looking for local prebuild @', localPrebuild)
+  fs.exists(localPrebuild, function (exists) {
+    if (exists) {
+      log.info('found. unpacking...')
+      cachedPrebuild = localPrebuild
+      return unpack()
+    }
+
+    log.info('not found. downloading...')
+    download()
+  })
+
+  function download() {
+    fs.exists(cachedPrebuild, function (exists) {
+      if (exists) return unpack()
+
+      log.http('request', 'GET ' + downloadUrl)
+      var req = get(downloadUrl, function (err, res) {
+        if (err) return onerror(err)
+        log.http(res.statusCode, downloadUrl)
+        if (res.statusCode !== 200) return onerror()
+        fs.mkdir(util.prebuildCache(), function () {
+          pump(res, fs.createWriteStream(tempFile), function (err) {
+            if (err) return onerror(err)
+            fs.rename(tempFile, cachedPrebuild, function (err) {
+              if (err) return cb(err)
+              unpack()
+            })
           })
         })
       })
-    })
 
-    req.setTimeout(30 * 1000, function () {
-      req.abort()
-    })
-
-    function onerror (err) {
-      fs.unlink(tempFile, function () {
-        cb(err || new Error('Prebuilt binaries for node version ' + process.version + ' are not available'))
+      req.setTimeout(30 * 1000, function () {
+        req.abort()
       })
-    }
-  })
+
+      function onerror(err) {
+        fs.unlink(tempFile, function () {
+          cb(err || new Error('Prebuilt binaries for node version ' + process.version + ' are not available'))
+        })
+      }
+    })
+  }
 
   function unpack () {
     var binaryName

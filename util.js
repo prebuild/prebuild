@@ -67,6 +67,10 @@ function getTarPath (opts, abi) {
   ].join(''))
 }
 
+function localPrebuild (url) {
+  return path.join('prebuilds', path.basename(url))
+}
+
 function readGypFile (version, file, cb) {
   fs.exists(path.join(nodeGypPath(), 'iojs-' + version), function (isIojs) {
     if (isIojs) {
@@ -112,6 +116,7 @@ function releaseFolder (opts) {
 exports.getDownloadUrl = getDownloadUrl
 exports.urlTemplate = urlTemplate
 exports.cachedPrebuild = cachedPrebuild
+exports.localPrebuild = localPrebuild
 exports.prebuildCache = prebuildCache
 exports.tempFile = tempFile
 exports.getTarPath = getTarPath
