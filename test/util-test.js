@@ -177,10 +177,10 @@ test('getTarPath based on package.json and rc config', function (t) {
 
 test('readGypFile reads file based on correct version', function (t) {
   var v = 'X.Y.Z'
-  var file = 'src/node_version.h'
+  var file = 'node_version.h'
   var _readFile = fs.readFile
   fs.readFile = function (fpath, encoding, cb) {
-    t.equal(fpath, home() + '/.node-gyp/' + v + '/' + file, 'corect file name')
+    t.equal(fpath, home() + '/.node-gyp/' + v + '/src/' + file, 'corect file name')
     cb()
   }
   util.readGypFile(v, file, function (err, data) {

@@ -68,7 +68,19 @@ function getTarPath (opts, abi) {
 }
 
 function readGypFile (version, file, cb) {
-  fs.readFile(path.join(nodeGypPath(), version, file), 'utf-8', cb)
+  fs.exists(path.join(nodeGypPath(), 'iojs-' + version), function (isIojs) {
+    if (isIojs) {
+      version = 'iojs-' + version;
+    }
+    
+    fs.exists(path.join(nodeGypPath(), version, 'include/node'), function (exists) {
+      if (exists) {
+        fs.readFile(path.join(nodeGypPath(), version, 'include/node/', file), 'utf-8', cb)
+      } else {
+        fs.readFile(path.join(nodeGypPath(), version, 'src', file), 'utf-8', cb)
+      }
+    });
+  });
 }
 
 function nodeGypPath () {
