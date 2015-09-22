@@ -8,15 +8,11 @@ function build (opts, version, cb) {
   var log = opts.log;
   var release = releaseFolder(opts)
 
-  log.verbose('installing node-gyp headers')
-  gypinstall(opts, version, function (err) {
+  log.verbose('starting node-gyp process')
+  runGyp(opts, version, function (err) {
     if (err) return cb(err)
-    log.verbose('starting node-gyp process')
-    runGyp(opts, version, function (err) {
-      if (err) return cb(err)
-      log.verbose('done node-gyp\'ing')
-      done()
-    })
+    log.verbose('done node-gyp\'ing')
+    done()
   })
 
   function done () {
