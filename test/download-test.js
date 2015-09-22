@@ -19,6 +19,7 @@ test('downloading from GitHub, not cached', function (t) {
   var requestCount = 0
   var opts = {
     pkg: pkg,
+    nolocal: true,
     rc: {platform: process.platform, arch: process.arch, path: __dirname},
     log: {
       http: function (type, message) {
@@ -106,6 +107,7 @@ test('cached prebuild', function (t) {
 
   var opts = {
     pkg: pkg,
+    nolocal: true,
     rc: {platform: process.platform, arch: process.arch, path: __dirname},
     log: {
       info: function (type, message) {
@@ -155,6 +157,7 @@ test('missing .node file in .tar.gz should fail', function (t) {
 
   var opts = {
     pkg: pkg,
+    nolocal: true,
     rc: {platform: process.platform, arch: process.arch, path: __dirname},
     updateName: function (entry) {
       t.ok(/\.node$/i.test(entry.name), 'should match but we pretend it does not')
@@ -172,6 +175,7 @@ test('non existing host should fail with no dangling temp file', function (t) {
 
   var opts = {
     pkg: pkg,
+    nolocal: true,
     rc: {platform: process.platform, arch: process.arch},
     log: {
       http: function (type, message) {
@@ -208,6 +212,7 @@ test('existing host but invalid url should fail', function (t) {
   var requestCount = 0
   var opts = {
     pkg: pkg,
+    nolocal: true,
     rc: {platform: process.platform, arch: process.arch},
     log: {
       http: function (type, message) {
@@ -251,6 +256,7 @@ test('error during download should fail with no dangling temp file', function (t
   var downloadError = new Error('something went wrong during download')
   var opts = {
     pkg: pkg,
+    nolocal: true,
     rc: {platform: process.platform, arch: process.arch},
     log: {http: function () { }}
   }
