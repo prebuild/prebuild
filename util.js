@@ -6,9 +6,10 @@ var cp = require('child_process')
 var expandTemplate = require('expand-template')()
 
 function getDownloadUrl (opts) {
+  var pkgName = opts.pkg.name.replace(/^@\w+\//, '')
   return expandTemplate(urlTemplate(opts), {
-    name: opts.pkg.name,
-    package_name: opts.pkg.name,
+    name: pkgName,
+    package_name: pkgName,
     version: opts.pkg.version,
     major: opts.pkg.version.split('.')[0],
     minor: opts.pkg.version.split('.')[1],
