@@ -1,9 +1,11 @@
 var fs = require('fs')
+var path = require('path')
+var mkdirp = require('mkdirp')
 var tar = require('tar-stream')
 var zlib = require('zlib')
 
 function pack (filename, tarPath, cb) {
-  fs.mkdir('prebuilds', function () {
+  mkdirp(path.dirname(tarPath), function () {
     fs.stat(filename, function (err, st) {
       if (err) return cb(err)
 

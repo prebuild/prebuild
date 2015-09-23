@@ -16,19 +16,13 @@ test('missing file calls back with error', function (t) {
 })
 
 test('resulting file is a gzipped tar archive', function (t) {
-  t.plan(18)
+  t.plan(17)
   rmrf.sync(output)
 
   t.equal(fs.existsSync(output), false, 'no output folder')
 
   var filename = path.join(__dirname, 'pack-test.js')
-  var tarPath = output + '/pack-test.tar.gz'
-
-  var _mkdir = fs.mkdir
-  fs.mkdir = function (path, cb) {
-    t.equal(path, 'prebuilds', 'correct output folder')
-    _mkdir(output, cb)
-  }
+  var tarPath = output + '/@scope/modulename-pack-test.tar.gz'
 
   var _stat = fs.stat
   fs.stat = function (fpath, cb) {
@@ -97,7 +91,6 @@ test('resulting file is a gzipped tar archive', function (t) {
   pack(filename, tarPath, function (err) {
     t.error(err, 'no error')
     t.equal(fs.existsSync(tarPath), true, 'file created')
-    fs.mkdir = _mkdir
     fs.stat = _stat
     fs.createWriteStream = _createWriteStream
     fs.createReadStream = _createReadStream
