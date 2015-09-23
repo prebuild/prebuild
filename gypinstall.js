@@ -4,7 +4,7 @@ function runGypInstall (opts, version, cb) {
   var gyp = opts.gyp || nodeGyp
   var log = opts.log
 
-  log.verbose('preparing nodegyp install');
+  log.verbose('preparing nodegyp install')
   var args = ['node', 'index.js', 'install', version]
   gyp.parseArgv(args)
 

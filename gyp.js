@@ -6,14 +6,14 @@ function runGyp (opts, version, cb) {
   var log = opts.log
   if (!opts.rc.preinstall) return run()
 
-  log.verbose('executing preinstall');
+  log.verbose('executing preinstall')
   util.spawn(opts.rc.preinstall, function (err) {
     if (err) return cb(err)
     run()
   })
 
   function run () {
-    log.verbose('preparing nodegyp rebuild');
+    log.verbose('preparing nodegyp rebuild')
     var args = ['node', 'index.js', 'rebuild', '--target=' + version, '--target_arch=' + opts.rc.arch]
     if (opts.rc.debug) args.push('--debug')
     gyp.parseArgv(args)
@@ -42,7 +42,7 @@ function runGyp (opts, version, cb) {
         process.nextTick(runStep)
       })
     }
-    runStep();
+    runStep()
   }
 }
 

@@ -8,15 +8,11 @@ function getAbi (opts, version, cb) {
 
   tryReadFiles(function(err, abi) {
     if (err && err.code === 'ENOENT') {
-      
       return install({log: log, force: true}, version, function (err) {
         if (err) return cb(err)
-
         tryReadFiles(function(err, abi) {
-          if (err && err.code === 'ENOENT') {
-            return cb(new Error('Failed to locate `node.h` and `node_version.h`.'));
-          }
-          cb(err, abi)
+          if (!err || err.code !== 'ENOENT') return cb(err, abi)
+          cb(new Error('Failed to locate `node.h` and `node_version.h`.'))
         })
       })
     }
