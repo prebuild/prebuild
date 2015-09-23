@@ -69,22 +69,20 @@ function getTarPath (opts, abi) {
 
 function readGypFile (version, file, cb) {
   fs.exists(path.join(nodeGypPath(), 'iojs-' + version), function (isIojs) {
-    if (isIojs) {
-      version = 'iojs-' + version;
-    }
-    
-    fs.exists(path.join(nodeGypPath(), version, 'include/node'), function (exists) {
+    if (isIojs) version = 'iojs-' + version
+    fs.exists(nodeGypPath(version, 'include/node'), function (exists) {
       if (exists) {
-        fs.readFile(path.join(nodeGypPath(), version, 'include/node/', file), 'utf-8', cb)
+        fs.readFile(nodeGypPath(version, 'include/node', file), 'utf-8', cb)
       } else {
-        fs.readFile(path.join(nodeGypPath(), version, 'src', file), 'utf-8', cb)
+        fs.readFile(nodeGypPath(version, 'src', file), 'utf-8', cb)
       }
-    });
-  });
+    })
+  })
 }
 
 function nodeGypPath () {
-  return path.join(home(), '.node-gyp')
+  var args = [].slice.call(arguments)
+  return path.join(home(), '.node-gyp', args.join('/'))
 }
 
 function spawn (cmd, args, cb) {
@@ -119,3 +117,4 @@ exports.readGypFile = readGypFile
 exports.spawn = spawn
 exports.platform = platform
 exports.releaseFolder = releaseFolder
+exports.nodeGypPath = nodeGypPath

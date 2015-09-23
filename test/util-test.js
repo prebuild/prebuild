@@ -255,3 +255,15 @@ test('releaseFolder(): depends on package.json and --debug', function (t) {
   }), 'foo/bar', 'using binary property from package.json')
   t.end()
 })
+
+test('nodeGypPath(): accepts any arguments', function (t) {
+  var nodeGypPath = util.nodeGypPath
+  t.equal(nodeGypPath('0.10.40', 'include/node'),
+          home() + '/.node-gyp/0.10.40/include/node')
+  t.equal(nodeGypPath('4.1.0', 'include/node', 'node.h'),
+          home() + '/.node-gyp/4.1.0/include/node/node.h')
+  t.equal(nodeGypPath('/iojs-1.0.4/', '/include/node/', '/node.h'),
+          home() + '/.node-gyp/iojs-1.0.4/include/node/node.h',
+          'trailing slashes should not matter')
+  t.end()
+})
