@@ -122,7 +122,6 @@ test('getDownloadUrl() expands template to correct values', function (t) {
   var o1 = {
     pkg: {
       name: 'a-native-module',
-      package_name: 'a-native-module',
       version: 'x.y.z-alpha5',
       binary: {
         host: 'https://foo.com',
@@ -140,7 +139,6 @@ test('getDownloadUrl() expands template to correct values', function (t) {
   var o2 = {
     pkg: {
       name: 'a-native-module',
-      package_name: 'a-native-module',
       version: 'x.y.z+beta77',
       binary: {
         host: 'https://foo.com',
@@ -156,6 +154,24 @@ test('getDownloadUrl() expands template to correct values', function (t) {
   }
   var url2 = util.getDownloadUrl(o2)
   t.equal(url2, 'https://foo.com/a-native-module-a-native-module-x.y.z+beta77-x-y-z+beta77-beta77-' + abi + '-' + abi + '-coolplatform-futureplatform-Debug-a-native-module-bindings', 'weird url but testing everything is propagated, with build and Debug')
+  var o3 = {
+    pkg: {
+      name: '@scope/a-native-module',
+      version: 'x.y.z+beta77',
+      binary: {
+        host: 'https://foo.com',
+        module_name: 'a-native-module-bindings',
+        package_name: '{name}-{package_name}-{version}-{major}-{minor}-{patch}-{build}-{abi}-{node_abi}-{platform}-{arch}-{configuration}-{module_name}'
+      }
+    },
+    rc: {
+      platform: 'coolplatform',
+      arch: 'futureplatform',
+      debug: true
+    }
+  }
+  var url3 = util.getDownloadUrl(o3)
+  t.equal(url3, url2, 'scope does not matter for download url')
   t.end()
 })
 
@@ -253,5 +269,17 @@ test('releaseFolder(): depends on package.json and --debug', function (t) {
     rc: { debug: true },
     pkg: { binary: {module_path: 'foo/bar' }}
   }), 'foo/bar', 'using binary property from package.json')
+  t.end()
+})
+
+test('nodeGypPath(): accepts any arguments', function (t) {
+  var nodeGypPath = util.nodeGypPath
+  t.equal(nodeGypPath('0.10.40', 'include/node'),
+          home() + '/.node-gyp/0.10.40/include/node')
+  t.equal(nodeGypPath('4.1.0', 'include/node', 'node.h'),
+          home() + '/.node-gyp/4.1.0/include/node/node.h')
+  t.equal(nodeGypPath('/iojs-1.0.4/', '/include/node/', '/node.h'),
+          home() + '/.node-gyp/iojs-1.0.4/include/node/node.h',
+          'trailing slashes should not matter')
   t.end()
 })

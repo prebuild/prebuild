@@ -5,7 +5,7 @@ var releaseFolder = require('./util').releaseFolder
 var runGyp = require('./gyp')
 
 function build (opts, version, cb) {
-  var log = opts.log;
+  var log = opts.log
   var release = releaseFolder(opts)
 
   log.verbose('starting node-gyp process')
@@ -18,11 +18,10 @@ function build (opts, version, cb) {
   function done () {
     fs.readdir(release, function (err, files) {
       if (err) return cb(err)
-
       for (var i = 0; i < files.length; i++) {
-        if (/\.node$/i.test(files[i])) return cb(null, path.join(release, files[i]), files[i])
+        if (/\.node$/i.test(files[i]))
+          return cb(null, path.join(release, files[i]), files[i])
       }
-
       cb(new Error('Could not find build in ' + release))
     })
   }
