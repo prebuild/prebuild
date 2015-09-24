@@ -3,21 +3,6 @@ var path = require('path')
 var rc = require('../rc')
 var exec = require('child_process').exec
 
-test('default config', function (t) {
-  t.equal(rc.target, process.version, 'correct target')
-  t.equal(rc.arch, process.arch, 'correct arch')
-  t.equal(rc.platform, process.platform, 'correct platform')
-  t.equal(rc.compile, false, 'compile is explicit')
-  t.equal(rc.force, false, 'force is explicit')
-  t.equal(rc.debug, false, 'debug not set')
-  t.equal(rc.path, '.', 'correct path')
-  t.equal(rc.help, undefined, 'help not set')
-  t.equal(rc.download, undefined, 'download not set')
-  t.equal(rc.version, undefined, 'version not set')
-  t.equal(rc.preinstall, undefined, 'preinstall not set')
-  t.end()
-})
-
 test('custom config and aliases', function (t) {
   var args = [
     '--target vX.Y.Z',
@@ -35,8 +20,6 @@ test('custom config and aliases', function (t) {
     '--preinstall somescript.js'
   ]
   runRc(t, args.join(' '), function (rc) {
-    t.deepEqual(rc.target, [ 'vX.Y.Z', 'vZ.Y.X' ], 'correct targets')
-    t.deepEqual(rc.target, rc.t)
     t.equal(rc.arch, 'ARCH', 'correct arch')
     t.equal(rc.arch, rc.a)
     t.equal(rc.platform, 'PLATFORM', 'correct platform')
