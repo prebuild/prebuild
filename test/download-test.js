@@ -12,7 +12,7 @@ var build = path.join(__dirname, 'build')
 var unpacked = path.join(build, 'Release/leveldown.node')
 
 test('downloading from GitHub, not cached', function (t) {
-  t.plan(19)
+  t.plan(20)
   rm.sync(build)
   rm.sync(util.prebuildCache())
 
@@ -41,15 +41,31 @@ test('downloading from GitHub, not cached', function (t) {
 
   var downloadUrl = util.getDownloadUrl(opts)
   var cachedPrebuild = util.cachedPrebuild(downloadUrl)
+  var npmCache = util.npmCache()
   var tempFile
 
+  var existsCallNum = 0;
+  var _access = fs.access ? fs.access.bind(fs) : fs.access
   var _exists = fs.exists.bind(fs)
+  if (_access) {
+    fs.access = function (path, a, cb) {
+      if (existsCallNum++ == 0) {
+        t.equal(path, npmCache, 'fs.exists called for npm cache')
+        _access(path, cb)
+      }
+    }
+  }
   fs.exists = function (path, cb) {
-    t.equal(path, cachedPrebuild, 'fs.exists called')
-    _exists(path, function (exists) {
-      t.equal(exists, false, 'prebuild should not be cached')
-      cb(exists)
-    })
+    if (existsCallNum++ == 0) {
+      t.equal(path, npmCache, 'fs.exists called for npm cache')
+      _exists(path, cb)
+    } else {
+      t.equal(path, cachedPrebuild, 'fs.exists called for prebuild')
+      _exists(path, function (exists) {
+        t.equal(exists, false, 'prebuild should be cached')
+        cb(exists)
+      })
+    }
   }
 
   var mkdirCount = 0
@@ -97,6 +113,7 @@ test('downloading from GitHub, not cached', function (t) {
     t.equal(fs.existsSync(unpacked), true, unpacked + ' should exist')
     t.equal(fs.existsSync(tempFile), false, 'temp file should be gone')
     fs.exists = _exists
+    fs.access = _access
     fs.mkdir = _mkdir
     fs.createWriteStream = _createWriteStream
     fs.createReadStream = _createReadStream
@@ -104,7 +121,7 @@ test('downloading from GitHub, not cached', function (t) {
 })
 
 test('cached prebuild', function (t) {
-  t.plan(9)
+  t.plan(10)
   rm.sync(build)
 
   var opts = {
@@ -121,14 +138,30 @@ test('cached prebuild', function (t) {
 
   var downloadUrl = util.getDownloadUrl(opts)
   var cachedPrebuild = util.cachedPrebuild(downloadUrl)
+  var npmCache = util.npmCache()
 
+  var existsCallNum = 0;
+  var _access = fs.access ? fs.access.bind(fs) : fs.access
   var _exists = fs.exists.bind(fs)
+  if (_access) {
+    fs.access = function (path, a, cb) {
+      if (existsCallNum++ == 0) {
+        t.equal(path, npmCache, 'fs.exists called for npm cache')
+        _access(path, cb)
+      }
+    }
+  }
   fs.exists = function (path, cb) {
-    t.equal(path, cachedPrebuild, 'fs.exists called')
-    _exists(path, function (exists) {
-      t.equal(exists, true, 'prebuild should be cached')
-      cb(exists)
-    })
+    if (existsCallNum++ == 0) {
+      t.equal(path, npmCache, 'fs.exists called for npm cache')
+      _exists(path, cb)
+    } else {
+      t.equal(path, cachedPrebuild, 'fs.exists called for prebuild')
+      _exists(path, function (exists) {
+        t.equal(exists, true, 'prebuild should be cached')
+        cb(exists)
+      })
+    }
   }
 
   var _createWriteStream = fs.createWriteStream.bind(fs)
@@ -151,6 +184,7 @@ test('cached prebuild', function (t) {
     fs.createReadStream = _createReadStream
     fs.createWriteStream = _createWriteStream
     fs.exists = _exists
+    fs.access = _access
   })
 })
 
