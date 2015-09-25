@@ -42,6 +42,10 @@ if (rc.compile) {
   download({pkg: pkg, rc: rc, log: log}, function (err) {
     if (err) {
       log.warn('install', err.message)
+      if (rc.compile === false) {
+        log.info('install', 'no-compile specified, not attempting build.')
+        return
+      }
       log.info('install', 'We will now try to compile from source.')
       return build(opts, process.version, onbuilderror)
     }
