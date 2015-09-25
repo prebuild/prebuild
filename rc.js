@@ -17,6 +17,19 @@ if (process.env.npm_config_argv) {
       }
     }
   } catch(e) { }
+
+  var npmconfigs = [
+    'proxy',
+    'https-proxy',
+    'local-address'
+  ];
+  for (var i = 0; i < npmconfigs.length; ++i) {
+    var envname = 'npm_config_' + npmconfigs[i].replace('-', '_');
+    if (process.env[envname]) {
+      process.argv.push('--' + npmconfigs[i])
+      process.argv.push(process.env[envname])
+    }
+  }
 }
 
 module.exports = require('rc')('prebuild', {
@@ -25,7 +38,9 @@ module.exports = require('rc')('prebuild', {
   platform: process.platform,
   force: false,
   debug: false,
-  path: '.'
+  path: '.',
+  proxy: process.env['HTTP_PROXY'],
+  'https-proxy': process.env['HTTPS_PROXY']
 }, minimist(process.argv, {
   alias: {
     target: 't',
