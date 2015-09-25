@@ -48,9 +48,12 @@ function cachedPrebuild (url) {
   return path.join(prebuildCache(), url.replace(/[^a-zA-Z0-9.]+/g, '-'))
 }
 
+function npmCache() {
+  return process.env.APPDATA ? path.join(process.env.APPDATA, 'npm-cache') : path.join(home(), '.npm')
+}
+
 function prebuildCache () {
-  var npm = process.env.APPDATA ? path.join(process.env.APPDATA, 'npm-cache') : path.join(home(), '.npm')
-  return path.join(npm, '_prebuilds')
+  return path.join(npmCache(), '_prebuilds')
 }
 
 function tempFile (cached) {
@@ -66,6 +69,10 @@ function getTarPath (opts, abi) {
     '-', opts.rc.arch,
     '.tar.gz'
   ].join(''))
+}
+
+function localPrebuild (url) {
+  return path.join('prebuilds', path.basename(url))
 }
 
 function readGypFile (version, file, cb) {
@@ -111,7 +118,9 @@ function releaseFolder (opts) {
 exports.getDownloadUrl = getDownloadUrl
 exports.urlTemplate = urlTemplate
 exports.cachedPrebuild = cachedPrebuild
+exports.localPrebuild = localPrebuild
 exports.prebuildCache = prebuildCache
+exports.npmCache = npmCache;
 exports.tempFile = tempFile
 exports.getTarPath = getTarPath
 exports.readGypFile = readGypFile
