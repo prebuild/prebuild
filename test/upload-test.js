@@ -1,5 +1,4 @@
 var test = require('tape')
-var ghreleases = require('ghreleases')
 var upload = require('../upload')
 var pkg = require('a-native-module/package')
 
@@ -46,14 +45,13 @@ test('uploading to GitHub, upload fails if uploadAssets fails', function (t) {
 })
 
 test('uploading to GitHub, only uploading not uploaded files', function (t) {
-  var opts = basicSetup(t, [{name: 'foo.tar.gz' }, {name: 'baz.tar.gz' }])
-  var error = new Error('uploadAssets failed miserably, buu huu')
+  var opts = basicSetup(t, [{name: 'foo.tar.gz'}, {name: 'baz.tar.gz'}])
   opts.gh.uploadAssets = function (auth, user, repo, ref, filtered, cb) {
     process.nextTick(cb)
   }
   upload(opts, function (err, result) {
     t.deepEqual(result.new, ['bar.tar.gz'], 'files are filtered correctly')
-    t.deepEqual(result.old, ['foo.tar.gz','baz.tar.gz'], 'files are filtered correctly')
+    t.deepEqual(result.old, ['foo.tar.gz', 'baz.tar.gz'], 'files are filtered correctly')
     t.error(err, 'no error')
     t.end()
   })
@@ -70,14 +68,14 @@ function basicSetup (t, assets) {
         t.deepEqual(auth, {user: 'x-oauth', token: 't000k3n'}, 'correct auth')
         t.equal(user, 'ralphtheninja', 'correct user')
         t.equal(repo, 'a-native-module', 'correct repo')
-        t.deepEqual(opts, {tag_name: 'v'+pkg.version}, 'correct opts')
+        t.deepEqual(opts, {tag_name: 'v' + pkg.version}, 'correct opts')
         process.nextTick(cb)
       },
       getByTag: function (auth, user, repo, tag, cb) {
         t.deepEqual(auth, {user: 'x-oauth', token: 't000k3n'}, 'correct auth')
         t.equal(user, 'ralphtheninja', 'correct user')
         t.equal(repo, 'a-native-module', 'correct repo')
-        t.equal(tag, 'v'+pkg.version, 'correct tag')
+        t.equal(tag, 'v' + pkg.version, 'correct tag')
         process.nextTick(function () { cb(null, {assets: assets || []}) })
       },
       uploadAssets: function (auth, user, repo, ref, _files, cb) {

@@ -4,6 +4,10 @@ var mkdirp = require('mkdirp')
 var tar = require('tar-stream')
 var zlib = require('zlib')
 
+function mode (octal) {
+  return parseInt(octal, 8)
+}
+
 function pack (filename, tarPath, cb) {
   mkdirp(path.dirname(tarPath), function () {
     fs.stat(filename, function (err, st) {
@@ -14,7 +18,7 @@ function pack (filename, tarPath, cb) {
       var stream = tarStream.entry({
         name: filename.replace(/\\/g, '/').replace(/:/g, '_'),
         size: st.size,
-        mode: st.mode | 0444 | 0222,
+        mode: st.mode | mode('444') | mode('222'),
         gid: st.gid,
         uid: st.uid
       })

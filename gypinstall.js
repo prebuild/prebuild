@@ -15,7 +15,7 @@ function runGypInstall (opts, version, cb) {
     }
 
     log.verbose('performing nodegyp install cmd', command.name, command.args)
-    gyp.commands[command.name](command.args, function(err) {
+    gyp.commands[command.name](command.args, function (err) {
       if (err) {
         log.error(command.name + ' error')
         log.error('stack', err.stack)

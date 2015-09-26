@@ -36,10 +36,13 @@ if (rc.help) {
 var buildLog = log.info.bind(log, 'build')
 var opts = {pkg: pkg, rc: rc, log: log, buildLog: buildLog}
 
-if (rc.compile) return build(opts, process.version, onbuilderror)
+if (rc.compile) {
+  build(opts, process.version, onbuilderror)
+  process.exit(0)
+}
 
 if (rc.download) {
-  return download({pkg: pkg, rc: rc, log: log}, function (err) {
+  download({pkg: pkg, rc: rc, log: log}, function (err) {
     if (err) {
       log.warn('install', err.message)
       log.info('install', 'We will now try to compile from source.')
@@ -47,6 +50,7 @@ if (rc.download) {
     }
     log.info('install', 'Prebuild successfully installed!')
   })
+  process.exit(0)
 }
 
 var files = []

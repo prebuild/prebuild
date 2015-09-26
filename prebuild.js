@@ -1,5 +1,4 @@
 var fs = require('fs')
-var path = require('path')
 var async = require('async')
 var getAbi = require('./abi')
 var getTarPath = require('./util').getTarPath
@@ -39,16 +38,18 @@ function prebuild (opts, target, callback) {
         }
       ]
 
-      if (rc.strip) tasks.splice(1, 0, function (filename, cb) {
-        buildLog('Stripping debug information from ' + filename)
-        strip(filename, function (err) {
-          if (err) return cb(err)
-          cb(null, filename)
+      if (rc.strip) {
+        tasks.splice(1, 0, function (filename, cb) {
+          buildLog('Stripping debug information from ' + filename)
+          strip(filename, function (err) {
+            if (err) return cb(err)
+            cb(null, filename)
+          })
         })
-      })
+      }
 
       // TODO if we can move out buildLog() to the caller, we can simply do
-      //async.waterfall(tasks, callback)
+      // async.waterfall(tasks, callback)
       async.waterfall(tasks, function (err) {
         if (err) return callback(err)
         buildLog('Prebuild written to ' + tarPath)
