@@ -38,10 +38,7 @@ var opts = {pkg: pkg, rc: rc, log: log, buildLog: buildLog}
 
 if (rc.compile) {
   build(opts, process.version, onbuilderror)
-  process.exit(0)
-}
-
-if (rc.download) {
+} else if (rc.download) {
   download({pkg: pkg, rc: rc, log: log}, function (err) {
     if (err) {
       log.warn('install', err.message)
@@ -50,36 +47,35 @@ if (rc.download) {
     }
     log.info('install', 'Prebuild successfully installed!')
   })
-  process.exit(0)
-}
-
-var files = []
-async.eachSeries([].concat(rc.target), function (target, next) {
-  prebuild(opts, target, function (err, tarGz) {
-    if (err) return next(err)
-    files.push(tarGz)
-    next()
-  })
-}, function (err) {
-  if (err) return onbuilderror(err)
-  if (!rc.upload) return
-  buildLog('Uploading ' + files.length + ' prebuilds(s) to Github releases')
-  upload({pkg: pkg, rc: rc, files: files}, function (err, result) {
+} else {
+  var files = []
+  async.eachSeries([].concat(rc.target), function (target, next) {
+    prebuild(opts, target, function (err, tarGz) {
+      if (err) return next(err)
+      files.push(tarGz)
+      next()
+    })
+  }, function (err) {
     if (err) return onbuilderror(err)
-    buildLog('Found ' + result.old.length + ' prebuild(s) on Github')
-    if (result.old.length) {
-      result.old.forEach(function (build) {
-        buildLog('-> ' + build)
-      })
-    }
-    buildLog('Uploaded ' + result.new.length + ' new prebuild(s) to Github')
-    if (result.new.length) {
-      result.new.forEach(function (build) {
-        buildLog('-> ' + build)
-      })
-    }
+    if (!rc.upload) return
+    buildLog('Uploading ' + files.length + ' prebuilds(s) to Github releases')
+    upload({pkg: pkg, rc: rc, files: files}, function (err, result) {
+      if (err) return onbuilderror(err)
+      buildLog('Found ' + result.old.length + ' prebuild(s) on Github')
+      if (result.old.length) {
+        result.old.forEach(function (build) {
+          buildLog('-> ' + build)
+        })
+      }
+      buildLog('Uploaded ' + result.new.length + ' new prebuild(s) to Github')
+      if (result.new.length) {
+        result.new.forEach(function (build) {
+          buildLog('-> ' + build)
+        })
+      }
+    })
   })
-})
+}
 
 function onbuilderror (err) {
   if (!err) return
