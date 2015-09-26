@@ -200,6 +200,7 @@ test('readGypFile reads file based on correct version', function (t) {
     cb()
   }
   util.readGypFile(v, file, function (err, data) {
+    t.error(err, 'readGypFile should succeed')
     fs.readFile = _readFile
     t.end()
   })
@@ -267,7 +268,7 @@ test('releaseFolder(): depends on package.json and --debug', function (t) {
   }), 'build/Debug', 'Debug folder when --debug')
   t.equal(folder({
     rc: { debug: true },
-    pkg: { binary: {module_path: 'foo/bar' }}
+    pkg: { binary: { module_path: 'foo/bar' } }
   }), 'foo/bar', 'using binary property from package.json')
   t.end()
 })

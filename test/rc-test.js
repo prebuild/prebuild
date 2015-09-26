@@ -1,6 +1,5 @@
 var test = require('tape')
 var path = require('path')
-var rc = require('../rc')
 var exec = require('child_process').exec
 
 test('custom config and aliases', function (t) {
@@ -53,8 +52,7 @@ function runRc (t, args, cb) {
     try {
       result = JSON.parse(stdout.toString())
       t.pass('json parsed correctly')
-    }
-    catch (e) {
+    } catch (e) {
       t.fail(e.message)
     }
     cb(result)

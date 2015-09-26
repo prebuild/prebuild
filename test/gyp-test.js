@@ -39,7 +39,7 @@ test('gyp is invoked with correct arguments, release mode', function (t) {
           process.nextTick(cb)
         }
       },
-      todo: [{ name: 'rebuild', args: ['--rebuildarg']}]
+      todo: [{ name: 'rebuild', args: [ '--rebuildarg' ] }]
     },
     log: {
       http: function () { },
@@ -68,7 +68,7 @@ test('gyp is invoked with correct arguments, debug mode', function (t) {
           t.deepEqual(args, ['--rebuildarg'], 'correct args')
         }
       },
-      todo: [{ name: 'rebuild', args: ['--rebuildarg']}]
+      todo: [{ name: 'rebuild', args: ['--rebuildarg'] }]
     },
     log: {
       http: function () { },

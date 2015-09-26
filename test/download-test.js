@@ -25,8 +25,7 @@ test('downloading from GitHub, not cached', function (t) {
         if (requestCount++ === 0) {
           t.equal(type, 'request', 'http request')
           t.equal(message, 'GET ' + downloadUrl)
-        }
-        else {
+        } else {
           t.equal(type, 200, 'status code logged')
           t.equal(message, downloadUrl)
         }
@@ -67,8 +66,7 @@ test('downloading from GitHub, not cached', function (t) {
     if (writeStreamCount++ === 0) {
       tempFile = path
       t.ok(/\.tmp$/i.test(path), 'this is the temporary file')
-    }
-    else {
+    } else {
       t.ok(/\.node$/i.test(path), 'this is the unpacked file')
     }
     return _createWriteStream(path)
@@ -163,9 +161,6 @@ test('missing .node file in .tar.gz should fail', function (t) {
     }
   }
 
-  var downloadUrl = util.getDownloadUrl(opts)
-  var cachedPrebuild = util.cachedPrebuild(downloadUrl)
-
   download(opts, function (err) {
     t.equal(err.message, 'Missing .node file in archive', 'correct error message')
     t.end()
@@ -220,8 +215,7 @@ test('existing host but invalid url should fail', function (t) {
         if (requestCount++ === 0) {
           t.equal(type, 'request', 'http request')
           t.equal(message, 'GET ' + downloadUrl)
-        }
-        else {
+        } else {
           t.equal(type, 404, 'invalid resource')
           t.equal(message, downloadUrl)
         }

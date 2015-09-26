@@ -27,7 +27,7 @@ function runGyp (opts, version, cb) {
       if (command.name === 'configure') configurePreGyp(command, opts)
 
       log.verbose('performing nodegyp rebuild cmd', command.name, command.args)
-      gyp.commands[command.name](command.args, function(err) {
+      gyp.commands[command.name](command.args, function (err) {
         if (err) {
           log.error(command.name + ' error')
           log.error('stack', err.stack)

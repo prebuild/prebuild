@@ -1,6 +1,5 @@
 var path = require('path')
 var fs = require('fs')
-var gypinstall = require('./gypinstall')
 var releaseFolder = require('./util').releaseFolder
 var runGyp = require('./gyp')
 
@@ -19,8 +18,9 @@ function build (opts, version, cb) {
     fs.readdir(release, function (err, files) {
       if (err) return cb(err)
       for (var i = 0; i < files.length; i++) {
-        if (/\.node$/i.test(files[i]))
+        if (/\.node$/i.test(files[i])) {
           return cb(null, path.join(release, files[i]), files[i])
+        }
       }
       cb(new Error('Could not find build in ' + release))
     })

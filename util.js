@@ -26,7 +26,10 @@ function getDownloadUrl (opts) {
 }
 
 function urlTemplate (opts) {
-  if (typeof opts.rc.download == 'string') return opts.rc.download
+  if (typeof opts.rc.download === 'string') {
+    return opts.rc.download
+  }
+
   var packageName = '{name}-v{version}-node-v{abi}-{platform}-{arch}.tar.gz'
   if (opts.pkg.binary) {
     return [
@@ -88,7 +91,7 @@ function nodeGypPath () {
 
 function spawn (cmd, args, cb) {
   args = args || []
-  if (typeof args == 'function') {
+  if (typeof args === 'function') {
     cb = args
     args = []
   }

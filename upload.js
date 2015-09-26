@@ -9,9 +9,11 @@ function upload (opts, cb) {
   var gh = opts.gh || ghreleases
 
   var url = github(pkg)
-  if (!url) return process.nextTick(function () {
-    cb(new Error('package.json is missing a repository field'))
-  })
+  if (!url) {
+    return process.nextTick(function () {
+      cb(new Error('package.json is missing a repository field'))
+    })
+  }
 
   var user = url.split('/')[3]
   var repo = url.split('/')[4]
@@ -38,7 +40,6 @@ function upload (opts, cb) {
       })
     })
   })
-
 }
 
 module.exports = upload

@@ -11,7 +11,6 @@ function downloadPrebuild (opts, cb) {
   var cachedPrebuild = util.cachedPrebuild(downloadUrl)
   var tempFile = util.tempFile(cachedPrebuild)
 
-  var pkg = opts.pkg
   var rc = opts.rc
   var log = opts.log
 

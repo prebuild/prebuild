@@ -35,7 +35,8 @@ test('resulting file is a gzipped tar archive', function (t) {
   var _createWriteStream = fs.createWriteStream
   fs.createWriteStream = function (path) {
     t.equal(path, tarPath, 'correct tar path')
-    return resultStream = _createWriteStream(path)
+    resultStream = _createWriteStream(path)
+    return resultStream
   }
 
   var _createReadStream = fs.createReadStream
