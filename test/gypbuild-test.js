@@ -1,5 +1,5 @@
 var test = require('tape')
-var runGyp = require('../gyp')
+var runGyp = require('../gypbuild')
 var util = require('../util')
 
 test('gyp is invoked with correct arguments, release mode', function (t) {

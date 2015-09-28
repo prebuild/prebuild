@@ -1,14 +1,14 @@
 var path = require('path')
 var fs = require('fs')
 var releaseFolder = require('./util').releaseFolder
-var runGyp = require('./gyp')
+var gypbuild = require('./gypbuild')
 
 function build (opts, version, cb) {
   var log = opts.log
   var release = releaseFolder(opts)
 
   log.verbose('starting node-gyp process')
-  runGyp(opts, version, function (err) {
+  gypbuild(opts, version, function (err) {
     if (err) return cb(err)
     log.verbose('done node-gyp\'ing')
     done()
