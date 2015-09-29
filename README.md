@@ -52,8 +52,7 @@ See [this page](https://github.com/settings/tokens) for more information on how 
 $ prebuild --download
 ```
 
-If no suitable binary is found for the current platform / node version `prebuild`
-will simply fallback to run `node-gyp rebuild`.
+If no suitable binary is found for the current platform / node version, `prebuild` will fallback to `node-gyp rebuild`. Native modules that have a javascript fallback can use `--no-compile` to prevent this.
 
 Once a binary has been downloaded `prebuild` will `require()` the module and if that fails it will also fallback to building it.
 
@@ -130,6 +129,7 @@ prebuild [options]
   --download,   -d  [url]       (download prebuilds, no url means github)
   --preinstall, -i  script      (run this script before prebuilding)
   --compile,    -c              (compile your project using node-gyp)
+  --no-compile                  (skip compile fallback when downloading)
   --strip                       (strip debug information)
   --debug                       (set Debug or Release configuration)
   --verbose                     (log verbosely)
