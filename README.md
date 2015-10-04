@@ -7,6 +7,7 @@ $ npm install -g prebuild
 ```
 
 [![build status](http://img.shields.io/travis/mafintosh/prebuild.svg?style=flat)](http://travis-ci.org/mafintosh/prebuild)
+[![dependencies](https://david-dm.org/mafintosh/prebuild.svg)](https://david-dm.org/mafintosh/prebuild)
 
 ## Features
 

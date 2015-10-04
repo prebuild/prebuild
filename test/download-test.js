@@ -276,7 +276,7 @@ test('existing host but invalid url should fail', function (t) {
     res.end()
   }).listen(8888, function () {
     download(opts, function (err) {
-      t.equal(err.message, 'Prebuilt binaries for node version ' + process.version + ' are not available', 'correct error')
+      t.equal(err.message, 'Prebuilt binaries for abi ' + process.versions.modules + ' are not available', 'correct error')
       t.equal(fs.existsSync(cachedPrebuild), false, 'nothing cached')
       t.end()
       server.unref()

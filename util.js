@@ -7,6 +7,7 @@ var expandTemplate = require('expand-template')()
 
 function getDownloadUrl (opts) {
   var pkgName = opts.pkg.name.replace(/^@\w+\//, '')
+  var abi = opts.rc.abi || process.versions.modules
   return expandTemplate(urlTemplate(opts), {
     name: pkgName,
     package_name: pkgName,
@@ -16,8 +17,8 @@ function getDownloadUrl (opts) {
     patch: opts.pkg.version.split('.')[2],
     prerelease: opts.pkg.version.split('-')[1],
     build: opts.pkg.version.split('+')[1],
-    abi: process.versions.modules,
-    node_abi: process.versions.modules,
+    abi: abi,
+    node_abi: abi,
     platform: opts.rc.platform,
     arch: opts.rc.arch,
     configuration: (opts.rc.debug ? 'Debug' : 'Release'),

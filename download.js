@@ -59,7 +59,8 @@ function downloadPrebuild (opts, cb) {
 
       function onerror (err) {
         fs.unlink(tempFile, function () {
-          cb(err || new Error('Prebuilt binaries for node version ' + process.version + ' are not available'))
+          var abi = opts.rc.abi || process.versions.modules
+          cb(err || new Error('Prebuilt binaries for abi ' + abi + ' are not available'))
         })
       }
     })
@@ -75,6 +76,18 @@ function downloadPrebuild (opts, cb) {
     pump(fs.createReadStream(cachedPrebuild), zlib.createGunzip(), tfs.extract(rc.path, {readable: true, writable: true}).on('entry', updateName), function (err) {
       if (err) return cb(err)
       if (binaryName) {
+        // HACK! to prevent calling require() for the electron use case,
+        // which will fail since require() is done using node, which doesn't
+        // make sense for the electron case
+        // TODO if this file was a separate module, we could move out the
+        // require test to the caller, since it doesn't really have
+        // anything to do with the download use case.
+        // NOTE that --require has intentionally been left out from docs
+        // for now
+        if (String(opts.rc.require) === 'false') {
+          log.info('unpack', 'skipping require test')
+          return cb()
+        }
         try {
           var resolved = path.resolve(rc.path || '.', binaryName)
           require(resolved)
@@ -89,6 +102,7 @@ function downloadPrebuild (opts, cb) {
   }
 
   function ensureNpmCacheDir (cb) {
+    // TODO maybe mkdirp(util.npmCache(), cb) is enough?
     var cacheFolder = util.npmCache()
     if (fs.access) {
       fs.access(cacheFolder, fs.R_OK | fs.W_OK, function (err) {
