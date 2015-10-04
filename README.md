@@ -1,6 +1,6 @@
 # prebuild
 
-A command line tool for easily doing prebuilds for multiple version of node/iojs on a specific platform
+A command line tool for easily doing prebuilds for multiple version of node/iojs on a specific platform.
 
 ```
 $ npm install -g prebuild
@@ -19,14 +19,14 @@ $ npm install -g prebuild
 
 ## Building
 
-Create prebuilds for iojs `v2.4.0` and node `0.12.7` and write them to `./prebuilds/`
+Create prebuilds for iojs `v2.4.0` and node `0.12.7` and write them to `./prebuilds/`.
 
 ```
 $ cd a-native-module
 $ prebuild -t v2.4.0 -t 0.12.7
 ```
 
-For more options run `prebuild --help`. The prebuilds created are compatible with [node-pre-gyp](https://github.com/mapbox/node-pre-gyp)
+For more options run `prebuild --help`. The prebuilds created are compatible with [node-pre-gyp](https://github.com/mapbox/node-pre-gyp).
 
 ## Uploading
 
@@ -40,8 +40,14 @@ If you don't want to use the token on cli you can also stick that in e.g. `~/.pr
 
 ```json
 {
-  "upload": "<github-token>"
+  "upload": "5737e33c8f387a9eb1b505b4107c3863c69e0c22"
 }
+```
+
+or in `ini` format:
+
+```ini
+upload=5737e33c8f387a9eb1b505b4107c3863c69e0c22
 ```
 
 See [this page](https://github.com/settings/tokens) for more information on how to create GitHub tokens.
@@ -60,7 +66,7 @@ Once a binary has been downloaded `prebuild` will `require()` the module and if 
 
 The downloaded binaries will be cached in your npm cache meaning you'll only have to download them once.
 
-Add `prebuild --download` to your `package.json` so the binaries will be downloaded when the module is installed
+Add `prebuild --download` to your `package.json` so the binaries will be downloaded when the module is installed:
 
 ```json
 {
@@ -69,12 +75,12 @@ Add `prebuild --download` to your `package.json` so the binaries will be downloa
     "install": "prebuild --download"
   },
   "dependencies": {
-    "prebuild": "^2.3.0"
+    "prebuild": "^2.6.0"
   }
 }
 ```
 
-If you are hosting your binaries elsewhere you can provide a host to the `--download` flag. The host string can also be a template for constructing more intrinsic urls. Download from `example.com` with a custom format for the binary name:
+If you are hosting your binaries elsewhere you can provide a host to the `--download` flag. The host string can also be a template for constructing more intrinsic urls. Download from `foo.com` with a custom format for the binary name:
 
 ```
 $ prebuild --download https://foo.com/{name}-{version}-{abi}-{platform}-{arch}.tar.gz
@@ -106,7 +112,7 @@ You just need to do a prebuild for every version of node/iojs that have new ABI 
 As of writing the following command will prebuild all possible ABI versions for iojs and for all node versions greater than `0.8`:
 
 ```
-prebuild -t 0.10.40 -t 0.12.7 -t 1.0.4 -t 1.8.4 -t 2.4.0
+prebuild -t 0.10.40 -t 0.12.7 -t 1.0.4 -t 1.8.4 -t 2.4.0 -t 3.0.0 -t 4.0.0
 ```
 
 Optionally, to always build for the above versions you can add a rc file to `~/.prebuildrc` with the following content. Note that using `~/.prebuildrc` will instruct prebuild to do this for *all* modules. Instead you should consider adding a `.prebuildrc` inside your project, so the module determines which version it supports rather than a global setting.
@@ -117,6 +123,8 @@ target[] = 0.12.7
 target[] = 1.0.4
 target[] = 1.8.4
 target[] = 2.4.0
+target[] = 3.0.0
+target[] = 4.0.0
 ```
 
 ## Help
