@@ -40,16 +40,15 @@ if (rc.compile) {
   build(opts, process.version, onbuilderror)
 } else if (rc.download) {
   download({pkg: pkg, rc: rc, log: log}, function (err) {
-    if (err) {
-      log.warn('install', err.message)
-      if (rc.compile === false) {
-        log.info('install', 'no-compile specified, not attempting build.')
-        return
-      }
-      log.info('install', 'We will now try to compile from source.')
-      return build(opts, process.version, onbuilderror)
+    if (!err) {
+      return log.info('install', 'Prebuild successfully installed!')
     }
-    log.info('install', 'Prebuild successfully installed!')
+    log.warn('install', err.message)
+    if (rc.compile === false) {
+      return log.info('install', 'no-compile specified, not attempting build.')
+    }
+    log.info('install', 'We will now try to compile from source.')
+    build(opts, rc.target || process.version, onbuilderror)
   })
 } else {
   var files = []

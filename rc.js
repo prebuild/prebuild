@@ -38,6 +38,7 @@ module.exports = require('rc')('prebuild', {
   platform: process.platform,
   force: false,
   debug: false,
+  require: true,
   path: '.',
   proxy: process.env['HTTP_PROXY'],
   'https-proxy': process.env['HTTPS_PROXY']

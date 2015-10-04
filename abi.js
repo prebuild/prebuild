@@ -8,7 +8,9 @@ function getAbi (opts, version, cb) {
 
   tryReadFiles(function (err, abi) {
     if (err && err.code === 'ENOENT') {
-      return install({log: log, force: true}, version, function (err) {
+      var installOpts = { log: log, force: true }
+      if (opts.distUrl) installOpts.distUrl = opts.distUrl
+      return install(installOpts, version, function (err) {
         if (err) return cb(err)
         tryReadFiles(function (err, abi) {
           if (!err || err.code !== 'ENOENT') return cb(err, abi)
