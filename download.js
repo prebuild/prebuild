@@ -59,7 +59,8 @@ function downloadPrebuild (opts, cb) {
 
       function onerror (err) {
         fs.unlink(tempFile, function () {
-          cb(err || new Error('Prebuilt binaries for node version ' + process.version + ' are not available'))
+          var abi = opts.rc.abi || process.versions.modules
+          cb(err || new Error('Prebuilt binaries for abi ' + abi + ' are not available'))
         })
       }
     })
