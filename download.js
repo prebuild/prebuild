@@ -4,6 +4,7 @@ var get = require('simple-get')
 var pump = require('pump')
 var tfs = require('tar-fs')
 var zlib = require('zlib')
+var mkdirp = require('mkdirp')
 var util = require('./util')
 
 function downloadPrebuild (opts, cb) {
@@ -17,15 +18,13 @@ function downloadPrebuild (opts, cb) {
 
   if (opts.nolocal) return download()
 
-  log.info('looking for local prebuild @', localPrebuild)
+  log.info('download', 'Looking for local prebuild @', localPrebuild)
   fs.exists(localPrebuild, function (exists) {
     if (exists) {
-      log.info('found. unpacking...')
-      cachedPrebuild = localPrebuild
-      return unpack()
+      log.info('download', 'Unpacking local prebuild')
+      return unpack(localPrebuild)
     }
-
-    log.info('not found. downloading...')
+    log.info('download', 'No local prebuild found. Downloading')
     download()
   })
 
@@ -34,7 +33,7 @@ function downloadPrebuild (opts, cb) {
       if (err) return onerror(err)
 
       fs.exists(cachedPrebuild, function (exists) {
-        if (exists) return unpack()
+        if (exists) return unpack(cachedPrebuild)
 
         log.http('request', 'GET ' + downloadUrl)
         var req = get(downloadUrl, function (err, res) {
@@ -46,7 +45,7 @@ function downloadPrebuild (opts, cb) {
               if (err) return onerror(err)
               fs.rename(tempFile, cachedPrebuild, function (err) {
                 if (err) return cb(err)
-                unpack()
+                unpack(cachedPrebuild)
               })
             })
           })
@@ -65,53 +64,24 @@ function downloadPrebuild (opts, cb) {
     })
   }
 
-  function unpack () {
+  function unpack (file) {
     var binaryName
 
     var updateName = opts.updateName || function (entry) {
       if (/\.node$/i.test(entry.name)) binaryName = entry.name
     }
 
-    pump(fs.createReadStream(cachedPrebuild), zlib.createGunzip(), tfs.extract(rc.path, {readable: true, writable: true}).on('entry', updateName), function (err) {
+    pump(fs.createReadStream(file), zlib.createGunzip(), tfs.extract(rc.path, {readable: true, writable: true}).on('entry', updateName), function (err) {
       if (err) return cb(err)
       if (binaryName) {
-        try {
-          var resolved = path.resolve(rc.path || '.', binaryName)
-          require(resolved)
-          log.info('unpack', 'required ' + resolved + ' successfully')
-        } catch (err) {
-          return cb(err)
-        }
-        return cb()
+        return cb(null, path.resolve(rc.path || '.', binaryName))
       }
       cb(new Error('Missing .node file in archive'))
     })
   }
 
   function ensureNpmCacheDir (cb) {
-    var cacheFolder = util.npmCache()
-    if (fs.access) {
-      fs.access(cacheFolder, fs.R_OK | fs.W_OK, function (err) {
-        if (err && err.code === 'ENOENT') {
-          return makeNpmCacheDir()
-        }
-        if (err) return cb(err)
-        cb()
-      })
-    } else {
-      fs.exists(cacheFolder, function (exists) {
-        if (!exists) return makeNpmCacheDir()
-        cb()
-      })
-    }
-
-    function makeNpmCacheDir () {
-      log.info('npm cache directory missing, creating it...')
-      fs.mkdir(cacheFolder, function (err) {
-        if (err) return cb(err)
-        cb()
-      })
-    }
+    (opts.mkdirp || mkdirp)(util.npmCache(), cb)
   }
 }
 

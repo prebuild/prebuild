@@ -39,17 +39,22 @@ var opts = {pkg: pkg, rc: rc, log: log, buildLog: buildLog}
 if (rc.compile) {
   build(opts, process.version, onbuilderror)
 } else if (rc.download) {
-  download({pkg: pkg, rc: rc, log: log}, function (err) {
+  download({pkg: pkg, rc: rc, log: log}, function (err, unpacked) {
     if (err) {
       log.warn('install', err.message)
       if (rc.compile === false) {
-        log.info('install', 'no-compile specified, not attempting build.')
-        return
+        return log.info('install', 'no-compile specified, not attempting build.')
       }
       log.info('install', 'We will now try to compile from source.')
       return build(opts, process.version, onbuilderror)
     }
-    log.info('install', 'Prebuild successfully installed!')
+    try {
+      require(unpacked)
+      log.info('unpack', 'required ' + unpacked + ' successfully')
+      log.info('install', 'Successfully installed prebuilt binary!')
+    } catch (err) {
+      onbuilderror(err)
+    }
   })
 } else {
   var files = []
