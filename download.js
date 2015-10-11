@@ -21,10 +21,8 @@ function downloadPrebuild (opts, cb) {
   fs.exists(localPrebuild, function (exists) {
     if (exists) {
       log.info('found. unpacking...')
-      cachedPrebuild = localPrebuild
-      return unpack()
+      return unpack(localPrebuild)
     }
-
     log.info('not found. downloading...')
     download()
   })
@@ -34,7 +32,7 @@ function downloadPrebuild (opts, cb) {
       if (err) return onerror(err)
 
       fs.exists(cachedPrebuild, function (exists) {
-        if (exists) return unpack()
+        if (exists) return unpack(cachedPrebuild)
 
         log.http('request', 'GET ' + downloadUrl)
         var req = get(downloadUrl, function (err, res) {
@@ -46,7 +44,7 @@ function downloadPrebuild (opts, cb) {
               if (err) return onerror(err)
               fs.rename(tempFile, cachedPrebuild, function (err) {
                 if (err) return cb(err)
-                unpack()
+                unpack(cachedPrebuild)
               })
             })
           })
@@ -65,14 +63,14 @@ function downloadPrebuild (opts, cb) {
     })
   }
 
-  function unpack () {
+  function unpack (file) {
     var binaryName
 
     var updateName = opts.updateName || function (entry) {
       if (/\.node$/i.test(entry.name)) binaryName = entry.name
     }
 
-    pump(fs.createReadStream(cachedPrebuild), zlib.createGunzip(), tfs.extract(rc.path, {readable: true, writable: true}).on('entry', updateName), function (err) {
+    pump(fs.createReadStream(file), zlib.createGunzip(), tfs.extract(rc.path, {readable: true, writable: true}).on('entry', updateName), function (err) {
       if (err) return cb(err)
       if (binaryName) {
         try {
