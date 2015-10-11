@@ -18,13 +18,13 @@ function downloadPrebuild (opts, cb) {
 
   if (opts.nolocal) return download()
 
-  log.info('looking for local prebuild @', localPrebuild)
+  log.info('download', 'Looking for local prebuild @', localPrebuild)
   fs.exists(localPrebuild, function (exists) {
     if (exists) {
-      log.info('found. unpacking...')
+      log.info('download', 'Unpacking local prebuild')
       return unpack(localPrebuild)
     }
-    log.info('not found. downloading...')
+    log.info('download', 'No local prebuild found. Downloading')
     download()
   })
 
@@ -74,14 +74,7 @@ function downloadPrebuild (opts, cb) {
     pump(fs.createReadStream(file), zlib.createGunzip(), tfs.extract(rc.path, {readable: true, writable: true}).on('entry', updateName), function (err) {
       if (err) return cb(err)
       if (binaryName) {
-        try {
-          var resolved = path.resolve(rc.path || '.', binaryName)
-          require(resolved)
-          log.info('unpack', 'required ' + resolved + ' successfully')
-        } catch (err) {
-          return cb(err)
-        }
-        return cb()
+        return cb(null, path.resolve(rc.path || '.', binaryName))
       }
       cb(new Error('Missing .node file in archive'))
     })

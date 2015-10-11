@@ -13,7 +13,7 @@ var build = path.join(__dirname, 'build')
 var unpacked = path.join(build, 'Release/leveldown.node')
 
 test('downloading from GitHub, not cached', function (t) {
-  t.plan(17)
+  t.plan(15)
   rm.sync(build)
   rm.sync(util.prebuildCache())
 
@@ -35,17 +35,12 @@ test('downloading from GitHub, not cached', function (t) {
           t.equal(type, 200, 'status code logged')
           t.equal(message, downloadUrl)
         }
-      },
-      info: function (type, message) {
-        t.equal(type, 'unpack', 'required module successfully')
-        t.equal(message, 'required ' + unpacked + ' successfully')
       }
     }
   }
 
   var downloadUrl = util.getDownloadUrl(opts)
   var cachedPrebuild = util.cachedPrebuild(downloadUrl)
-  var npmCache = util.npmCache()
   var tempFile
 
   var writeStreamCount = 0
@@ -87,24 +82,17 @@ test('downloading from GitHub, not cached', function (t) {
 })
 
 test('cached prebuild', function (t) {
-  t.plan(7)
+  t.plan(5)
   rm.sync(build)
 
   var opts = {
     pkg: pkg,
     nolocal: true,
-    rc: {platform: process.platform, arch: process.arch, path: __dirname},
-    log: {
-      info: function (type, message) {
-        t.equal(type, 'unpack', 'required module successfully')
-        t.equal(message, 'required ' + unpacked + ' successfully')
-      }
-    }
+    rc: {platform: process.platform, arch: process.arch, path: __dirname}
   }
 
   var downloadUrl = util.getDownloadUrl(opts)
   var cachedPrebuild = util.cachedPrebuild(downloadUrl)
-  var npmCache = util.npmCache()
 
   var _createWriteStream = fs.createWriteStream.bind(fs)
   fs.createWriteStream = function (path) {
