@@ -4,6 +4,7 @@ var get = require('simple-get')
 var pump = require('pump')
 var tfs = require('tar-fs')
 var zlib = require('zlib')
+var mkdirp = require('mkdirp')
 var util = require('./util')
 
 function downloadPrebuild (opts, cb) {
@@ -87,29 +88,7 @@ function downloadPrebuild (opts, cb) {
   }
 
   function ensureNpmCacheDir (cb) {
-    var cacheFolder = util.npmCache()
-    if (fs.access) {
-      fs.access(cacheFolder, fs.R_OK | fs.W_OK, function (err) {
-        if (err && err.code === 'ENOENT') {
-          return makeNpmCacheDir()
-        }
-        if (err) return cb(err)
-        cb()
-      })
-    } else {
-      fs.exists(cacheFolder, function (exists) {
-        if (!exists) return makeNpmCacheDir()
-        cb()
-      })
-    }
-
-    function makeNpmCacheDir () {
-      log.info('npm cache directory missing, creating it...')
-      fs.mkdir(cacheFolder, function (err) {
-        if (err) return cb(err)
-        cb()
-      })
-    }
+    (opts.mkdirp || mkdirp)(util.npmCache(), cb)
   }
 }
 
