@@ -80,7 +80,7 @@ test('npm_config_* are passed on from environment into rc', function (t) {
 })
 
 function runRc (t, args, opts, cb) {
-  if (typeof opts == 'function') {
+  if (typeof opts === 'function') {
     cb = opts
     opts = {}
   }
