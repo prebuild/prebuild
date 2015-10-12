@@ -1,11 +1,7 @@
 var minimist = require('minimist')
 
 if (process.env.npm_config_argv) {
-  var npmargs = [
-    'compile',
-    'no-build-from-source',
-    'debug'
-  ]
+  var npmargs = ['compile', 'build-from-source', 'debug']
   try {
     var npm_argv = JSON.parse(process.env.npm_config_argv).cooked
     for (var i = 0; i < npmargs.length; ++i) {
@@ -17,18 +13,14 @@ if (process.env.npm_config_argv) {
       }
     }
   } catch (e) { }
+}
 
-  var npmconfigs = [
-    'proxy',
-    'https-proxy',
-    'local-address'
-  ]
-  for (var j = 0; j < npmconfigs.length; ++j) {
-    var envname = 'npm_config_' + npmconfigs[j].replace('-', '_')
-    if (process.env[envname]) {
-      process.argv.push('--' + npmconfigs[j])
-      process.argv.push(process.env[envname])
-    }
+var npmconfigs = ['proxy', 'https-proxy', 'local-address']
+for (var j = 0; j < npmconfigs.length; ++j) {
+  var envname = 'npm_config_' + npmconfigs[j].replace('-', '_')
+  if (process.env[envname]) {
+    process.argv.push('--' + npmconfigs[j])
+    process.argv.push(process.env[envname])
   }
 }
 
@@ -58,5 +50,5 @@ module.exports = require('rc')('prebuild', {
 }))
 
 if (!module.parent) {
-  console.log('%j', module.exports)
+  console.log(JSON.stringify(module.exports, null, 2))
 }
