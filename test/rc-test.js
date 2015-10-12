@@ -56,8 +56,8 @@ test('npm args are passed on from npm environment into rc', function (t) {
   }
   runRc(t, '', env, function (rc) {
     t.equal(rc['build-from-source'], true, '--build-from-source works')
-    t.equal(rc.compile, true, 'compile should should be true')
-    t.equal(rc.debug, true, 'debug should should be true')
+    t.equal(rc.compile, true, 'compile should be true')
+    t.equal(rc.debug, true, 'debug should be true')
     t.end()
   })
 })
