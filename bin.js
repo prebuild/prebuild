@@ -11,12 +11,13 @@ var prebuild = require('./prebuild')
 var build = require('./build')
 var upload = require('./upload')
 
-if (rc.path) process.chdir(rc.path)
-
+var prebuildVersion = require('./package.json').version
 if (rc.version) {
-  console.log(require('./package.json').version)
+  console.log(prebuildVersion)
   process.exit(0)
 }
+
+if (rc.path) process.chdir(rc.path)
 
 log.heading = 'prebuild'
 if (process.env.npm_config_loglevel && !rc.verbose) log.level = process.env.npm_config_loglevel
@@ -32,6 +33,8 @@ if (rc.help) {
   console.error(fs.readFileSync(path.join(__dirname, 'help.txt'), 'utf-8'))
   process.exit(0)
 }
+
+log.info('begin', 'Prebuild version', prebuildVersion)
 
 var buildLog = log.info.bind(log, 'build')
 var opts = {pkg: pkg, rc: rc, log: log, buildLog: buildLog}
