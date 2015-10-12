@@ -3,7 +3,7 @@
   "version": "2.6.0",
   "description": "A command line tool for easily doing prebuilds for multiple version of node/iojs on a specific platform",
   "scripts": {
-    "test": "standard && tape test/*-test.js"
+    "test": "tape test/*-test.js && standard"
   },
   "dependencies": {
     "async": "^1.4.0",
