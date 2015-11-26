@@ -1,4 +1,5 @@
 var minimist = require('minimist')
+var targets = require('./targets')
 
 if (process.env.npm_config_argv) {
   var npmargs = ['compile', 'build-from-source', 'debug']
@@ -24,10 +25,11 @@ for (var j = 0; j < npmconfigs.length; ++j) {
   }
 }
 
-module.exports = require('rc')('prebuild', {
+var config = module.exports = require('rc')('prebuild', {
   target: process.version,
   arch: process.arch,
   platform: process.platform,
+  all: false,
   force: false,
   debug: false,
   path: '.',
@@ -48,6 +50,11 @@ module.exports = require('rc')('prebuild', {
     preinstall: 'i'
   }
 }))
+
+if (config.all === true) {
+  delete config.target
+  config.target = targets
+}
 
 if (!module.parent) {
   console.log(JSON.stringify(module.exports, null, 2))
