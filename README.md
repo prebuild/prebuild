@@ -18,7 +18,7 @@ $ npm install -g prebuild
 
 ## Building
 
-Create prebuilds for iojs `v2.4.0` and node `0.12.7` and write them to `./prebuilds/`
+Create prebuilds for iojs `v2.4.0` and node `0.12.7` (`v` prefix is optional) and write them to `./prebuilds/`
 
 ```
 $ cd a-native-module
@@ -118,18 +118,25 @@ target[] = 1.8.4
 target[] = 2.4.0
 ```
 
+Another option is to use `--all` to build for *all* known abi versions (see [`targets.js`](https://github.com/mafintosh/prebuild/blob/master/targets.js) for currently available versions)
+
+```
+$ prebuild --all
+```
+
 ## Help
 
 ```
 $ prebuild -h
 prebuild [options]
 
-  --path,       -p  path        (make a prebuild here)
-  --target,     -t  version     (version to prebuild against)
-  --upload,     -u  [gh-token]  (upload prebuilds to github)
-  --download,   -d  [url]       (download prebuilds, no url means github)
-  --preinstall, -i  script      (run this script before prebuilding)
-  --compile,    -c              (compile your project using node-gyp)
+  --path        -p  path        (make a prebuild here)
+  --target      -t  version     (version to prebuild against)
+  --all                         (prebuild for all known abi versions)
+  --upload      -u  [gh-token]  (upload prebuilds to github)
+  --download    -d  [url]       (download prebuilds, no url means github)
+  --preinstall  -i  script      (run this script before prebuilding)
+  --compile     -c              (compile your project using node-gyp)
   --no-compile                  (skip compile fallback when downloading)
   --strip                       (strip debug information)
   --debug                       (set Debug or Release configuration)

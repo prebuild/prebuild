@@ -2,6 +2,7 @@ var test = require('tape')
 var path = require('path')
 var exec = require('child_process').exec
 var xtend = require('xtend')
+var targets = require('../targets')
 
 test('custom config and aliases', function (t) {
   var args = [
@@ -20,6 +21,7 @@ test('custom config and aliases', function (t) {
     '--preinstall somescript.js'
   ]
   runRc(t, args.join(' '), {}, function (rc) {
+    t.equal(rc.all, false, 'default is not building all targets')
     t.equal(rc.arch, 'ARCH', 'correct arch')
     t.equal(rc.arch, rc.a)
     t.equal(rc.platform, 'PLATFORM', 'correct platform')
@@ -40,6 +42,19 @@ test('custom config and aliases', function (t) {
     t.equal(rc.path, rc.p)
     t.equal(rc.preinstall, 'somescript.js', 'correct script')
     t.equal(rc.preinstall, rc.i)
+    t.end()
+  })
+})
+
+test('using --all will build for all targets', function (t) {
+  var args = [
+    '--target vX.Y.Z',
+    '--target vZ.Y.X',
+    '--all'
+  ]
+  runRc(t, args.join(' '), {}, function (rc) {
+    t.equal(rc.all, true, 'should be true')
+    t.deepEqual(rc.target, targets, 'targets picked from targets.js')
     t.end()
   })
 })
