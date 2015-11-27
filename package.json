@@ -5,6 +5,17 @@
   "scripts": {
     "test": "tape test/*-test.js && standard"
   },
+  "keywords": [
+    "prebuilt",
+    "binaries",
+    "native",
+    "addon",
+    "module",
+    "c",
+    "c++",
+    "bindings",
+    "devops"
+  ],
   "dependencies": {
     "async": "^1.4.0",
     "expand-template": "^1.0.0",
