@@ -54,6 +54,16 @@ if (rc.compile) {
     }
     log.info('install', 'Prebuild successfully installed!')
   })
+} else if (rc['upload-all']) {
+  rc.upload = rc['upload-all']
+
+  fs.readdir('prebuilds', function (err, pbFiles) {
+    if (err) return onbuilderror(err)
+    for (var i = 0; i < pbFiles.length; ++i) {
+      pbFiles[i] = 'prebuilds/' + pbFiles[i]
+    }
+    uploadFiles(pbFiles)
+  })
 } else {
   var files = []
   async.eachSeries([].concat(rc.target), function (target, next) {
@@ -65,22 +75,26 @@ if (rc.compile) {
   }, function (err) {
     if (err) return onbuilderror(err)
     if (!rc.upload) return
-    buildLog('Uploading ' + files.length + ' prebuilds(s) to Github releases')
-    upload({pkg: pkg, rc: rc, files: files}, function (err, result) {
-      if (err) return onbuilderror(err)
-      buildLog('Found ' + result.old.length + ' prebuild(s) on Github')
-      if (result.old.length) {
-        result.old.forEach(function (build) {
-          buildLog('-> ' + build)
-        })
-      }
-      buildLog('Uploaded ' + result.new.length + ' new prebuild(s) to Github')
-      if (result.new.length) {
-        result.new.forEach(function (build) {
-          buildLog('-> ' + build)
-        })
-      }
-    })
+    uploadFiles(files)
+  })
+}
+
+function uploadFiles (files) {
+  buildLog('Uploading ' + files.length + ' prebuilds(s) to Github releases')
+  upload({pkg: pkg, rc: rc, files: files}, function (err, result) {
+    if (err) return onbuilderror(err)
+    buildLog('Found ' + result.old.length + ' prebuild(s) on Github')
+    if (result.old.length) {
+      result.old.forEach(function (build) {
+        buildLog('-> ' + build)
+      })
+    }
+    buildLog('Uploaded ' + result.new.length + ' new prebuild(s) to Github')
+    if (result.new.length) {
+      result.new.forEach(function (build) {
+        buildLog('-> ' + build)
+      })
+    }
   })
 }
 
