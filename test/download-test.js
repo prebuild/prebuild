@@ -4,7 +4,6 @@ var rm = require('rimraf')
 var path = require('path')
 var download = require('../download')
 var util = require('../util')
-var pkg = require('a-native-module/package')
 var http = require('http')
 var https = require('https')
 
@@ -12,32 +11,11 @@ var build = path.join(__dirname, 'build')
 var unpacked = path.join(build, 'Release/leveldown.node')
 
 test('downloading from GitHub, not cached', function (t) {
-  t.plan(20)
+  t.plan(14)
   rm.sync(build)
   rm.sync(util.prebuildCache())
 
-  var requestCount = 0
-  var opts = {
-    pkg: pkg,
-    nolocal: true,
-    rc: {platform: process.platform, arch: process.arch, path: __dirname},
-    log: {
-      http: function (type, message) {
-        if (requestCount++ === 0) {
-          t.equal(type, 'request', 'http request')
-          t.equal(message, 'GET ' + downloadUrl)
-        } else {
-          t.equal(type, 200, 'status code logged')
-          t.equal(message, downloadUrl)
-        }
-      },
-      info: function (type, message) {
-        t.equal(type, 'unpack', 'required module successfully')
-        t.equal(message, 'required ' + unpacked + ' successfully')
-      }
-    }
-  }
-
+  var opts = getOpts()
   var downloadUrl = util.getDownloadUrl(opts)
   var cachedPrebuild = util.cachedPrebuild(downloadUrl)
   var npmCache = util.npmCache()
@@ -119,21 +97,10 @@ test('downloading from GitHub, not cached', function (t) {
 })
 
 test('cached prebuild', function (t) {
-  t.plan(10)
+  t.plan(8)
   rm.sync(build)
 
-  var opts = {
-    pkg: pkg,
-    nolocal: true,
-    rc: {platform: process.platform, arch: process.arch, path: __dirname},
-    log: {
-      info: function (type, message) {
-        t.equal(type, 'unpack', 'required module successfully')
-        t.equal(message, 'required ' + unpacked + ' successfully')
-      }
-    }
-  }
-
+  var opts = getOpts()
   var downloadUrl = util.getDownloadUrl(opts)
   var cachedPrebuild = util.cachedPrebuild(downloadUrl)
   var npmCache = util.npmCache()
@@ -189,15 +156,10 @@ test('cached prebuild', function (t) {
 test('missing .node file in .tar.gz should fail', function (t) {
   t.plan(2)
 
-  var opts = {
-    pkg: pkg,
-    nolocal: true,
-    rc: {platform: process.platform, arch: process.arch, path: __dirname},
-    updateName: function (entry) {
-      t.ok(/\.node$/i.test(entry.name), 'should match but we pretend it does not')
-    }
+  var opts = getOpts()
+  opts.updateName = function (entry) {
+    t.ok(/\.node$/i.test(entry.name), 'should match but we pretend it does not')
   }
-
   download(opts, function (err) {
     t.equal(err.message, 'Missing .node file in archive', 'correct error message')
     t.end()
@@ -205,19 +167,9 @@ test('missing .node file in .tar.gz should fail', function (t) {
 })
 
 test('non existing host should fail with no dangling temp file', function (t) {
-  t.plan(5)
+  t.plan(3)
 
-  var opts = {
-    pkg: pkg,
-    nolocal: true,
-    rc: {platform: process.platform, arch: process.arch},
-    log: {
-      http: function (type, message) {
-        t.equal(type, 'request', 'http request')
-        t.equal(message, 'GET ' + downloadUrl)
-      }
-    }
-  }
+  var opts = getOpts()
   opts.pkg.binary = {
     host: 'https://foo.bar.baz'
   }
@@ -241,26 +193,9 @@ test('non existing host should fail with no dangling temp file', function (t) {
 })
 
 test('existing host but invalid url should fail', function (t) {
-  t.plan(7)
+  t.plan(3)
 
-  var requestCount = 0
-  var opts = {
-    pkg: pkg,
-    nolocal: true,
-    rc: {platform: process.platform, arch: process.arch},
-    log: {
-      http: function (type, message) {
-        if (requestCount >= 2) return
-        if (requestCount++ === 0) {
-          t.equal(type, 'request', 'http request')
-          t.equal(message, 'GET ' + downloadUrl)
-        } else {
-          t.equal(type, 404, 'invalid resource')
-          t.equal(message, downloadUrl)
-        }
-      }
-    }
-  }
+  var opts = getOpts()
   opts.pkg.binary = {
     host: 'http://localhost:8888',
     remote_path: 'prebuilds',
@@ -288,12 +223,8 @@ test('error during download should fail with no dangling temp file', function (t
   t.plan(7)
 
   var downloadError = new Error('something went wrong during download')
-  var opts = {
-    pkg: pkg,
-    nolocal: true,
-    rc: {platform: process.platform, arch: process.arch},
-    log: {http: function () { }}
-  }
+
+  var opts = getOpts()
   opts.pkg.binary = {
     host: 'http://localhost:8889',
     remote_path: 'prebuilds',
@@ -340,3 +271,12 @@ test('error during download should fail with no dangling temp file', function (t
     })
   })
 })
+
+function getOpts () {
+  return {
+    pkg: require('a-native-module/package'),
+    nolocal: true,
+    rc: {platform: process.platform, arch: process.arch, path: __dirname},
+    log: {http: function (type, message) {}, info: function (type, message) {}}
+  }
+}
