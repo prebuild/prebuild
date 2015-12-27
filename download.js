@@ -20,12 +20,11 @@ function downloadPrebuild (opts, cb) {
   log.info('looking for local prebuild @', localPrebuild)
   fs.exists(localPrebuild, function (exists) {
     if (exists) {
-      log.info('found. unpacking...')
+      log.info('found local prebuild')
       cachedPrebuild = localPrebuild
       return unpack()
     }
 
-    log.info('not found. downloading...')
     download()
   })
 
@@ -33,8 +32,12 @@ function downloadPrebuild (opts, cb) {
     ensureNpmCacheDir(function (err) {
       if (err) return onerror(err)
 
+      log.info('looking for cached prebuild @', cachedPrebuild)
       fs.exists(cachedPrebuild, function (exists) {
-        if (exists) return unpack()
+        if (exists) {
+          log.info('found cached prebuild')
+          return unpack()
+        }
 
         log.http('request', 'GET ' + downloadUrl)
         var req = get(downloadUrl, function (err, res) {
@@ -42,10 +45,12 @@ function downloadPrebuild (opts, cb) {
           log.http(res.statusCode, downloadUrl)
           if (res.statusCode !== 200) return onerror()
           fs.mkdir(util.prebuildCache(), function () {
+            log.info('downloading to @', tempFile)
             pump(res, fs.createWriteStream(tempFile), function (err) {
               if (err) return onerror(err)
               fs.rename(tempFile, cachedPrebuild, function (err) {
                 if (err) return cb(err)
+                log.info('renaming to @', cachedPrebuild)
                 unpack()
               })
             })
@@ -72,19 +77,19 @@ function downloadPrebuild (opts, cb) {
       if (/\.node$/i.test(entry.name)) binaryName = entry.name
     }
 
+    log.info('unpacking @', cachedPrebuild)
     pump(fs.createReadStream(cachedPrebuild), zlib.createGunzip(), tfs.extract(rc.path, {readable: true, writable: true}).on('entry', updateName), function (err) {
       if (err) return cb(err)
-      if (binaryName) {
-        try {
-          var resolved = path.resolve(rc.path || '.', binaryName)
-          require(resolved)
-          log.info('unpack', 'required ' + resolved + ' successfully')
-        } catch (err) {
-          return cb(err)
-        }
-        return cb()
+      if (!binaryName) return cb(new Error('Missing .node file in archive'))
+      var resolved
+      try {
+        resolved = path.resolve(rc.path || '.', binaryName)
+        require(resolved)
+      } catch (err) {
+        return cb(err)
       }
-      cb(new Error('Missing .node file in archive'))
+      log.info('unpack', 'required ' + resolved + ' successfully')
+      cb(null, resolved)
     })
   }
 
