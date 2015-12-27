@@ -36,6 +36,19 @@ if (rc.help) {
 
 log.info('begin', 'Prebuild version', prebuildVersion)
 
+if (rc.install) {
+  if (!(typeof pkg._from === 'string')) {
+    // From Git directly
+    rc.compile = true
+  } else if (pkg._from.length > 4 && pkg._from.substr(0, 4) === 'git+') {
+    // From npm install git+
+    rc.compile = true
+  } else {
+    // From npm repository
+    rc.download = true
+  }
+}
+
 var buildLog = log.info.bind(log, 'build')
 var opts = {pkg: pkg, rc: rc, log: log, buildLog: buildLog}
 
