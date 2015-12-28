@@ -11,9 +11,9 @@ $ npm install -g prebuild
 ## Features
 
 * Builds native modules for any version of node/iojs, without having to switch between different versions of node/iojs to do so. This works by only downloading the correct headers and telling `node-gyp` to use those instead of the ones installed on your system.
-* Support for uploading (`--upload`) prebuilds to GitHub.
-* Support for downloading (`--download`) prebuilds from GitHub. You can also download from a host of your choice and you can customize the url format as you see fit.
-* Downloaded binaries will be cached in `~/.npm/_prebuilds/` so you only need to download them once.
+* Installs (`--install`) prebuilt binaries from GitHub by default or from a host of your choice. The url format can be customized as you see fit.
+* Upload (`--upload`) prebuilt binaries to GitHub.
+* Installed binaries are cached in `~/.npm/_prebuilds/` so you only need to download them once.
 * Support for stripping (`--strip`) debug information.
 
 ## Building
@@ -27,57 +27,41 @@ $ prebuild -t v2.4.0 -t 0.12.7
 
 For more options run `prebuild --help`. The prebuilds created are compatible with [node-pre-gyp](https://github.com/mapbox/node-pre-gyp)
 
-## Uploading
+## Installing
 
-`prebuild` supports uploading prebuilds to GitHub releases. If the release doesn't exist, it will be created for you. To upload prebuilds simply add the `--upload <github-token>` option:
-
-```
-$ prebuild -t v2.4.0 -t 0.12.7 -u <github-token>
-```
-
-If you don't want to use the token on cli you can also stick that in e.g. `~/.prebuildrc`:
-
-```json
-{
-  "upload": "<github-token>"
-}
-```
-
-See [this page](https://github.com/settings/tokens) for more information on how to create GitHub tokens.
-
-## Downloading
-
-`prebuild` supports downloading prebuilds from GitHub by default. To download a prebuild for your specific platform simply use the `--download` flag.
+`prebuild` supports installing prebuilt binaries from GitHub by default. To install for your platform, use the `--install` flag.
 
 ```
-$ prebuild --download
+$ prebuild --install
 ```
 
-If no suitable binary is found for the current platform / node version, `prebuild` will fallback to `node-gyp rebuild`. Native modules that have a javascript fallback can use `--no-compile` to prevent this.
+If no suitable binary can be found, `prebuild` will fallback to `node-gyp rebuild`. Native modules that have a javascript fallback can use `--no-compile` to prevent this.
 
 Once a binary has been downloaded `prebuild` will `require()` the module and if that fails it will also fallback to building it.
 
-The downloaded binaries will be cached in your npm cache meaning you'll only have to download them once.
+Installed binaries are cached in your npm cache meaning you'll only have to download them once.
 
-Add `prebuild --download` to your `package.json` so the binaries will be downloaded when the module is installed
+Add `prebuild --install` to your `package.json` so the binaries will be installed when the module is installed
 
 ```json
 {
   "name": "a-native-module",
   "scripts": {
-    "install": "prebuild --download"
+    "install": "prebuild --install"
   },
   "dependencies": {
-    "prebuild": "^2.3.0"
+    "prebuild": "^2.7.2"
   }
 }
 ```
 
-If you are hosting your binaries elsewhere you can provide a host to the `--download` flag. The host string can also be a template for constructing more intrinsic urls. Download from `example.com` with a custom format for the binary name:
+If you are hosting your binaries elsewhere you can provide a host to the `--install` flag. The host string can also be a template for constructing more intrinsic urls. Install from `example.com` with a custom format for the binary name:
 
 ```
-$ prebuild --download https://foo.com/{name}-{version}-{abi}-{platform}-{arch}.tar.gz
+$ prebuild --install https://example.com/{name}-{version}-{abi}-{platform}-{arch}.tar.gz
 ```
+
+`--install` will download binaries when installing from npm and compile in other cases. If you want `prebuild` to always download binaries you can use `--download` instead of `--install`. Either way, if downloading fails for any reason, it will fallback to compiling the code.
 
 There's also support for `node-pre-gyp` style by utilizing the `binary` property in `package.json`.
 
@@ -124,6 +108,24 @@ Another option is to use `--all` to build for *all* known abi versions (see [`ta
 $ prebuild --all
 ```
 
+## Uploading
+
+`prebuild` supports uploading prebuilds to GitHub releases. If the release doesn't exist, it will be created for you. To upload prebuilds simply add the `--upload <github-token>` option:
+
+```
+$ prebuild -t v2.4.0 -t 0.12.7 -u <github-token>
+```
+
+If you don't want to use the token on cli you can also stick that in e.g. `~/.prebuildrc`:
+
+```json
+{
+  "upload": "<github-token>"
+}
+```
+
+See [this page](https://github.com/settings/tokens) for more information on how to create GitHub tokens.
+
 ## Help
 
 ```
@@ -133,8 +135,9 @@ prebuild [options]
   --path        -p  path        (make a prebuild here)
   --target      -t  version     (version to prebuild against)
   --all                         (prebuild for all known abi versions)
-  --upload      -u  [gh-token]  (upload prebuilds to github)
+  --install                     (download when using npm, compile otherwise)
   --download    -d  [url]       (download prebuilds, no url means github)
+  --upload      -u  [gh-token]  (upload prebuilds to github)
   --preinstall  -i  script      (run this script before prebuilding)
   --compile     -c              (compile your project using node-gyp)
   --no-compile                  (skip compile fallback when downloading)
