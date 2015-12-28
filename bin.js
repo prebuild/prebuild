@@ -45,7 +45,7 @@ if (rc.install) {
     rc.compile = true
   } else {
     // From npm repository
-    rc.download = true
+    rc.download = rc.install
   }
 }
 
