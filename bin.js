@@ -72,10 +72,7 @@ if (rc.compile) {
 
   fs.readdir('prebuilds', function (err, pbFiles) {
     if (err) return onbuilderror(err)
-    for (var i = 0; i < pbFiles.length; ++i) {
-      pbFiles[i] = 'prebuilds/' + pbFiles[i]
-    }
-    uploadFiles(pbFiles)
+    uploadFiles(pbFiles.map(function (file) { return 'prebuilds/' + file }))
   })
 } else {
   var files = []
