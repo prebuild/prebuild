@@ -25,7 +25,7 @@ for (var j = 0; j < npmconfigs.length; ++j) {
   }
 }
 
-var config = module.exports = require('rc')('prebuild', {
+var rc = module.exports = require('rc')('prebuild', {
   target: process.version,
   arch: process.arch,
   platform: process.platform,
@@ -51,9 +51,13 @@ var config = module.exports = require('rc')('prebuild', {
   }
 }))
 
-if (config.all === true) {
-  delete config.target
-  config.target = targets
+if (rc.all === true) {
+  delete rc.target
+  rc.target = targets
+}
+
+if (rc['upload-all']) {
+  rc.upload = rc['upload-all']
 }
 
 if (!module.parent) {
