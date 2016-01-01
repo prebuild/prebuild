@@ -124,6 +124,10 @@ If you don't want to use the token on cli you can also stick that in e.g. `~/.pr
 }
 ```
 
+Note that `--upload` will only upload the targets that was built and stored in `./prebuilds`, so `prebuild --upload <token> -t 2.4.0` will only upload the binary for the `2.4.0` target.
+
+You can use `prebuild --upload-all` to upload all files from the `./prebuilds` folder.
+
 See [this page](https://github.com/settings/tokens) for more information on how to create GitHub tokens.
 
 ## Help
@@ -138,6 +142,7 @@ prebuild [options]
   --install                     (download when using npm, compile otherwise)
   --download    -d  [url]       (download prebuilds, no url means github)
   --upload      -u  [gh-token]  (upload prebuilds to github)
+  --upload-all  -u  [gh-token]  (upload all files from ./prebuilds folder to github)
   --preinstall  -i  script      (run this script before prebuilding)
   --compile     -c              (compile your project using node-gyp)
   --no-compile                  (skip compile fallback when downloading)

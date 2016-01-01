@@ -59,6 +59,14 @@ test('using --all will build for all targets', function (t) {
   })
 })
 
+test('using --upload-all will set token for --upload', function (t) {
+  var args = ['--upload-all t00k3n']
+  runRc(t, args.join(' '), {}, function (rc) {
+    t.equal(rc.upload, 't00k3n', 'upload should have the same token set')
+    t.end()
+  })
+})
+
 test('npm args are passed on from npm environment into rc', function (t) {
   var env = {
     npm_config_argv: JSON.stringify({

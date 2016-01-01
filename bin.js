@@ -68,14 +68,9 @@ if (rc.compile) {
     log.info('install', 'Prebuild successfully installed!')
   })
 } else if (rc['upload-all']) {
-  rc.upload = rc['upload-all']
-
   fs.readdir('prebuilds', function (err, pbFiles) {
     if (err) return onbuilderror(err)
-    for (var i = 0; i < pbFiles.length; ++i) {
-      pbFiles[i] = 'prebuilds/' + pbFiles[i]
-    }
-    uploadFiles(pbFiles)
+    uploadFiles(pbFiles.map(function (file) { return 'prebuilds/' + file }))
   })
 } else {
   var files = []

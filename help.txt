@@ -6,6 +6,7 @@ prebuild [options]
   --install                     (download when using npm, compile otherwise)
   --download    -d  [url]       (download prebuilds, no url means github)
   --upload      -u  [gh-token]  (upload prebuilds to github)
+  --upload-all  -u  [gh-token]  (upload all files from ./prebuilds folder to github)
   --preinstall  -i  script      (run this script before prebuilding)
   --compile     -c              (compile your project using node-gyp)
   --no-compile                  (skip compile fallback when downloading)
