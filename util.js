@@ -16,7 +16,7 @@ function getDownloadUrl (opts) {
     patch: opts.pkg.version.split('.')[2],
     prerelease: opts.pkg.version.split('-')[1],
     build: opts.pkg.version.split('+')[1],
-    abi: process.versions.modules,
+    abi: opts.rc.abi || process.versions.modules,
     node_abi: process.versions.modules,
     platform: opts.rc.platform,
     arch: opts.rc.arch,
