@@ -10,7 +10,7 @@ var error = require('./error')
 var exec = require('child_process').exec
 
 function transformElectron (opts, cb) {
-  if (!opts.rc.electron) return cb()
+  if (!opts.rc.electron) return process.nextTick(cb)
 
   var log = opts.log
   var local = './node_modules/.bin/electron'
