@@ -7,6 +7,40 @@ var noop = require('noop-logger')
 var zlib = require('zlib')
 var util = require('./util')
 var error = require('./error')
+var exec = require('child_process').exec
+
+function transformElectron (opts, cb) {
+  if (!opts.rc.electron) return cb()
+
+  var log = opts.log
+  var local = './node_modules/.bin/electron'
+  fs.stat(local, function (err) {
+    var electron = err
+      ? 'electron'
+      : local
+
+    log.info('fetching electron abi from "' + electron + '"')
+    ask(electron)
+  })
+
+  function ask (electron) {
+    var script = '/tmp/electron_abi.js'
+    var src = 'console.log(process.versions.modules);process.exit(0)'
+    fs.writeFile(script, src, function (err) {
+      if (err) return cb(err)
+      var cmd = electron + ' --require ' + script
+      exec(cmd, function (err, stdout, stderr) {
+        if (err) return cb(err)
+        if (stderr.length) return cb(new Error(stderr.toString()))
+
+        var abi = Number(stdout.toString())
+        log.info('found electron abi version ' + abi)
+        opts.rc.abi = abi
+        cb()
+      })
+    })
+  }
+}
 
 function downloadPrebuild (opts, cb) {
   var downloadUrl = util.getDownloadUrl(opts)
@@ -126,4 +160,10 @@ function downloadPrebuild (opts, cb) {
   }
 }
 
-module.exports = downloadPrebuild
+module.exports = function (opts, cb) {
+  transformElectron(opts, function (err) {
+    if (err) return cb(err)
+    downloadPrebuild(opts, cb)
+  })
+}
+
