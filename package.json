@@ -47,6 +47,11 @@
     "url": "https://github.com/mafintosh/prebuild.git"
   },
   "author": "Mathias Buus (@mafintosh)",
+  "contributors": [
+    "Julian Gruber <julian@juliangruber.com> (https://github.com/juliangruber)",
+    "Brett Lawson <brett19@gmail.com> (https://github.com/brett19)",
+    "Lars-Magnus Skog <ralphtheninja@riseup.net> (https://github.com/ralphtheninja)"
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/mafintosh/prebuild/issues"
