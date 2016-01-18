@@ -81,15 +81,26 @@ function downloadPrebuild (opts, cb) {
     pump(fs.createReadStream(cachedPrebuild), zlib.createGunzip(), tfs.extract(rc.path, {readable: true, writable: true}).on('entry', updateName), function (err) {
       if (err) return cb(err)
       if (!binaryName) return cb(new Error('Missing .node file in archive'))
+
       var resolved
       try {
         resolved = path.resolve(rc.path || '.', binaryName)
-        require(resolved)
       } catch (err) {
         return cb(err)
       }
-      log.info('unpack', 'required ' + resolved + ' successfully')
-      cb(null, resolved)
+      log.info('unpack', 'resolved to ' + resolved)
+
+      if (rc.abi === process.versions.modules) {
+        try {
+          require(resolved)
+        } catch (err) {
+          return cb(err)
+        }
+        log.info('unpack', 'required ' + resolved + ' successfully')
+        cb(null, resolved)
+      } else {
+        cb(null, resolved)
+      }
     })
   }
 
