@@ -128,7 +128,22 @@ Note that `--upload` will only upload the targets that was built and stored in `
 
 You can use `prebuild --upload-all` to upload all files from the `./prebuilds` folder.
 
-See [this page](https://github.com/settings/tokens) for more information on how to create GitHub tokens.
+## Create GitHub Token
+
+A GitHub token is needed for two reasons:
+
+* Create a GitHub release ([leveldown example](https://github.com/Level/leveldown/releases/tag/v1.4.3))
+* Upload the prebuilt binaries to that release
+
+To create a token:
+
+* Go to [this page](https://github.com/settings/tokens)
+* Click the `Generate new token` button
+* Give the token a name and click the `Generate token` button, see below
+
+![create token](images/create-token.png)
+
+The default scopes should be fine.
 
 ## Help
 
