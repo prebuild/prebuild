@@ -38,30 +38,28 @@ test('tempFile() ends with pid and random number', function (t) {
 })
 
 test('urlTemplate() returns different templates based on pkg and rc', function (t) {
-  var o1 = {rc: {download: 'd0000d'}}
+  var o1 = {download: 'd0000d'}
   var t1 = util.urlTemplate(o1)
   t.equal(t1, 'd0000d', 'template based on --download <string>')
   var o2 = {
-    pkg: {binary: {host: 'http://foo.com'}},
-    rc: {}
+    pkg: {binary: {host: 'http://foo.com'}}
   }
   var t2 = util.urlTemplate(o2)
   t.equal(t2, 'http://foo.com/{name}-v{version}-node-v{abi}-{platform}-{arch}.tar.gz', 'template based on pkg.binary properties')
   var o3 = {
     pkg: {binary: {host: 'http://foo.com'}},
-    rc: {download: true}
+    download: true
   }
   var t3 = util.urlTemplate(o3)
   t.equal(t3, t2, 'pkg: {} takes precedence over --download')
   var o4 = {
     pkg: {binary: {host: 'http://foo.com'}},
-    rc: {download: 'd0000d'}
+    download: 'd0000d'
   }
   var t4 = util.urlTemplate(o4)
   t.equal(t4, t1, '--download <string> always goes first')
   var o5 = {
-    pkg: {binary: {host: 'http://foo.com', remote_path: 'w00t'}},
-    rc: {}
+    pkg: {binary: {host: 'http://foo.com', remote_path: 'w00t'}}
   }
   var t5 = util.urlTemplate(o5)
   t.equal(t5, 'http://foo.com/w00t/{name}-v{version}-node-v{abi}-{platform}-{arch}.tar.gz', 'pkg.binary.remote_path is added after host, default format')
@@ -72,12 +70,11 @@ test('urlTemplate() returns different templates based on pkg and rc', function (
         remote_path: 'w00t',
         package_name: '{name}-{major}.{minor}-node-v{abi}-{platform}-{arch}.tar.gz'
       }
-    },
-    rc: {}
+    }
   }
   var t6 = util.urlTemplate(o6)
   t.equal(t6, 'http://foo.com/w00t/{name}-{major}.{minor}-node-v{abi}-{platform}-{arch}.tar.gz', 'pkg.binary.package_name is added after host and remote_path, custom format')
-  var o7 = {pkg: require('../package.json'), rc: {download: true}}
+  var o7 = {pkg: require('../package.json'), download: true}
   var t7 = util.urlTemplate(o7)
   t.equal(t7, 'https://github.com/mafintosh/prebuild/releases/download/v{version}/{name}-v{version}-node-v{abi}-{platform}-{arch}.tar.gz', '--download with no arguments, no pkg.binary, default format')
   t.end()
@@ -92,8 +89,7 @@ test('urlTemplate() with pkg.binary cleans up leading ./ or / and trailing /', f
         remote_path: '/w00t',
         package_name: '/{name}-{major}.{minor}-node-v{abi}-{platform}-{arch}.tar.gz'
       }
-    },
-    rc: {}
+    }
   }
   t.equal(util.urlTemplate(o), expected)
   o.pkg.binary = {
@@ -129,10 +125,8 @@ test('getDownloadUrl() expands template to correct values', function (t) {
         package_name: '{name}-{package_name}-{version}-{major}-{minor}-{patch}-{prerelease}-{abi}-{node_abi}-{platform}-{arch}-{configuration}-{module_name}'
       }
     },
-    rc: {
-      platform: 'coolplatform',
-      arch: 'futureplatform'
-    }
+    platform: 'coolplatform',
+    arch: 'futureplatform'
   }
   var url1 = util.getDownloadUrl(o1)
   t.equal(url1, 'https://foo.com/a-native-module-a-native-module-x.y.z-alpha5-x-y-z-alpha5-alpha5-' + abi + '-' + abi + '-coolplatform-futureplatform-Release-a-native-module-bindings', 'weird url but testing everything is propagated, with prerelease and Release')
@@ -146,11 +140,9 @@ test('getDownloadUrl() expands template to correct values', function (t) {
         package_name: '{name}-{package_name}-{version}-{major}-{minor}-{patch}-{build}-{abi}-{node_abi}-{platform}-{arch}-{configuration}-{module_name}'
       }
     },
-    rc: {
-      platform: 'coolplatform',
-      arch: 'futureplatform',
-      debug: true
-    }
+    platform: 'coolplatform',
+    arch: 'futureplatform',
+    debug: true
   }
   var url2 = util.getDownloadUrl(o2)
   t.equal(url2, 'https://foo.com/a-native-module-a-native-module-x.y.z+beta77-x-y-z+beta77-beta77-' + abi + '-' + abi + '-coolplatform-futureplatform-Debug-a-native-module-bindings', 'weird url but testing everything is propagated, with build and Debug')
@@ -164,11 +156,9 @@ test('getDownloadUrl() expands template to correct values', function (t) {
         package_name: '{name}-{package_name}-{version}-{major}-{minor}-{patch}-{build}-{abi}-{node_abi}-{platform}-{arch}-{configuration}-{module_name}'
       }
     },
-    rc: {
-      platform: 'coolplatform',
-      arch: 'futureplatform',
-      debug: true
-    }
+    platform: 'coolplatform',
+    arch: 'futureplatform',
+    debug: true
   }
   var url3 = util.getDownloadUrl(o3)
   t.equal(url3, url2, 'scope does not matter for download url')
@@ -181,10 +171,8 @@ test('getTarPath based on package.json and rc config', function (t) {
       name: 'foo',
       version: 'X.Y.Z'
     },
-    rc: {
-      platform: 'fakeos',
-      arch: 'x64'
-    }
+    platform: 'fakeos',
+    arch: 'x64'
   }
   var tarPath = util.getTarPath(opts, 314)
   t.equal(tarPath, 'prebuilds/foo-vX.Y.Z-node-v314-fakeos-x64.tar.gz', 'correct tar path')
@@ -257,17 +245,17 @@ test('spawn(): callback fires with error on non 0 exit code', function (t) {
 
 test('releaseFolder(): depends on package.json and --debug', function (t) {
   var folder = util.releaseFolder
-  t.equal(folder({rc: {}, pkg: {}}), 'build/Release', 'Release is default')
+  t.equal(folder({pkg: {}}), 'build/Release', 'Release is default')
   t.equal(folder({
-    rc: { debug: false },
+    debug: false,
     pkg: {}
   }), 'build/Release', 'Release is default')
   t.equal(folder({
-    rc: { debug: true },
+    debug: true,
     pkg: {}
   }), 'build/Debug', 'Debug folder when --debug')
   t.equal(folder({
-    rc: { debug: true },
+    debug: true,
     pkg: { binary: { module_path: 'foo/bar' } }
   }), 'foo/bar', 'using binary property from package.json')
   t.end()

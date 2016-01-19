@@ -61,7 +61,7 @@ function basicSetup (t, assets) {
   var files = ['foo.tar.gz', 'bar.tar.gz', 'baz.tar.gz']
   return {
     pkg: pkg,
-    rc: {upload: 't000k3n'},
+    upload: 't000k3n',
     files: files,
     gh: {
       create: function (auth, user, repo, opts, cb) {

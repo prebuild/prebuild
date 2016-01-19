@@ -4,6 +4,7 @@ var path = require('path')
 var log = require('npmlog')
 var fs = require('fs')
 var async = require('async')
+var extend = require('xtend')
 
 var rc = require('./rc')
 var download = require('./download')
@@ -50,15 +51,15 @@ if (rc.install) {
 }
 
 var buildLog = log.info.bind(log, 'build')
-var opts = {pkg: pkg, rc: rc, log: log, buildLog: buildLog}
+var opts = extend(rc, {pkg: pkg, log: log, buildLog: buildLog})
 
-if (rc.compile) {
+if (opts.compile) {
   build(opts, process.version, onbuilderror)
-} else if (rc.download) {
-  download({pkg: pkg, rc: rc, log: log}, function (err) {
+} else if (opts.download) {
+  download(opts, function (err) {
     if (err) {
       log.warn('install', err.message)
-      if (rc.compile === false) {
+      if (opts.compile === false) {
         log.info('install', 'no-compile specified, not attempting build.')
         return
       }
@@ -67,14 +68,14 @@ if (rc.compile) {
     }
     log.info('install', 'Prebuild successfully installed!')
   })
-} else if (rc['upload-all']) {
+} else if (opts['upload-all']) {
   fs.readdir('prebuilds', function (err, pbFiles) {
     if (err) return onbuilderror(err)
     uploadFiles(pbFiles.map(function (file) { return 'prebuilds/' + file }))
   })
 } else {
   var files = []
-  async.eachSeries([].concat(rc.target), function (target, next) {
+  async.eachSeries([].concat(opts.target), function (target, next) {
     prebuild(opts, target, function (err, tarGz) {
       if (err) return next(err)
       files.push(tarGz)
@@ -82,14 +83,14 @@ if (rc.compile) {
     })
   }, function (err) {
     if (err) return onbuilderror(err)
-    if (!rc.upload) return
+    if (!opts.upload) return
     uploadFiles(files)
   })
 }
 
 function uploadFiles (files) {
   buildLog('Uploading ' + files.length + ' prebuilds(s) to Github releases')
-  upload({pkg: pkg, rc: rc, files: files}, function (err, result) {
+  upload(extend(opts, {files: files}), function (err, result) {
     if (err) return onbuilderror(err)
     buildLog('Found ' + result.old.length + ' prebuild(s) on Github')
     if (result.old.length) {

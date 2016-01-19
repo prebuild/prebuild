@@ -5,7 +5,7 @@ var pump = require('pump')
 var tfs = require('tar-fs')
 var zlib = require('zlib')
 var util = require('./util')
-var noop = require('noop-logger');
+var noop = require('noop-logger')
 
 function downloadPrebuild (opts, cb) {
   var downloadUrl = util.getDownloadUrl(opts)
@@ -13,7 +13,6 @@ function downloadPrebuild (opts, cb) {
   var localPrebuild = util.localPrebuild(downloadUrl)
   var tempFile = util.tempFile(cachedPrebuild)
 
-  var rc = opts.rc || {}
   var log = opts.log || noop
 
   if (opts.nolocal) return download()
@@ -79,19 +78,19 @@ function downloadPrebuild (opts, cb) {
     }
 
     log.info('unpacking @', cachedPrebuild)
-    pump(fs.createReadStream(cachedPrebuild), zlib.createGunzip(), tfs.extract(rc.path, {readable: true, writable: true}).on('entry', updateName), function (err) {
+    pump(fs.createReadStream(cachedPrebuild), zlib.createGunzip(), tfs.extract(opts.path, {readable: true, writable: true}).on('entry', updateName), function (err) {
       if (err) return cb(err)
       if (!binaryName) return cb(new Error('Missing .node file in archive'))
 
       var resolved
       try {
-        resolved = path.resolve(rc.path || '.', binaryName)
+        resolved = path.resolve(opts.path || '.', binaryName)
       } catch (err) {
         return cb(err)
       }
       log.info('unpack', 'resolved to ' + resolved)
 
-      if (rc.abi === process.versions.modules) {
+      if (opts.abi === process.versions.modules) {
         try {
           require(resolved)
         } catch (err) {

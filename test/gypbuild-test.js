@@ -9,9 +9,7 @@ test('gyp is invoked with correct arguments, release mode', function (t) {
       module_name: 'module_name',
       module_path: 'module_path'
     }},
-    rc: {
-      arch: 'fooarch'
-    },
+    arch: 'fooarch',
     gyp: {
       parseArgv: function (args) {
         t.deepEqual(args, ['node', 'index.js', 'rebuild', '--target=x.y.z', '--target_arch=fooarch'], 'correct arguments')
@@ -55,10 +53,8 @@ test('gyp is invoked with correct arguments, release mode', function (t) {
 test('gyp is invoked with correct arguments, debug mode', function (t) {
   t.plan(2)
   var opts = {
-    rc: {
-      arch: 'fooarch',
-      debug: true
-    },
+    arch: 'fooarch',
+    debug: true,
     gyp: {
       parseArgv: function (args) {
         t.deepEqual(args, ['node', 'index.js', 'rebuild', '--target=x.y.z', '--target_arch=fooarch', '--debug'], 'correct arguments')
@@ -87,9 +83,7 @@ test('--preinstall script is spawned, calls back with error if fails', function 
     process.nextTick(cb.bind(null, new Error('some error')))
   }
   var opts = {
-    rc: {
-      preinstall: 'somescript.sh'
-    },
+    preinstall: 'somescript.sh',
     log: {
       http: function () { },
       info: function () { },

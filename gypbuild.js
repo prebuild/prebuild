@@ -3,18 +3,17 @@ var util = require('./util')
 
 function runGyp (opts, version, cb) {
   var log = opts.log
-  var rc = opts.rc || {}
-  if (!rc.preinstall) return run()
+  if (!opts.preinstall) return run()
 
   log.verbose('executing preinstall')
-  util.spawn(rc.preinstall, function (err) {
+  util.spawn(opts.preinstall, function (err) {
     if (err) return cb(err)
     run()
   })
 
   function run () {
-    var args = ['node', 'index.js', 'rebuild', '--target=' + version, '--target_arch=' + rc.arch]
-    if (rc.debug) args.push('--debug')
+    var args = ['node', 'index.js', 'rebuild', '--target=' + version, '--target_arch=' + opts.arch]
+    if (opts.debug) args.push('--debug')
 
     gyp({
       gyp: opts.gyp,

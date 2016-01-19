@@ -16,18 +16,18 @@ function getDownloadUrl (opts) {
     patch: opts.pkg.version.split('.')[2],
     prerelease: opts.pkg.version.split('-')[1],
     build: opts.pkg.version.split('+')[1],
-    abi: opts.rc.abi || process.versions.modules,
+    abi: opts.abi || process.versions.modules,
     node_abi: process.versions.modules,
-    platform: opts.rc.platform,
-    arch: opts.rc.arch,
-    configuration: (opts.rc.debug ? 'Debug' : 'Release'),
+    platform: opts.platform,
+    arch: opts.arch,
+    configuration: (opts.debug ? 'Debug' : 'Release'),
     module_name: opts.pkg.binary && opts.pkg.binary.module_name
   })
 }
 
 function urlTemplate (opts) {
-  if (typeof opts.rc.download === 'string') {
-    return opts.rc.download
+  if (typeof opts.download === 'string') {
+    return opts.download
   }
 
   var packageName = '{name}-v{version}-node-v{abi}-{platform}-{arch}.tar.gz'
@@ -68,8 +68,8 @@ function getTarPath (opts, abi) {
     opts.pkg.name,
     '-v', opts.pkg.version,
     '-node-v', abi,
-    '-', opts.rc.platform,
-    '-', opts.rc.arch,
+    '-', opts.platform,
+    '-', opts.arch,
     '.tar.gz'
   ].join(''))
 }
@@ -113,7 +113,7 @@ function platform () {
 }
 
 function releaseFolder (opts) {
-  var type = ((opts.rc && opts.rc.debug) ? 'Debug' : 'Release')
+  var type = (opts.debug ? 'Debug' : 'Release')
   var binary = opts.pkg.binary
   return (binary && binary.module_path) || 'build/' + type
 }

@@ -8,17 +8,16 @@ var pack = require('./pack')
 
 function prebuild (opts, target, callback) {
   var pkg = opts.pkg
-  var rc = opts.rc
   var log = opts.log
   var buildLog = opts.buildLog || function () {}
 
   if (target[0] !== 'v') target = 'v' + target
-  buildLog('Preparing to prebuild ' + pkg.name + '@' + pkg.version + ' for ' + target + ' on ' + rc.platform + '-' + rc.arch)
+  buildLog('Preparing to prebuild ' + pkg.name + '@' + pkg.version + ' for ' + target + ' on ' + opts.platform + '-' + opts.arch)
   getAbi(opts, target, function (err, abi) {
     if (err) return log.error('build', err.message)
     var tarPath = getTarPath(opts, abi)
     fs.stat(tarPath, function (err, st) {
-      if (!err && !rc.force) {
+      if (!err && !opts.force) {
         buildLog(tarPath + ' exists, skipping build')
         return callback(null, tarPath)
       }
@@ -38,7 +37,7 @@ function prebuild (opts, target, callback) {
         }
       ]
 
-      if (rc.strip) {
+      if (opts.strip) {
         tasks.splice(1, 0, function (filename, cb) {
           buildLog('Stripping debug information from ' + filename)
           strip(filename, function (err) {
