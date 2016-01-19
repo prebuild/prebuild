@@ -189,15 +189,14 @@ Options:
 - `.log` (optional)
 - `.nolocal` Don't check for cached builds (optional)
 - `.updateName` Function to update the binary name (optional)
-- `.rc` (optional)
-  - `.path` Location of the module (default: `"."`)
-  - `.abi` Node ABI version (default: `process.versions.modules`)
-  - `.platform` OS platform (default: `process.platform`)
-  - `.download` Precomputed url to download the binary from
-  - `.all` (default: `false`)
-  - `.force` (default: `false`)
-  - `.proxy` (default: `process.env['HTTP_PROXY']`)
-  - `.https-proxy` (default: `process.env['HTTP-PROXY']`)`
+- `.path` Location of the module (default: `"."`)
+- `.abi` Node ABI version (default: `process.versions.modules`)
+- `.platform` OS platform (default: `process.platform`)
+- `.download` Precomputed url to download the binary from (optional)
+- `.all` (default: `false`)
+- `.force` (default: `false`)
+- `.proxy` (default: `process.env['HTTP_PROXY']`)
+- `.https-proxy` (default: `process.env['HTTP-PROXY']`)`
 
 Example:
 
@@ -214,16 +213,9 @@ prebuild.download({
 Options:
 
 - `.log` (optional)
-- `.rc`
-  - `preinstall`
+- `preinstall` (optional)
 - `.gyp` Provide a custom `node-gyp` instance (optional)
 - `.args` Additional command line arguments to `node-gyp` (optional)
-
-### Global options:
-
-- `.rc`
-  - `.debug` Download or build a debug build (default: `false`)
-  - `.arch` Processor architecture (default: `process.arch`)
 
 Example:
 
@@ -232,6 +224,10 @@ prebuild.build({}, version, function (err) {
   // ...  
 });
 ```
+### Global options:
+
+- `.debug` Download or build a debug build (default: `false`)
+- `.arch` Processor architecture (default: `process.arch`)
 
 ## Develop `prebuild`
 
