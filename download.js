@@ -97,10 +97,8 @@ function downloadPrebuild (opts, cb) {
           return cb(err)
         }
         log.info('unpack', 'required ' + resolved + ' successfully')
-        cb(null, resolved)
-      } else {
-        cb(null, resolved)
       }
+      cb(null, resolved)
     })
   }
 
@@ -111,8 +109,7 @@ function downloadPrebuild (opts, cb) {
         if (err && err.code === 'ENOENT') {
           return makeNpmCacheDir()
         }
-        if (err) return cb(err)
-        cb()
+        cb(err)
       })
     } else {
       fs.exists(cacheFolder, function (exists) {
@@ -123,10 +120,7 @@ function downloadPrebuild (opts, cb) {
 
     function makeNpmCacheDir () {
       log.info('npm cache directory missing, creating it...')
-      fs.mkdir(cacheFolder, function (err) {
-        if (err) return cb(err)
-        cb()
-      })
+      fs.mkdir(cacheFolder, cb)
     }
   }
 }
