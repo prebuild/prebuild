@@ -5,6 +5,7 @@ var pump = require('pump')
 var tfs = require('tar-fs')
 var zlib = require('zlib')
 var util = require('./util')
+var noop = require('noop-logger');
 
 function downloadPrebuild (opts, cb) {
   var downloadUrl = util.getDownloadUrl(opts)
@@ -13,7 +14,7 @@ function downloadPrebuild (opts, cb) {
   var tempFile = util.tempFile(cachedPrebuild)
 
   var rc = opts.rc
-  var log = opts.log
+  var log = opts.log || noop
 
   if (opts.nolocal) return download()
 
