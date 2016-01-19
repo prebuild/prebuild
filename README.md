@@ -167,6 +167,38 @@ prebuild [options]
   --version                     (print prebuild version and exit)
 ```
 
+## Develop `prebuild`
+
+If you want to hack on `prebuild` you need an environment to play around with. We recommend a setup similar
+to the following:
+
+* A fork of `prebuild`
+* A GitHub token (see above)
+* A native node module
+
+If you don't have access to a native module, you can always fork an already existing one, e.g. [`leveldown`](https://github.com/Level/leveldown).
+Assuming you picked `leveldown`, run something like:
+
+```bash
+$ git clone git@github.com:<your-nick>/prebuild
+$ cd prebuild && npm link && cd ..
+$ git clone git@github.com:<your-nick>/leveldown
+$ cd leveldown && npm i
+```
+
+Since you did `npm link` on `prebuild` it will be installed globally. Now you can go ahead and try things out.
+
+```bash
+$ cd leveldown && prebuild --all --strip --upload <github-token>
+```
+
+This command would:
+
+* Build `leveldown` for all targets listed in `targets.js` and store them in `./prebuilds/`
+* Strip binaries from debug information
+* Create a release on GitHub, if needed
+* Upload all binaries not already uploaded to that release
+
 ## License
 
 MIT
