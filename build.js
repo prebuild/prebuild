@@ -2,9 +2,10 @@ var path = require('path')
 var fs = require('fs')
 var releaseFolder = require('./util').releaseFolder
 var gypbuild = require('./gypbuild')
+var noop = require('noop-logger')
 
 function build (opts, version, cb) {
-  var log = opts.log
+  var log = opts.log || noop
   var release = releaseFolder(opts)
 
   log.verbose('starting node-gyp process')
