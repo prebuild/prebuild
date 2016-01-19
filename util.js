@@ -113,7 +113,7 @@ function platform () {
 }
 
 function releaseFolder (opts) {
-  var type = (opts.rc.debug ? 'Debug' : 'Release')
+  var type = ((opts.rc && opts.rc.debug) ? 'Debug' : 'Release')
   var binary = opts.pkg.binary
   return (binary && binary.module_path) || 'build/' + type
 }

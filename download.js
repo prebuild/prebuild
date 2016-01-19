@@ -13,7 +13,7 @@ function downloadPrebuild (opts, cb) {
   var localPrebuild = util.localPrebuild(downloadUrl)
   var tempFile = util.tempFile(cachedPrebuild)
 
-  var rc = opts.rc
+  var rc = opts.rc || {}
   var log = opts.log || noop
 
   if (opts.nolocal) return download()
