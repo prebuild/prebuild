@@ -175,6 +175,64 @@ prebuild [options]
   --version                     (print prebuild version and exit)
 ```
 
+## JavaScript API
+
+```js
+var prebuild = require('prebuild')
+```
+
+### .download(opts, cb)
+
+Options:
+
+- `.pkg` the parsed `package.json`
+- `.log` (optional)
+- `.nolocal` Don't check for cached builds (optional)
+- `.updateName` Function to update the binary name (optional)
+- `.rc` (optional)
+  - `.path` Location of the module (default: `"."`)
+  - `.abi` Node ABI version (default: `process.versions.modules`)
+  - `.platform` OS platform (default: `process.platform`)
+  - `.download` Precomputed url to download the binary from
+  - `.all` (default: `false`)
+  - `.force` (default: `false`)
+  - `.proxy` (default: `process.env['HTTP_PROXY']`)
+  - `.https-proxy` (default: `process.env['HTTP-PROXY']`)`
+
+Example:
+
+```js
+prebuild.download({
+  pkg: require('./package.json')  
+}, function (err) {
+  // ...  
+})
+```
+
+### .build(opts, version, cb)
+
+Options:
+
+- `.log` (optional)
+- `.rc`
+  - `preinstall`
+- `.gyp` Provide a custom `node-gyp` instance (optional)
+- `.args` Additional command line arguments to `node-gyp` (optional)
+
+### Global options:
+
+- `.rc`
+  - `.debug` Download or build a debug build (default: `false`)
+  - `.arch` Processor architecture (default: `process.arch`)
+
+Example:
+
+```js
+prebuild.build({}, version, function (err) {
+  // ...  
+});
+```
+
 ## Develop `prebuild`
 
 If you want to hack on `prebuild` you need an environment to play around with. We recommend a setup similar
