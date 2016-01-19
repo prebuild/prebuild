@@ -18,11 +18,11 @@ $ npm install -g prebuild
 
 ## Building
 
-Create prebuilds for iojs `v2.4.0` and node `0.12.7` (`v` prefix is optional) and write them to `./prebuilds/`
+Create prebuilds for node `v5.4.1` and `0.12.9` (`v` prefix is optional) and write them to `./prebuilds/`
 
 ```
 $ cd a-native-module
-$ prebuild -t v2.4.0 -t 0.12.7
+$ prebuild -t v5.4.1 -t 0.12.9
 ```
 
 For more options run `prebuild --help`. The prebuilds created are compatible with [node-pre-gyp](https://github.com/mapbox/node-pre-gyp)
@@ -50,7 +50,7 @@ Add `prebuild --install` to your `package.json` so the binaries will be installe
     "install": "prebuild --install"
   },
   "dependencies": {
-    "prebuild": "^2.7.2"
+    "prebuild": "^2.8.1"
   }
 }
 ```
@@ -84,36 +84,38 @@ The following placeholders can be used:
 
 ## ABI
 
-You just need to do a prebuild for every version of node/iojs that have new ABI (application binary interface).
+It's only necessary to build for node/iojs targets with different ABI versions ([Application Binary Interface](https://en.wikipedia.org/wiki/Application_binary_interface)).
 
-As of writing the following command will prebuild all possible ABI versions for iojs and for all node versions greater than `0.8`:
+To build for *all* known abi versions greater than `0.8`:
 
 ```
-prebuild -t 0.10.40 -t 0.12.7 -t 1.0.4 -t 1.8.4 -t 2.4.0
+prebuild --all
 ```
 
-Optionally, to always build for the above versions you can add a rc file to `~/.prebuildrc` with the following content. Note that using `~/.prebuildrc` will instruct prebuild to do this for *all* modules. Instead you should consider adding a `.prebuildrc` inside your project, so the module determines which version it supports rather than a global setting.
+Alternatively, to build for some specific versions you can do:
+
+```
+prebuild -t 0.10.41 -t 0.12.9 -t 3.3.1
+```
+
+Optionally, to always build for the above versions you can add the following to `~/.prebuildrc`.
 
 ``` ini
-target[] = 0.10.40
-target[] = 0.12.7
-target[] = 1.0.4
-target[] = 1.8.4
-target[] = 2.4.0
+target[] = 0.10.41
+target[] = 0.12.9
+target[] = 3.3.1
 ```
 
-Another option is to use `--all` to build for *all* known abi versions (see [`targets.js`](https://github.com/mafintosh/prebuild/blob/master/targets.js) for currently available versions)
+Note that `~/.prebuildrc` instructs `prebuild` to do this for *all* modules. If this is not what you want you should consider adding a `.prebuildrc` to your project. This way the module determines which version it supports rather than a global setting.
 
-```
-$ prebuild --all
-```
+See [`targets.js`](https://github.com/mafintosh/prebuild/blob/master/targets.js) for currently available versions.
 
 ## Uploading
 
-`prebuild` supports uploading prebuilds to GitHub releases. If the release doesn't exist, it will be created for you. To upload prebuilds simply add the `--upload <github-token>` option:
+`prebuild` supports uploading prebuilds to GitHub releases. If the release doesn't exist, it will be created for you. To upload prebuilds simply add the `-u <github-token>` option:
 
 ```
-$ prebuild -t v2.4.0 -t 0.12.7 -u <github-token>
+$ prebuild --all -u <github-token>
 ```
 
 If you don't want to use the token on cli you can also stick that in e.g. `~/.prebuildrc`:
@@ -124,11 +126,32 @@ If you don't want to use the token on cli you can also stick that in e.g. `~/.pr
 }
 ```
 
+`rc` supports `.ini` format so you can write the same file as:
+
+```ini
+upload = <github-token>
+```
+
 Note that `--upload` will only upload the targets that was built and stored in `./prebuilds`, so `prebuild --upload <token> -t 2.4.0` will only upload the binary for the `2.4.0` target.
 
 You can use `prebuild --upload-all` to upload all files from the `./prebuilds` folder.
 
-See [this page](https://github.com/settings/tokens) for more information on how to create GitHub tokens.
+## Create GitHub Token
+
+A GitHub token is needed for two reasons:
+
+* Create a GitHub release ([leveldown example](https://github.com/Level/leveldown/releases/tag/v1.4.3))
+* Upload the prebuilt binaries to that release
+
+To create a token:
+
+* Go to [this page](https://github.com/settings/tokens)
+* Click the `Generate new token` button
+* Give the token a name and click the `Generate token` button, see below
+
+![create token](images/create-token.png)
+
+The default scopes should be fine.
 
 ## Help
 
@@ -151,6 +174,35 @@ prebuild [options]
   --verbose                     (log verbosely)
   --version                     (print prebuild version and exit)
 ```
+
+## Develop `prebuild`
+
+If you want to hack on `prebuild` you need an environment to play around with. We recommend a setup similar
+to the following:
+
+* A fork of `prebuild`
+* A GitHub token (see above)
+* A native node module
+
+```bash
+$ git clone git@github.com:<your-nick>/prebuild
+$ cd prebuild && npm link && cd ..
+$ git clone git@github.com:<your-nick>/some-native-module
+```
+
+Since you did `npm link` on `prebuild` it will be installed globally. Now you can go ahead and try things out.
+
+```bash
+$ cd some-native-module
+$ prebuild --all --strip -u <github-token>
+```
+
+This command would:
+
+* Build `some-native-module` for all targets listed in `targets.js` and store them in `./prebuilds/`
+* Strip binaries from debug information
+* Create a release on GitHub, if needed
+* Upload all binaries to that release, if not already uploaded
 
 ## License
 
