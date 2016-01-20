@@ -279,6 +279,7 @@ function getOpts () {
     platform: process.platform,
     arch: process.arch,
     path: __dirname,
+    target: process.version,
     log: {http: function (type, message) {}, info: function (type, message) {}}
   }
 }
