@@ -64,7 +64,7 @@ function downloadPrebuild (opts, cb) {
 
       function onerror (err) {
         fs.unlink(tempFile, function () {
-          cb(err || new Error('Prebuilt binaries for node version ' + process.version + ' are not available'))
+          cb(err || new Error('Prebuilt binaries for node version ' + opts.target + ' are not available'))
         })
       }
     })

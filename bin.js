@@ -64,7 +64,7 @@ if (opts.compile) {
         return
       }
       log.info('install', 'We will now try to compile from source.')
-      return build(opts, process.version, onbuilderror)
+      return build(opts, rc.target, onbuilderror)
     }
     log.info('install', 'Prebuild successfully installed!')
   })
