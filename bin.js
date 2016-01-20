@@ -54,7 +54,7 @@ var buildLog = log.info.bind(log, 'build')
 var opts = extend(rc, {pkg: pkg, log: log, buildLog: buildLog})
 
 if (opts.compile) {
-  build(opts, process.version, onbuilderror)
+  build(opts, rc.target, onbuilderror)
 } else if (opts.download) {
   download(opts, function (err) {
     if (err) {
