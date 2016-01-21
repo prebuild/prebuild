@@ -3,7 +3,9 @@
   "version": "2.8.1",
   "description": "A command line tool for easily doing prebuilds for multiple version of node/iojs on a specific platform",
   "scripts": {
-    "test": "tape test/*-test.js && standard"
+    "test": "tape test/*-test.js && npm run audit && npm run lint",
+    "audit": "nsp check",
+    "lint": "standard"
   },
   "keywords": [
     "prebuilt",
@@ -36,6 +38,7 @@
   },
   "devDependencies": {
     "a-native-module": "^1.0.0",
+    "nsp": "^2.2.0",
     "rimraf": "^2.4.2",
     "standard": "~5.4.1",
     "tape": "^4.0.1",
