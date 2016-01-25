@@ -10,6 +10,7 @@ prebuild [options]
   --preinstall  -i  script      (run this script before prebuilding)
   --compile     -c              (compile your project using node-gyp)
   --no-compile                  (skip compile fallback when downloading)
+  --abi                         (use provided abi rather than system abi)
   --strip                       (strip debug information)
   --debug                       (set Debug or Release configuration)
   --verbose                     (log verbosely)
