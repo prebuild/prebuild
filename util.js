@@ -1,7 +1,7 @@
 var fs = require('fs')
 var path = require('path')
 var github = require('github-from-package')
-var home = require('home-dir')
+var home = require('os-homedir')
 var cp = require('child_process')
 var expandTemplate = require('expand-template')()
 
