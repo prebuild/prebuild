@@ -1,6 +1,6 @@
 var test = require('tape')
 var fs = require('fs')
-var home = require('home-dir')
+var home = require('os-homedir')
 var cp = require('child_process')
 var EventEmitter = require('events').EventEmitter
 var util = require('../util')
