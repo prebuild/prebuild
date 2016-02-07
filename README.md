@@ -95,15 +95,15 @@ prebuild --all
 Alternatively, to build for some specific versions you can do:
 
 ```
-prebuild -t 0.10.41 -t 0.12.9 -t 3.3.1
+prebuild -pb 0.10.41 -pb 0.12.9 -pb 3.3.1
 ```
 
 Optionally, to always build for the above versions you can add the following to `~/.prebuildrc`.
 
 ``` ini
-target[] = 0.10.41
-target[] = 0.12.9
-target[] = 3.3.1
+prebuild[] = 0.10.41
+prebuild[] = 0.12.9
+prebuild[] = 3.3.1
 ```
 
 Note that `~/.prebuildrc` instructs `prebuild` to do this for *all* modules. If this is not what you want you should consider adding a `.prebuildrc` to your project. This way the module determines which version it supports rather than a global setting.
@@ -160,7 +160,8 @@ $ prebuild -h
 prebuild [options]
 
   --path        -p  path        (make a prebuild here)
-  --target      -t  version     (version to prebuild against)
+  --target      -t  version     (version to build or install for)
+  --prebuild    -pb version     (version to prebuild against)
   --all                         (prebuild for all known abi versions)
   --install                     (download when using npm, compile otherwise)
   --download    -d  [url]       (download prebuilds, no url means github)

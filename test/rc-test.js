@@ -6,8 +6,8 @@ var targets = require('../targets')
 
 test('custom config and aliases', function (t) {
   var args = [
-    '--target vX.Y.Z',
-    '--target vZ.Y.X',
+    '--prebuild vX.Y.Z',
+    '--prebuild vZ.Y.X',
     '--arch ARCH',
     '--platform PLATFORM',
     '--download https://foo.bar',
@@ -23,38 +23,39 @@ test('custom config and aliases', function (t) {
   runRc(t, args.join(' '), {}, function (rc) {
     t.equal(rc.all, false, 'default is not building all targets')
     t.equal(rc.arch, 'ARCH', 'correct arch')
-    t.equal(rc.arch, rc.a)
+    t.equal(rc.arch, rc.a, 'arch alias')
     t.equal(rc.platform, 'PLATFORM', 'correct platform')
     t.equal(rc.download, 'https://foo.bar', 'download is set')
-    t.equal(rc.download, rc.d)
+    t.equal(rc.download, rc.d, 'download alias')
     t.equal(rc.upload, 't00k3n', 'upload token set')
-    t.equal(rc.upload, rc.u)
+    t.equal(rc.upload, rc.u, 'upload alias')
     t.equal(rc.compile, true, 'compile is set')
-    t.equal(rc.compile, rc.c)
+    t.equal(rc.compile, rc.c, 'compile alias')
     t.equal(rc.debug, true, 'debug is set')
     t.equal(rc.force, true, 'force is set')
-    t.equal(rc.force, rc.f)
+    t.equal(rc.force, rc.f, 'force alias')
     t.equal(rc.version, true, 'version is set')
-    t.equal(rc.version, rc.v)
+    t.equal(rc.version, rc.v, 'version alias')
     t.equal(rc.help, true, 'help is set')
-    t.equal(rc.help, rc.h)
+    t.equal(rc.help, rc.h, 'help alias')
     t.equal(rc.path, '../some/other/path', 'correct path')
-    t.equal(rc.path, rc.p)
+    t.equal(rc.path, rc.p, 'path alias')
     t.equal(rc.preinstall, 'somescript.js', 'correct script')
-    t.equal(rc.preinstall, rc.i)
+    t.equal(rc.preinstall, rc.i, 'preinstall alias')
+    t.deepEqual(rc.prebuild, rc.pb, 'prebuild alias')
     t.end()
   })
 })
 
 test('using --all will build for all targets', function (t) {
   var args = [
-    '--target vX.Y.Z',
-    '--target vZ.Y.X',
+    '--prebuild vX.Y.Z',
+    '--prebuild vZ.Y.X',
     '--all'
   ]
   runRc(t, args.join(' '), {}, function (rc) {
     t.equal(rc.all, true, 'should be true')
-    t.deepEqual(rc.target, targets, 'targets picked from targets.js')
+    t.deepEqual(rc.prebuild, targets, 'targets picked from targets.js')
     t.end()
   })
 })
