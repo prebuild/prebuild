@@ -1,6 +1,6 @@
 {
   "name": "prebuild",
-  "version": "2.9.2",
+  "version": "3.0.0",
   "description": "A command line tool for easily doing prebuilds for multiple version of node/iojs on a specific platform",
   "scripts": {
     "test": "tape test/*-test.js && npm run audit && npm run lint",
