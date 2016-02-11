@@ -37,6 +37,10 @@ if (rc.help) {
 
 log.info('begin', 'Prebuild version', prebuildVersion)
 
+// nvm! do not mess with headers? kkthx!
+delete process.env.NVM_IOJS_ORG_MIRROR
+delete process.env.NVM_NODEJS_ORG_MIRROR
+
 if (rc.install) {
   if (!(typeof pkg._from === 'string')) {
     // From Git directly
