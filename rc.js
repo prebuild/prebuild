@@ -38,6 +38,7 @@ var rc = module.exports = require('rc')('prebuild', {
 }, minimist(process.argv, {
   alias: {
     target: 't',
+    prebuild: 'pb',
     help: 'h',
     arch: 'a',
     path: 'p',
@@ -52,8 +53,8 @@ var rc = module.exports = require('rc')('prebuild', {
 }))
 
 if (rc.all === true) {
-  delete rc.target
-  rc.target = targets
+  delete rc.prebuild
+  rc.prebuild = targets
 }
 
 if (rc['upload-all']) {

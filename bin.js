@@ -79,7 +79,7 @@ if (opts.compile) {
   })
 } else {
   var files = []
-  async.eachSeries([].concat(opts.target), function (target, next) {
+  async.eachSeries([].concat(opts.prebuild), function (target, next) {
     prebuild(opts, target, function (err, tarGz) {
       if (err) return next(err)
       files.push(tarGz)
