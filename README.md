@@ -1,6 +1,6 @@
 # prebuild
 
-A command line tool for easily doing prebuilds for multiple version of node/iojs on a specific platform
+A command line tool for easily doing prebuilds for multiple version of node/iojs on a specific platform.
 
 ```
 $ npm install -g prebuild
@@ -11,21 +11,63 @@ $ npm install -g prebuild
 ## Features
 
 * Builds native modules for any version of node/iojs, without having to switch between different versions of node/iojs to do so. This works by only downloading the correct headers and telling `node-gyp` to use those instead of the ones installed on your system.
-* Installs (`--install`) prebuilt binaries from GitHub by default or from a host of your choice. The url format can be customized as you see fit.
 * Upload (`--upload`) prebuilt binaries to GitHub.
+* Installs (`--install`) prebuilt binaries from GitHub by default or from a host of your choice. The url format can be customized as you see fit.
 * Installed binaries are cached in `~/.npm/_prebuilds/` so you only need to download them once.
 * Support for stripping (`--strip`) debug information.
 
 ## Building
 
-Create prebuilds for node `v5.4.1` and `0.12.9` (`v` prefix is optional) and write them to `./prebuilds/`
+Building is only required for node/iojs targets with different ABI versions ([Application Binary Interface](https://en.wikipedia.org/wiki/Application_binary_interface)). To build for *all* known abi versions greater than `0.8` (this is the method used by [leveldown](https://github.com/level/leveldown)):
 
 ```
-$ cd a-native-module
-$ prebuild -t v5.4.1 -t 0.12.9
+prebuild --all
 ```
+
+Alternatively, to build for some specific versions you can do:
+
+```
+prebuild -pb 0.10.42 -pb 0.12.10 -pb 4.3.0
+```
+
+Optionally, to always build for the above versions, add the following to a `.prebuildrc` file in the project root:
+
+``` ini
+prebuild[] = 0.10.42
+prebuild[] = 0.12.10
+prebuild[] = 4.3.0
+```
+
+See [`targets.js`](https://github.com/mafintosh/prebuild/blob/master/targets.js) for currently available versions.
 
 For more options run `prebuild --help`. The prebuilds created are compatible with [node-pre-gyp](https://github.com/mapbox/node-pre-gyp)
+
+
+## Uploading
+
+`prebuild` supports uploading prebuilds to GitHub releases. If the release doesn't exist, it will be created for you. To upload prebuilds simply add the `-u <github-token>` option:
+
+```
+$ prebuild --all -u <github-token>
+```
+
+If you don't want to use the token on cli you can also stick that in e.g. `~/.prebuildrc`:
+
+```json
+{
+  "upload": "<github-token>"
+}
+```
+
+`rc` supports `.ini` format so you can write the same file as:
+
+```ini
+upload = <github-token>
+```
+
+Note that `--upload` will only upload the targets that was built and stored in `./prebuilds`, so `prebuild -u <github-token> -pb 2.4.0` will only upload the binary for the `2.4.0` target.
+
+You can use `prebuild --upload-all` to upload all files from the `./prebuilds` folder.
 
 ## Installing
 
@@ -81,60 +123,6 @@ The following placeholders can be used:
 * `{arch}`: architecture taken from `--arch` or `process.arch` if not specified
 * `{configuration}`: `'Debug'` if `--debug` is specified, otherwise `'Release'`
 * `{module_name}`: taken from `binary.module_name` property from `package.json`
-
-## ABI
-
-It's only necessary to build for node/iojs targets with different ABI versions ([Application Binary Interface](https://en.wikipedia.org/wiki/Application_binary_interface)).
-
-To build for *all* known abi versions greater than `0.8`:
-
-```
-prebuild --all
-```
-
-Alternatively, to build for some specific versions you can do:
-
-```
-prebuild -pb 0.10.41 -pb 0.12.9 -pb 3.3.1
-```
-
-Optionally, to always build for the above versions you can add the following to `~/.prebuildrc`.
-
-``` ini
-prebuild[] = 0.10.41
-prebuild[] = 0.12.9
-prebuild[] = 3.3.1
-```
-
-Note that `~/.prebuildrc` instructs `prebuild` to do this for *all* modules. If this is not what you want you should consider adding a `.prebuildrc` to your project. This way the module determines which version it supports rather than a global setting.
-
-See [`targets.js`](https://github.com/mafintosh/prebuild/blob/master/targets.js) for currently available versions.
-
-## Uploading
-
-`prebuild` supports uploading prebuilds to GitHub releases. If the release doesn't exist, it will be created for you. To upload prebuilds simply add the `-u <github-token>` option:
-
-```
-$ prebuild --all -u <github-token>
-```
-
-If you don't want to use the token on cli you can also stick that in e.g. `~/.prebuildrc`:
-
-```json
-{
-  "upload": "<github-token>"
-}
-```
-
-`rc` supports `.ini` format so you can write the same file as:
-
-```ini
-upload = <github-token>
-```
-
-Note that `--upload` will only upload the targets that was built and stored in `./prebuilds`, so `prebuild --upload <token> -t 2.4.0` will only upload the binary for the `2.4.0` target.
-
-You can use `prebuild --upload-all` to upload all files from the `./prebuilds` folder.
 
 ## Create GitHub Token
 
@@ -204,9 +192,9 @@ Example:
 
 ```js
 prebuild.download({
-  pkg: require('./package.json')  
+  pkg: require('./package.json')
 }, function (err) {
-  // ...  
+  // ...
 })
 ```
 
@@ -223,8 +211,8 @@ Example:
 
 ```js
 prebuild.build({}, version, function (err) {
-  // ...  
-});
+  // ...
+})
 ```
 ### Global options:
 
