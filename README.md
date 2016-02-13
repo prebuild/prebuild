@@ -27,7 +27,7 @@ prebuild --all
 Alternatively, to build for some specific versions you can do:
 
 ```
-prebuild -pb 0.10.42 -pb 0.12.10 -pb 4.3.0
+prebuild -b 0.10.42 -b 0.12.10 -b 4.3.0
 ```
 
 Optionally, to always build for the above versions, add the following to a `.prebuildrc` file in the project root:
@@ -65,7 +65,7 @@ If you don't want to use the token on cli you can also stick that in e.g. `~/.pr
 upload = <github-token>
 ```
 
-Note that `--upload` will only upload the targets that was built and stored in `./prebuilds`, so `prebuild -u <github-token> -pb 2.4.0` will only upload the binary for the `2.4.0` target.
+Note that `--upload` will only upload the targets that was built and stored in `./prebuilds`, so `prebuild -u <github-token> -b 2.4.0` will only upload the binary for the `2.4.0` target.
 
 You can use `prebuild --upload-all` to upload all files from the `./prebuilds` folder.
 
@@ -149,7 +149,7 @@ prebuild [options]
 
   --path        -p  path        (make a prebuild here)
   --target      -t  version     (version to build or install for)
-  --prebuild    -pb version     (version to prebuild against)
+  --prebuild    -b version      (version to prebuild against)
   --all                         (prebuild for all known abi versions)
   --install                     (download when using npm, compile otherwise)
   --download    -d  [url]       (download prebuilds, no url means github)

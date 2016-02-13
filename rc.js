@@ -38,7 +38,7 @@ var rc = module.exports = require('rc')('prebuild', {
 }, minimist(process.argv, {
   alias: {
     target: 't',
-    prebuild: 'pb',
+    prebuild: 'b',
     help: 'h',
     arch: 'a',
     path: 'p',
@@ -51,6 +51,18 @@ var rc = module.exports = require('rc')('prebuild', {
     preinstall: 'i'
   }
 }))
+
+if (rc.path === true) {
+  delete rc.path
+}
+
+if (rc.prebuild) {
+  rc.pb = rc.prebuild
+}
+
+if (rc.pb) {
+  rc.prebuild = rc.pb
+}
 
 if (rc.all === true) {
   delete rc.prebuild
