@@ -1,5 +1,6 @@
 var gypinstall = require('./gypinstall')
 var util = require('./util')
+var error = require('./error')
 
 function getAbi (opts, version, cb) {
   var log = opts.log
@@ -12,7 +13,7 @@ function getAbi (opts, version, cb) {
         if (err) return cb(err)
         tryReadFiles(function (err, abi) {
           if (!err || err.code !== 'ENOENT') return cb(err, abi)
-          cb(new Error('Failed to locate `node.h` and `node_version.h`.'))
+          cb(error.missingHeaders())
         })
       })
     }
@@ -26,7 +27,7 @@ function getAbi (opts, version, cb) {
       util.readGypFile(version, 'node.h', function (err, b) {
         if (err) return readCb(err)
         var abi = parse(a) || parse(b)
-        if (!abi) return readCb(new Error('Could not detect abi for ' + version))
+        if (!abi) return readCb(error.noAbi(version))
         readCb(null, abi)
       })
     })

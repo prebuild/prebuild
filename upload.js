@@ -1,6 +1,7 @@
 var path = require('path')
 var github = require('github-from-package')
 var ghreleases = require('ghreleases')
+var error = require('./error')
 
 function upload (opts, cb) {
   var pkg = opts.pkg
@@ -10,7 +11,7 @@ function upload (opts, cb) {
   var url = github(pkg)
   if (!url) {
     return process.nextTick(function () {
-      cb(new Error('package.json is missing a repository field'))
+      cb(error.noRepository())
     })
   }
 

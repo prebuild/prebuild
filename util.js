@@ -4,6 +4,7 @@ var github = require('github-from-package')
 var home = require('os-homedir')
 var cp = require('child_process')
 var expandTemplate = require('expand-template')()
+var error = require('./error')
 
 function getDownloadUrl (opts) {
   var pkgName = opts.pkg.name.replace(/^@\w+\//, '')
@@ -104,7 +105,7 @@ function spawn (cmd, args, cb) {
   }
   return cp.spawn(cmd, args, {stdio: 'inherit'}).on('exit', function (code) {
     if (code === 0) return cb()
-    cb(new Error(cmd + ' ' + args.join(' ') + ' failed with exit code ' + code))
+    cb(error.spawnFailed(cmd, args, code))
   })
 }
 

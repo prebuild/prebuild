@@ -81,7 +81,7 @@ function downloadPrebuild (opts, cb) {
     log.info('unpacking @', cachedPrebuild)
     pump(fs.createReadStream(cachedPrebuild), zlib.createGunzip(), tfs.extract(opts.path, {readable: true, writable: true}).on('entry', updateName), function (err) {
       if (err) return cb(err)
-      if (!binaryName) return cb(new Error('Missing .node file in archive'))
+      if (!binaryName) return cb(error.invalidArchive())
 
       var resolved
       try {
