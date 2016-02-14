@@ -1,8 +1,9 @@
 var path = require('path')
 var fs = require('fs')
+var noop = require('noop-logger')
 var releaseFolder = require('./util').releaseFolder
 var gypbuild = require('./gypbuild')
-var noop = require('noop-logger')
+var error = require('./error')
 
 function build (opts, version, cb) {
   var log = opts.log || noop
@@ -23,7 +24,7 @@ function build (opts, version, cb) {
           return cb(null, path.join(release, files[i]), files[i])
         }
       }
-      cb(new Error('Could not find build in ' + release))
+      cb(error.noBuild(release))
     })
   }
 }

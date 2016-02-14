@@ -4,6 +4,7 @@ var home = require('os-homedir')
 var cp = require('child_process')
 var EventEmitter = require('events').EventEmitter
 var util = require('../util')
+var error = require('../error')
 
 var spawn = util.spawn
 
@@ -238,7 +239,7 @@ test('spawn(): callback fires with no error on exit code 0', function (t) {
 test('spawn(): callback fires with error on non 0 exit code', function (t) {
   cp.spawn = function () { return new EventEmitter() }
   spawn('foo', ['arg1'], function (err) {
-    t.equal(err.message, 'foo arg1 failed with exit code 314', 'correct error')
+    t.same(err, error.spawnFailed('foo', ['arg1'], 314))
     t.end()
   }).emit('exit', 314)
 })

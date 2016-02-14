@@ -1,6 +1,7 @@
 var test = require('tape')
 var util = require('../util')
 var getAbi = require('../abi')
+var error = require('../error')
 
 test('src/node_version.h takes precedence over src/node.h', function (t) {
   var readCount = 0
@@ -50,7 +51,7 @@ test('getAbi calls back with error if no abi could be found', function (t) {
     process.nextTick(cb.bind(null, null, 'no proper define here!'))
   }
   getAbi({}, v, function (err, abi) {
-    t.equal(err.message, 'Could not detect abi for X.Y.Z', 'correct error')
+    t.same(err, error.noAbi(v), 'correct error')
     util.readGypFile = _readGypFile
     t.end()
   })
