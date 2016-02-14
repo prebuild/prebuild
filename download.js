@@ -3,9 +3,10 @@ var fs = require('fs')
 var get = require('simple-get')
 var pump = require('pump')
 var tfs = require('tar-fs')
+var noop = require('noop-logger')
 var zlib = require('zlib')
 var util = require('./util')
-var noop = require('noop-logger')
+var error = require('./error')
 
 function downloadPrebuild (opts, cb) {
   var downloadUrl = util.getDownloadUrl(opts)
@@ -64,7 +65,7 @@ function downloadPrebuild (opts, cb) {
 
       function onerror (err) {
         fs.unlink(tempFile, function () {
-          cb(err || new Error('Prebuilt binaries for node version ' + opts.target + ' are not available'))
+          cb(err || error.noPrebuilts(opts))
         })
       }
     })

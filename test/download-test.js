@@ -2,10 +2,11 @@ var test = require('tape')
 var fs = require('fs')
 var rm = require('rimraf')
 var path = require('path')
-var download = require('../download')
-var util = require('../util')
 var http = require('http')
 var https = require('https')
+var download = require('../download')
+var util = require('../util')
+var error = require('../error')
 
 var build = path.join(__dirname, 'build')
 var unpacked = path.join(build, 'Release/leveldown.node')
@@ -211,7 +212,7 @@ test('existing host but invalid url should fail', function (t) {
     res.end()
   }).listen(8888, function () {
     download(opts, function (err) {
-      t.equal(err.message, 'Prebuilt binaries for node version ' + process.version + ' are not available', 'correct error')
+      t.same(err, error.noPrebuilts(opts))
       t.equal(fs.existsSync(cachedPrebuild), false, 'nothing cached')
       t.end()
       server.unref()
