@@ -149,7 +149,7 @@ prebuild [options]
 
   --path        -p  path        (make a prebuild here)
   --target      -t  version     (version to build or install for)
-  --prebuild    -b version      (version to prebuild against)
+  --prebuild    -b  version     (version to prebuild against)
   --all                         (prebuild for all known abi versions)
   --install                     (download when using npm, compile otherwise)
   --download    -d  [url]       (download prebuilds, no url means github)
