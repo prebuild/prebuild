@@ -26,6 +26,7 @@
     "minimist": "^1.1.2",
     "mkdirp": "^0.5.1",
     "node-gyp": "^3.0.3",
+    "node-ninja": "^0.3.0",
     "noop-logger": "^0.1.0",
     "npmlog": "^2.0.0",
     "os-homedir": "^1.0.1",

@@ -18,6 +18,7 @@ function runGyp (opts, version, cb) {
     gyp({
       gyp: opts.gyp,
       log: opts.log,
+      backend: opts.backend,
       args: args,
       filter: function (command) {
         if (command.name === 'configure') {

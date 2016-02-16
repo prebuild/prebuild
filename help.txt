@@ -12,6 +12,7 @@ prebuild [options]
   --compile     -c              (compile your project using node-gyp)
   --no-compile                  (skip compile fallback when downloading)
   --abi                         (use provided abi rather than system abi)
+  --backend                     (specify build backend, default is 'node-gyp')
   --strip                       (strip debug information)
   --debug                       (set Debug or Release configuration)
   --verbose                     (log verbosely)
