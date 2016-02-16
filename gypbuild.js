@@ -13,7 +13,7 @@ function runGyp (opts, version, cb) {
 
   function run () {
     var args = ['node', 'index.js']
-    if (opts.backend === "node-ninja") {
+    if (opts.backend === 'node-ninja') {
       args.push('configure')
       args.push('build')
       args.push('--builddir=build/' + version)
