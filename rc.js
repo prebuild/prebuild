@@ -33,6 +33,7 @@ var rc = module.exports = require('rc')('prebuild', {
   force: false,
   debug: false,
   path: '.',
+  backend: 'node-gyp',
   proxy: process.env['HTTP_PROXY'],
   'https-proxy': process.env['HTTPS_PROXY']
 }, minimist(process.argv, {

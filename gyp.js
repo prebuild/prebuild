@@ -1,10 +1,11 @@
 var nodeGyp = require('node-gyp')()
+var nodeNinja = require('node-ninja')()
 
 function runGyp (opts, cb) {
-  var gyp = opts.gyp || nodeGyp
+  var gyp = opts.backend === "node-gyp"? nodeGyp: nodeNinja
   var log = opts.log
 
-  log.verbose('execute node-gyp with `' + opts.args.join(' ') + '`')
+  log.verbose('execute ' + opts.backend + ' with `' + opts.args.join(' ') + '`')
   gyp.parseArgv(opts.args)
 
   function runStep () {
