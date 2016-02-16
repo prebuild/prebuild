@@ -17,6 +17,7 @@ function runGyp (opts, version, cb) {
 
     gyp({
       gyp: opts.gyp,
+      backend: opts.backend,
       log: opts.log,
       args: args,
       filter: function (command) {

@@ -79,14 +79,17 @@ function localPrebuild (url) {
   return path.join('prebuilds', path.basename(url))
 }
 
-function readGypFile (version, file, cb) {
-  fs.exists(path.join(nodeGypPath(), 'iojs-' + version), function (isIojs) {
+function readGypFile (opts, cb) {
+  var version = opts.version
+  var file = opts.file
+  var dir = '.' + (opts.backend || 'node-gyp')
+  fs.exists(path.join(nodeGypPath(dir), 'iojs-' + version), function (isIojs) {
     if (isIojs) version = 'iojs-' + version
-    fs.exists(nodeGypPath(version, 'include/node'), function (exists) {
+    fs.exists(nodeGypPath(dir, version, 'include/node'), function (exists) {
       if (exists) {
-        fs.readFile(nodeGypPath(version, 'include/node', file), 'utf-8', cb)
+        fs.readFile(nodeGypPath(dir, version, 'include/node', file), 'utf-8', cb)
       } else {
-        fs.readFile(nodeGypPath(version, 'src', file), 'utf-8', cb)
+        fs.readFile(nodeGypPath(dir, version, 'src', file), 'utf-8', cb)
       }
     })
   })
@@ -94,7 +97,7 @@ function readGypFile (version, file, cb) {
 
 function nodeGypPath () {
   var args = [].slice.call(arguments)
-  return path.join(home(), '.node-gyp', args.join('/'))
+  return path.join(home(), args.join('/'))
 }
 
 function spawn (cmd, args, cb) {

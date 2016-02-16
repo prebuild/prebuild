@@ -18,7 +18,7 @@ $ npm install -g prebuild
 
 ## Building
 
-Building is only required for node/iojs targets with different ABI versions ([Application Binary Interface](https://en.wikipedia.org/wiki/Application_binary_interface)). To build for *all* known abi versions greater than `0.8` (this is the method used by [leveldown](https://github.com/level/leveldown)):
+Building is only required for targets with different [ABI](https://en.wikipedia.org/wiki/Application_binary_interface) versions. To build for all *supported* abi versions greater than `0.8` ([example from leveldown](https://github.com/Level/leveldown/blob/ea5999dbd5fddf8f811b6c14162a3282b24ef7a9/package.json#L55)):
 
 ```
 prebuild --all
@@ -65,7 +65,7 @@ If you don't want to use the token on cli you can also stick that in e.g. `~/.pr
 upload = <github-token>
 ```
 
-Note that `--upload` will only upload the targets that was built and stored in `./prebuilds`, so `prebuild -u <github-token> -b 2.4.0` will only upload the binary for the `2.4.0` target.
+Note that `--upload` will only upload the targets that was built and stored in `./prebuilds`, so `prebuild -u <github-token> -b 4.3.0` will only upload the binary for the `4.3.0` target.
 
 You can use `prebuild --upload-all` to upload all files from the `./prebuilds` folder.
 
@@ -92,7 +92,7 @@ Add `prebuild --install` to your `package.json` so the binaries will be installe
     "install": "prebuild --install"
   },
   "dependencies": {
-    "prebuild": "^2.8.1"
+    "prebuild": "^4.0.0"
   }
 }
 ```
@@ -128,7 +128,7 @@ The following placeholders can be used:
 
 A GitHub token is needed for two reasons:
 
-* Create a GitHub release ([leveldown example](https://github.com/Level/leveldown/releases/tag/v1.4.3))
+* Create a GitHub release ([leveldown example](https://github.com/Level/leveldown/releases/tag/v1.4.4))
 * Upload the prebuilt binaries to that release
 
 To create a token:

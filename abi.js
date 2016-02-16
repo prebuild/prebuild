@@ -22,9 +22,17 @@ function getAbi (opts, version, cb) {
   })
 
   function tryReadFiles (readCb) {
-    util.readGypFile(version, 'node_version.h', function (err, a) {
+    util.readGypFile({
+      backend: opts.backend,
+      version: version,
+      file: 'node_version.h'
+    }, function (err, a) {
       if (err) return readCb(err)
-      util.readGypFile(version, 'node.h', function (err, b) {
+      util.readGypFile({
+        backend: opts.backend,
+        version: version,
+        file: 'node.h'
+      }, function (err, b) {
         if (err) return readCb(err)
         var abi = parse(a) || parse(b)
         if (!abi) return readCb(error.noAbi(version))
