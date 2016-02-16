@@ -251,6 +251,8 @@ This command would:
 * Create a release on GitHub, if needed
 * Upload all binaries to that release, if not already uploaded
 
+Before you commit your changes and send us a pull request, do run `npm test`.
+
 ## License
 
 MIT

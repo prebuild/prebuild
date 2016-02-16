@@ -12,7 +12,16 @@ function runGyp (opts, version, cb) {
   })
 
   function run () {
-    var args = ['node', 'index.js', 'rebuild', '--target=' + version, '--target_arch=' + opts.arch]
+    var args = ['node', 'index.js']
+    if (opts.backend === 'node-ninja') {
+      args.push('configure')
+      args.push('build')
+      args.push('--builddir=build/' + version)
+    } else {
+      args.push('rebuild')
+    }
+    args.push('--target=' + version)
+    args.push('--target_arch=' + opts.arch)
     if (opts.debug) args.push('--debug')
 
     gyp({
@@ -20,6 +29,7 @@ function runGyp (opts, version, cb) {
       backend: opts.backend,
       log: opts.log,
       args: args,
+      version: version,
       filter: function (command) {
         if (command.name === 'configure') {
           return configurePreGyp(command, opts)
