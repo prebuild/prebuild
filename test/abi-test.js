@@ -7,13 +7,13 @@ test('src/node_version.h takes precedence over src/node.h', function (t) {
   var readCount = 0
   var v = 'vX.Y.Z'
   var _readGypFile = util.readGypFile
-  util.readGypFile = function (version, file, cb) {
-    t.equal(version, 'X.Y.Z', 'correct version, v stripped')
+  util.readGypFile = function (opts, cb) {
+    t.equal(opts.version, 'X.Y.Z', 'correct version, v stripped')
     if (readCount++ === 0) {
-      t.equal(file, 'node_version.h', 'correct file')
+      t.equal(opts.file, 'node_version.h', 'correct file')
       process.nextTick(cb.bind(null, null, '#define NODE_MODULE_VERSION 666'))
     } else {
-      t.equal(file, 'node.h', 'correct file')
+      t.equal(opts.file, 'node.h', 'correct file')
       process.nextTick(cb.bind(null, null, '#define NODE_MODULE_VERSION 314'))
     }
   }
@@ -29,7 +29,7 @@ test('abi taken from src/node.h if no define in src/node_version.h', function (t
   var readCount = 0
   var v = 'vX.Y.Z'
   var _readGypFile = util.readGypFile
-  util.readGypFile = function (version, file, cb) {
+  util.readGypFile = function (opts, cb) {
     if (readCount++ === 0) {
       process.nextTick(cb.bind(null, null, 'no proper define here!'))
     } else {
@@ -47,7 +47,7 @@ test('abi taken from src/node.h if no define in src/node_version.h', function (t
 test('getAbi calls back with error if no abi could be found', function (t) {
   var v = 'vX.Y.Z'
   var _readGypFile = util.readGypFile
-  util.readGypFile = function (version, file, cb) {
+  util.readGypFile = function (opts, cb) {
     process.nextTick(cb.bind(null, null, 'no proper define here!'))
   }
   getAbi({}, v, function (err, abi) {
@@ -62,7 +62,7 @@ test('missing src/node_version.h will run node-gyp-install and retry', function 
   var readCount = 0
   var v = 'vX.Y.Z'
   var _readGypFile = util.readGypFile
-  util.readGypFile = function (version, file, cb) {
+  util.readGypFile = function (opts, cb) {
     if (readCount++ === 0) {
       process.nextTick(cb.bind(null, {code: 'ENOENT'}))
     } else {
@@ -84,3 +84,5 @@ test('missing src/node_version.h will run node-gyp-install and retry', function 
     t.end()
   })
 })
+
+// TODO add tests for node-ninja

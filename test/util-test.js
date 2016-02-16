@@ -188,7 +188,7 @@ test('readGypFile reads file based on correct version', function (t) {
     t.equal(fpath, home() + '/.node-gyp/' + v + '/src/' + file, 'corect file name')
     cb()
   }
-  util.readGypFile(v, file, function (err, data) {
+  util.readGypFile({version: v, file: file}, function (err, data) {
     t.error(err, 'readGypFile should succeed')
     fs.readFile = _readFile
     t.end()
@@ -203,9 +203,9 @@ test('readGypFile errors if fs.readFile errors', function (t) {
   fs.readFile = function (fpath, encoding, cb) {
     process.nextTick(cb.bind(null, error))
   }
-  util.readGypFile(v, file, function (err, data) {
+  util.readGypFile({version: v, file: file}, function (err, data) {
     fs.readFile = _readFile
-    t.deepEqual(err, error, 'expected error')
+    t.same(err, error, 'expected error')
     t.end()
   })
 })
@@ -213,8 +213,8 @@ test('readGypFile errors if fs.readFile errors', function (t) {
 test('spawn(): no args default to empty array', function (t) {
   cp.spawn = function (cmd, args, opts) {
     t.equal(cmd, 'foo', 'correct command')
-    t.deepEqual(args, [], 'default args')
-    t.deepEqual(opts, {stdio: 'inherit'}, 'inherit stdio')
+    t.same(args, [], 'default args')
+    t.same(opts, {stdio: 'inherit'}, 'inherit stdio')
     return {
       on: function (id, cb) {
         t.equal(id, 'exit', 'listener on exit event')
@@ -227,7 +227,7 @@ test('spawn(): no args default to empty array', function (t) {
 
 test('spawn(): callback fires with no error on exit code 0', function (t) {
   cp.spawn = function (cmd, args, opts) {
-    t.deepEqual(args, ['arg1', 'arg2'], 'correct args')
+    t.same(args, ['arg1', 'arg2'], 'correct args')
     return new EventEmitter()
   }
   spawn('foo', ['arg1', 'arg2'], function (err) {
@@ -264,11 +264,11 @@ test('releaseFolder(): depends on package.json and --debug', function (t) {
 
 test('nodeGypPath(): accepts any arguments', function (t) {
   var nodeGypPath = util.nodeGypPath
-  t.equal(nodeGypPath('0.10.40', 'include/node'),
+  t.equal(nodeGypPath('.node-gyp', '0.10.40', 'include/node'),
           home() + '/.node-gyp/0.10.40/include/node')
-  t.equal(nodeGypPath('4.1.0', 'include/node', 'node.h'),
+  t.equal(nodeGypPath('.node-gyp', '4.1.0', 'include/node', 'node.h'),
           home() + '/.node-gyp/4.1.0/include/node/node.h')
-  t.equal(nodeGypPath('/iojs-1.0.4/', '/include/node/', '/node.h'),
+  t.equal(nodeGypPath('.node-gyp', '/iojs-1.0.4/', '/include/node/', '/node.h'),
           home() + '/.node-gyp/iojs-1.0.4/include/node/node.h',
           'trailing slashes should not matter')
   t.end()

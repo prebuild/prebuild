@@ -1,12 +1,19 @@
-var nodeGyp = require('node-gyp')()
-var nodeNinja = require('node-ninja')()
+var assert = require('assert')
+var backends = {
+  'node-gyp': require('node-gyp')(),
+  'node-ninja': require('node-ninja')()
+}
 
 function runGyp (opts, cb) {
-  var gyp = opts.backend === "node-gyp"? nodeGyp: nodeNinja
+  var backend = opts.backend || 'node-gyp'
+  var gyp = opts.gyp || backends[backend]
+  assert(gyp, 'missing backend')
   var log = opts.log
+  var args = opts.args
+  assert(Array.isArray(args), 'args must be an array')
 
-  log.verbose('execute ' + opts.backend + ' with `' + opts.args.join(' ') + '`')
-  gyp.parseArgv(opts.args)
+  log.verbose('execute ' + backend + ' with `' + args.join(' ') + '`')
+  gyp.parseArgv(args)
 
   function runStep () {
     var command = gyp.todo.shift()
@@ -29,10 +36,7 @@ function runGyp (opts, cb) {
         return cb(err)
       }
 
-      // Log that the command completed properly
       log.verbose('ok')
-
-      // now run the next command in the queue
       process.nextTick(runStep)
     })
   }

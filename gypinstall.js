@@ -1,8 +1,8 @@
 var gyp = require('./gyp')
 
+// TODO test this
 function runGypInstall (opts, version, cb) {
   gyp({
-    gyp: opts.gyp,
     log: opts.log,
     args: ['node', 'index.js', 'install', version]
   }, cb)
