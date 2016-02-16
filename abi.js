@@ -9,7 +9,8 @@ function getAbi (opts, version, cb) {
 
   tryReadFiles(function (err, abi) {
     if (err && err.code === 'ENOENT') {
-      return install({log: log, force: true}, version, function (err) {
+      return install({ log: log, force: true, backend: opts.backend},
+                     version, function (err) {
         if (err) return cb(err)
         tryReadFiles(function (err, abi) {
           if (!err || err.code !== 'ENOENT') return cb(err, abi)
