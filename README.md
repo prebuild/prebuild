@@ -159,6 +159,7 @@ prebuild [options]
   --compile     -c              (compile your project using node-gyp)
   --no-compile                  (skip compile fallback when downloading)
   --abi                         (use provided abi rather than system abi)
+  --backend                     (specify build backend, default is 'node-gyp')
   --strip                       (strip debug information)
   --debug                       (set Debug or Release configuration)
   --verbose                     (log verbosely)
@@ -203,9 +204,11 @@ prebuild.download({
 Options:
 
 - `.log` (optional)
-- `preinstall` (optional)
+- `.preinstall` (optional)
 - `.gyp` Provide a custom `node-gyp` instance (optional)
+- `.backend` Provide a custom `node-gyp` instance via string. Alternatives are `'node-gyp'` and `'node-ninja'` (optional, defaults to `'node-gyp'`)
 - `.args` Additional command line arguments to `node-gyp` (optional)
+- `.debug` Pass in `--debug` on command line to gyp backend (optional)
 
 Example:
 
