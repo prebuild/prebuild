@@ -7,7 +7,7 @@ var error = require('./error')
 
 function build (opts, version, cb) {
   var log = opts.log || noop
-  var release = releaseFolder(opts)
+  var release = releaseFolder(opts, version)
 
   log.verbose('starting node-gyp process')
   gypbuild(opts, version, function (err) {

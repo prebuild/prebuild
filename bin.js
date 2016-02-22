@@ -21,7 +21,11 @@ if (rc.version) {
 if (rc.path) process.chdir(rc.path)
 
 log.heading = 'prebuild'
-if (process.env.npm_config_loglevel && !rc.verbose) log.level = process.env.npm_config_loglevel
+if (rc.verbose) {
+  log.level = 'verbose'
+} else if (process.env.npm_config_loglevel) {
+  log.level = process.env.npm_config_loglevel
+}
 
 if (!fs.existsSync('package.json')) {
   log.error('setup', 'No package.json found. Aborting...')
