@@ -116,10 +116,14 @@ function platform () {
   return process.platform
 }
 
-function releaseFolder (opts) {
+function releaseFolder (opts, version) {
   var type = (opts.debug ? 'Debug' : 'Release')
   var binary = opts.pkg.binary
-  return (binary && binary.module_path) || 'build/' + type
+  if (opts.backend === 'node-ninja') {
+    return (binary && binary.module_path) || 'build/' + version + '/' + type
+  } else {
+    return (binary && binary.module_path) || 'build/' + type
+  }
 }
 
 exports.getDownloadUrl = getDownloadUrl
