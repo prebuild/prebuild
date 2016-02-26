@@ -51,7 +51,13 @@ For more options run `prebuild --help`. The prebuilds created are compatible wit
 $ prebuild --all -u <github-token>
 ```
 
-If you don't want to use the token on cli you can also stick that in e.g. `~/.prebuildrc`:
+If you don't want to use the token on cli you can also either use an environment variable (useful in Docker build environments):
+
+```
+export GITHUB_TOKEN=<github-token>
+```
+
+or stick it in e.g. `~/.prebuildrc`:
 
 ```json
 {
