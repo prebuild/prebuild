@@ -30,14 +30,6 @@ Alternatively, to build for some specific versions you can do:
 prebuild -b 0.10.42 -b 0.12.10 -b 4.3.0
 ```
 
-Optionally, to always build for the above versions, add the following to a `.prebuildrc` file in the project root:
-
-``` ini
-prebuild[] = 0.10.42
-prebuild[] = 0.12.10
-prebuild[] = 4.3.0
-```
-
 See [`targets.js`](https://github.com/mafintosh/prebuild/blob/master/targets.js) for currently available versions.
 
 For more options run `prebuild --help`. The prebuilds created are compatible with [node-pre-gyp](https://github.com/mapbox/node-pre-gyp)
@@ -51,18 +43,10 @@ For more options run `prebuild --help`. The prebuilds created are compatible wit
 $ prebuild --all -u <github-token>
 ```
 
-If you don't want to use the token on cli you can also stick that in e.g. `~/.prebuildrc`:
+If you don't want to use the token on cli you can put it in `~/.prebuildrc`:
 
-```json
-{
-  "upload": "<github-token>"
-}
 ```
-
-`rc` supports `.ini` format so you can write the same file as:
-
-```ini
-upload = <github-token>
+upload=<github-token>
 ```
 
 Note that `--upload` will only upload the targets that was built and stored in `./prebuilds`, so `prebuild -u <github-token> -b 4.3.0` will only upload the binary for the `4.3.0` target.
