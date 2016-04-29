@@ -72,7 +72,7 @@ function getTarPath (opts, abi) {
     '-node-v', abi,
     '-', opts.platform,
     '-', opts.arch,
-    opts.libc || '',
+    opts.libc,
     '.tar.gz'
   ].join(''))
 }
