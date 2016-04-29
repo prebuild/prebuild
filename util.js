@@ -21,6 +21,7 @@ function getDownloadUrl (opts) {
     node_abi: process.versions.modules,
     platform: opts.platform,
     arch: opts.arch,
+    libc: opts.libc || '',
     configuration: (opts.debug ? 'Debug' : 'Release'),
     module_name: opts.pkg.binary && opts.pkg.binary.module_name
   })
@@ -31,7 +32,7 @@ function urlTemplate (opts) {
     return opts.download
   }
 
-  var packageName = '{name}-v{version}-node-v{abi}-{platform}-{arch}.tar.gz'
+  var packageName = '{name}-v{version}-node-v{abi}-{platform}{libc}-{arch}.tar.gz'
   if (opts.pkg.binary) {
     return [
       opts.pkg.binary.host,

@@ -84,7 +84,7 @@ Add `prebuild --install` to your `package.json` so the binaries will be installe
 If you are hosting your binaries elsewhere you can provide a host to the `--install` flag. The host string can also be a template for constructing more intrinsic urls. Install from `example.com` with a custom format for the binary name:
 
 ```
-$ prebuild --install https://example.com/{name}-{version}-{abi}-{platform}-{arch}.tar.gz
+$ prebuild --install https://example.com/{name}-{version}-{abi}-{platform}{libc}-{arch}.tar.gz
 ```
 
 `--install` will download binaries when installing from npm and compile in other cases. If you want `prebuild` to always download binaries you can use `--download` instead of `--install`. Either way, if downloading fails for any reason, it will fallback to compiling the code.
@@ -105,6 +105,7 @@ The following placeholders can be used:
 * `{abi}` or `{node_abi}`: ABI version of node/iojs taken from current `--target` or `process.version` if not specified, see `ABI` section below for more information
 * `{platform}`: platform taken from `--platform` or `process.platform` if not specified
 * `{arch}`: architecture taken from `--arch` or `process.arch` if not specified
+* `{libc}`: libc setting for alternative libc taken from `--libc` or blank if not specified
 * `{configuration}`: `'Debug'` if `--debug` is specified, otherwise `'Release'`
 * `{module_name}`: taken from `binary.module_name` property from `package.json`
 
@@ -143,6 +144,7 @@ prebuild [options]
   --compile     -c              (compile your project using node-gyp)
   --no-compile                  (skip compile fallback when downloading)
   --abi                         (use provided abi rather than system abi)
+  --libc                        (use provided libc rather than system default)
   --backend                     (specify build backend, default is 'node-gyp')
   --strip                       (strip debug information)
   --debug                       (set Debug or Release configuration)
@@ -166,6 +168,7 @@ Options:
 - `.updateName` Function to update the binary name (optional)
 - `.path` Location of the module (default: `"."`)
 - `.abi` Node ABI version (default: `process.versions.modules`)
+- `.libc` OS libc (default: blank)
 - `.platform` OS platform (default: `process.platform`)
 - `.download` Precomputed url to download the binary from (optional)
 - `.all` (default: `false`)
