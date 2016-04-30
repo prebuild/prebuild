@@ -21,7 +21,7 @@ function getDownloadUrl (opts) {
     node_abi: process.versions.modules,
     platform: opts.platform,
     arch: opts.arch,
-    libc: opts.libc || '',
+    libc: opts.libc || process.env.LIBC || '',
     configuration: (opts.debug ? 'Debug' : 'Release'),
     module_name: opts.pkg.binary && opts.pkg.binary.module_name
   })

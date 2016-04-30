@@ -105,7 +105,7 @@ The following placeholders can be used:
 * `{abi}` or `{node_abi}`: ABI version of node/iojs taken from current `--target` or `process.version` if not specified, see `ABI` section below for more information
 * `{platform}`: platform taken from `--platform` or `process.platform` if not specified
 * `{arch}`: architecture taken from `--arch` or `process.arch` if not specified
-* `{libc}`: libc setting for alternative libc taken from `--libc` or blank if not specified
+* `{libc}`: libc setting for alternative libc taken from `--libc` or LIBC env var or blank if not specified
 * `{configuration}`: `'Debug'` if `--debug` is specified, otherwise `'Release'`
 * `{module_name}`: taken from `binary.module_name` property from `package.json`
 
