@@ -46,7 +46,7 @@ test('urlTemplate() returns different templates based on pkg and rc', function (
     pkg: {binary: {host: 'http://foo.com'}}
   }
   var t2 = util.urlTemplate(o2)
-  t.equal(t2, 'http://foo.com/{name}-v{version}-node-v{abi}-{platform}-{arch}.tar.gz', 'template based on pkg.binary properties')
+  t.equal(t2, 'http://foo.com/{name}-v{version}-node-v{abi}-{platform}{libc}-{arch}.tar.gz', 'template based on pkg.binary properties')
   var o3 = {
     pkg: {binary: {host: 'http://foo.com'}},
     download: true
@@ -63,7 +63,7 @@ test('urlTemplate() returns different templates based on pkg and rc', function (
     pkg: {binary: {host: 'http://foo.com', remote_path: 'w00t'}}
   }
   var t5 = util.urlTemplate(o5)
-  t.equal(t5, 'http://foo.com/w00t/{name}-v{version}-node-v{abi}-{platform}-{arch}.tar.gz', 'pkg.binary.remote_path is added after host, default format')
+  t.equal(t5, 'http://foo.com/w00t/{name}-v{version}-node-v{abi}-{platform}{libc}-{arch}.tar.gz', 'pkg.binary.remote_path is added after host, default format')
   var o6 = {
     pkg: {
       binary: {
@@ -77,7 +77,7 @@ test('urlTemplate() returns different templates based on pkg and rc', function (
   t.equal(t6, 'http://foo.com/w00t/{name}-{major}.{minor}-node-v{abi}-{platform}-{arch}.tar.gz', 'pkg.binary.package_name is added after host and remote_path, custom format')
   var o7 = {pkg: require('../package.json'), download: true}
   var t7 = util.urlTemplate(o7)
-  t.equal(t7, 'https://github.com/mafintosh/prebuild/releases/download/v{version}/{name}-v{version}-node-v{abi}-{platform}-{arch}.tar.gz', '--download with no arguments, no pkg.binary, default format')
+  t.equal(t7, 'https://github.com/mafintosh/prebuild/releases/download/v{version}/{name}-v{version}-node-v{abi}-{platform}{libc}-{arch}.tar.gz', '--download with no arguments, no pkg.binary, default format')
   t.end()
 })
 
