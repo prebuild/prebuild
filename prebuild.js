@@ -12,7 +12,9 @@ function prebuild (opts, target, callback) {
   var buildLog = opts.buildLog || function () {}
 
   if (target[0] !== 'v') target = 'v' + target
-  buildLog('Preparing to prebuild ' + pkg.name + '@' + pkg.version + ' for ' + target + ' on ' + opts.platform + '-' + opts.arch + ' using ' + opts.backend)
+  var buildLogMessage = 'Preparing to prebuild ' + pkg.name + '@' + pkg.version + ' for ' + target + ' on ' + opts.platform + '-' + opts.arch + ' using ' + opts.backend
+  if (opts.libc && opts.libc.length > 0) buildLogMessage += 'using libc ' + opts.libc
+  buildLog(buildLogMessage)
   getAbi(opts, target, function (err, abi) {
     if (err) return log.error('build', err.message)
     var tarPath = getTarPath(opts, abi)

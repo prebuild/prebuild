@@ -28,6 +28,7 @@ for (var j = 0; j < npmconfigs.length; ++j) {
 var rc = module.exports = require('rc')('prebuild', {
   target: process.version,
   arch: process.arch,
+  libc: process.env.LIBC,
   platform: process.platform,
   all: false,
   force: false,
