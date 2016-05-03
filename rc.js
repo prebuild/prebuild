@@ -4,12 +4,12 @@ var targets = require('./targets')
 if (process.env.npm_config_argv) {
   var npmargs = ['compile', 'build-from-source', 'debug']
   try {
-    var npm_argv = JSON.parse(process.env.npm_config_argv).cooked
+    var npmArgv = JSON.parse(process.env.npm_config_argv).cooked
     for (var i = 0; i < npmargs.length; ++i) {
-      if (npm_argv.indexOf('--' + npmargs[i]) !== -1) {
+      if (npmArgv.indexOf('--' + npmargs[i]) !== -1) {
         process.argv.push('--' + npmargs[i])
       }
-      if (npm_argv.indexOf('--no-' + npmargs[i]) !== -1) {
+      if (npmArgv.indexOf('--no-' + npmargs[i]) !== -1) {
         process.argv.push('--no-' + npmargs[i])
       }
     }
