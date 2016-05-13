@@ -1,7 +1,16 @@
 var assert = require('assert')
+var path = require('path')
+
 var backends = {
   'node-gyp': require('node-gyp')(),
   'node-ninja': require('node-ninja')()
+}
+
+// Use system installed node-gyp for other JS engines
+var jsEngine = process.jsEngine || 'v8'
+if (jsEngine !== 'v8') {
+  backends['node-gyp'] = require(path.join(
+    path.dirname(process.execPath), 'node_modules/npm/node_modules/node-gyp'))()
 }
 
 function runGyp (opts, cb) {
