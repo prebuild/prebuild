@@ -5,6 +5,7 @@ var path = require('path')
 var http = require('http')
 var https = require('https')
 var download = require('../download')
+var rc = require('../rc')
 var util = require('../util')
 var error = require('../error')
 
@@ -269,6 +270,28 @@ test('error during download should fail with no dangling temp file', function (t
       t.end()
       fs.createWriteStream = _createWriteStream
       server.unref()
+    })
+  })
+})
+
+test('should fail if abi is system abi with invalid binary', function (t) {
+  var opts = getOpts()
+  opts.abi = rc.abi
+  opts.pkg.binary = {host: 'http://localhost:8890'}
+
+  var server = http.createServer(function (req, res) {
+    res.statusCode = 200
+    var archive = path.join(__dirname, 'invalid.tar.gz')
+    fs.createReadStream(archive).pipe(res)
+  }).listen(8890, function () {
+    download(opts, function (err) {
+      server.unref()
+      if (err && typeof err.message === 'string') {
+        t.equal(/invalid\.node: invalid ELF header/.test(err.message), true, 'should match ' + err.message)
+      } else {
+        t.fail('should have caused a require() error')
+      }
+      t.end()
     })
   })
 })
