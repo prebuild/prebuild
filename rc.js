@@ -30,6 +30,7 @@ var rc = module.exports = require('rc')('prebuild', {
   arch: process.arch,
   libc: process.env.LIBC,
   platform: process.platform,
+  abi: process.versions.modules,
   all: false,
   force: false,
   debug: false,
