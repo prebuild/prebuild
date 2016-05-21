@@ -13,3 +13,4 @@ prebuild [options]
   --debug                       (set Debug or Release configuration)
   --verbose                     (log verbosely)
   --version                     (print prebuild version and exit)
+  --collect-files-filter        (regex to match files that will be distributed [default: '\\.(node|a)$'])

@@ -7,6 +7,7 @@ var error = require('./error')
 
 function build (opts, version, cb) {
   var log = opts.log || noop
+  var fileExp = opts['collect-files-filter']
   var release = releaseFolder(opts, version)
 
   log.verbose('starting node-gyp process')
@@ -19,12 +20,18 @@ function build (opts, version, cb) {
   function done () {
     fs.readdir(release, function (err, files) {
       if (err) return cb(err)
-      for (var i = 0; i < files.length; i++) {
-        if (/\.node$/i.test(files[i])) {
-          return cb(null, path.join(release, files[i]), files[i])
-        }
+
+      var collected = files.filter(function filterByRegex (filename) {
+        return fileExp.test(filename)
+      }).map(function addPath (filename) {
+        return path.join(release, filename)
+      })
+
+      if (!collected.length) {
+        return cb(error.noBuild(release))
       }
-      cb(error.noBuild(release))
+
+      cb(null, collected)
     })
   }
 }

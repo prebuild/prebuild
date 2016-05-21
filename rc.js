@@ -12,7 +12,8 @@ var rc = require('rc')('prebuild', {
   debug: false,
   verbose: false,
   path: '.',
-  backend: 'node-gyp'
+  backend: 'node-gyp',
+  'collect-files-filter': '\\.node$'
 }, minimist(process.argv, {
   alias: {
     target: 't',
@@ -53,6 +54,8 @@ if (rc.all === true) {
 if (rc['upload-all']) {
   rc.upload = rc['upload-all']
 }
+
+rc['collect-files-filter'] = new RegExp(rc['collect-files-filter'], 'i')
 
 module.exports = rc
 
