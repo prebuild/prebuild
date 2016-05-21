@@ -38,7 +38,8 @@ var rc = module.exports = require('rc')('prebuild', {
   path: '.',
   backend: 'node-gyp',
   proxy: process.env['HTTP_PROXY'],
-  'https-proxy': process.env['HTTPS_PROXY']
+  'https-proxy': process.env['HTTPS_PROXY'],
+  'collect-files-filter': '\\.node$'
 }, minimist(process.argv, {
   alias: {
     target: 't',
@@ -76,6 +77,8 @@ if (rc.all === true) {
 if (rc['upload-all']) {
   rc.upload = rc['upload-all']
 }
+
+rc['collect-files-filter'] = new RegExp(rc['collect-files-filter'], 'i')
 
 if (!module.parent) {
   console.log(JSON.stringify(module.exports, null, 2))
