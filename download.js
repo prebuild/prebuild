@@ -47,9 +47,8 @@ function downloadPrebuild (opts, cb) {
               url: downloadUrl,
               encoding: null,
               timeout: 3 * 1000
-            }).on('error', function (err) {
-              return onerror(err)
-            }).on('response', function (res) {
+            }).on('error', onerror)
+            .on('response', function (res) {
               log.http(res.statusCode, downloadUrl)
               if (res.statusCode !== 200) return onerror()
               log.info('downloading to @', tempFile)
@@ -63,9 +62,7 @@ function downloadPrebuild (opts, cb) {
               })
             }).pipe(stream)
           })
-          stream.on('error', function (err) {
-            return onerror(err)
-          })
+          stream.on('error', onerror)
         })
       })
 
