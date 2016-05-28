@@ -41,9 +41,8 @@ function downloadPrebuild (opts, cb) {
         }
 
         fs.mkdir(util.prebuildCache(), function () {
-
-          var stream = fs.createWriteStream(tempFile);
-          stream.on('open', function() {
+          var stream = fs.createWriteStream(tempFile)
+          stream.on('open', function () {
             request({
               url: downloadUrl,
               encoding: null,
@@ -64,13 +63,10 @@ function downloadPrebuild (opts, cb) {
               })
             }).pipe(stream)
           })
-          
-          stream.on('error', function(err) {
+          stream.on('error', function (err) {
             return onerror(err)
           })
-
         })
-        
       })
 
       function onerror (err) {

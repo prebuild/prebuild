@@ -219,8 +219,6 @@ test('existing host but invalid url should fail', function (t) {
 test('error during download should fail with no dangling temp file', function (t) {
   t.plan(6)
 
-  var downloadError = new Error('something went wrong during download')
-
   var opts = getOpts()
   opts.pkg.binary = {
     host: 'http://localhost:8889',
