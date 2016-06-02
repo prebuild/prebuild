@@ -16,7 +16,7 @@ if (process.env.npm_config_argv) {
   } catch (e) { }
 }
 
-var npmconfigs = ['proxy', 'https-proxy', 'local-address']
+var npmconfigs = ['proxy', 'https-proxy', 'local-address', 'target', 'abi']
 for (var j = 0; j < npmconfigs.length; ++j) {
   var envname = 'npm_config_' + npmconfigs[j].replace('-', '_')
   if (process.env[envname]) {
