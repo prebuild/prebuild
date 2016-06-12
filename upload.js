@@ -19,6 +19,8 @@ function upload (opts, cb) {
   }
 
   var semver = SemVer(pkg.version)
+  var prerelease = opts.prerelease
+  if (prerelease && prerelease !== true) semver.prerelease.push(prerelease)
 
   var user = url.split('/')[3]
   var repo = url.split('/')[4]
@@ -27,7 +29,7 @@ function upload (opts, cb) {
 
   var options = {tag_name: tag}
 
-  if(semver.prerelease.length || opts.prerelease) options.prerelease = true
+  if (prerelease || semver.prerelease.length) options.prerelease = true
 
   gh.create(auth, user, repo, options, function () {
     gh.getByTag(auth, user, repo, tag, function (err, release) {
