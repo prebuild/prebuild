@@ -1,6 +1,9 @@
 var path = require('path')
-var github = require('github-from-package')
+
 var ghreleases = require('ghreleases')
+var github = require('github-from-package')
+var SemVer = require('semver')
+
 var error = require('./error')
 
 function upload (opts, cb) {
@@ -15,14 +18,16 @@ function upload (opts, cb) {
     })
   }
 
+  var semver = SemVer(pkg.version)
+
   var user = url.split('/')[3]
   var repo = url.split('/')[4]
   var auth = {user: 'x-oauth', token: opts.upload}
-  var tag = 'v' + pkg.version
+  var tag = 'v' + semver.format()
 
   var options = {tag_name: tag}
 
-  if(opts.prerelease) options.prerelease = true
+  if(semver.prerelease.length || opts.prerelease) options.prerelease = true
 
   gh.create(auth, user, repo, options, function () {
     gh.getByTag(auth, user, repo, tag, function (err, release) {
