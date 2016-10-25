@@ -2,6 +2,7 @@ var fs = require('fs')
 var path = require('path')
 var github = require('github-from-package')
 var home = require('os-homedir')
+var cp = require('child_process')
 var execSpawn = require('execspawn')
 var expandTemplate = require('expand-template')()
 var error = require('./error')
@@ -102,10 +103,17 @@ function nodeGypPath () {
   return path.join(home(), args.join('/'))
 }
 
-function spawn (cmd, cb) {
+function spawn (cmd, args, cb) {
+  return cp.spawn(cmd, args).on('exit', function (code) {
+    if (code === 0) return cb()
+    cb(error.spawnFailed(cmd, args, code))
+  })
+}
+
+function exec (cmd, cb) {
   return execSpawn(cmd, {stdio: 'inherit'}).on('exit', function (code) {
     if (code === 0) return cb()
-    cb(error.spawnFailed(cmd, code))
+    cb(error.spawnFailed(cmd, [], code))
   })
 }
 
@@ -133,6 +141,7 @@ exports.tempFile = tempFile
 exports.getTarPath = getTarPath
 exports.readGypFile = readGypFile
 exports.spawn = spawn
+exports.exec = exec
 exports.platform = platform
 exports.releaseFolder = releaseFolder
 exports.nodeGypPath = nodeGypPath

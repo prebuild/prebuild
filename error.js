@@ -28,5 +28,5 @@ exports.noRepository = function () {
 }
 
 exports.spawnFailed = function (cmd, args, code) {
-  return new Error(cmd + ' failed with exit code ' + code)
+  return new Error(cmd + ' ' + args.join(' ') + ' failed with exit code ' + code)
 }

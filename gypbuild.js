@@ -6,7 +6,7 @@ function runGyp (opts, version, cb) {
   if (!opts.preinstall) return run()
 
   log.verbose('executing preinstall')
-  util.spawn(opts.preinstall, function (err) {
+  util.exec(opts.preinstall, function (err) {
     if (err) return cb(err)
     run()
   })
