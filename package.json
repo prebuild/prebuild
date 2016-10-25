@@ -33,6 +33,7 @@
     "os-homedir": "^1.0.1",
     "pump": "^1.0.0",
     "rc": "^1.0.3",
+    "shell-quote": "^1.6.1",
     "simple-get": "^1.4.2",
     "tar-fs": "^1.7.0",
     "tar-stream": "^1.2.1",
