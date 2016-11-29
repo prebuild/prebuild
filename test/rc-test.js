@@ -100,6 +100,16 @@ test('npm_config_* are passed on from environment into rc', function (t) {
   })
 })
 
+test('modules are build from source when used inside electron', function (t) {
+  var env = {
+    npm_config_runtime: 'electron'
+  }
+  runRc(t, '', env, function (rc) {
+    t.equal(rc.compile, true, 'compile is set')
+    t.end()
+  })
+})
+
 function runRc (t, args, env, cb) {
   var cmd = 'node ' + path.resolve(__dirname, '..', 'rc.js') + ' ' + args
   env = xtend(process.env, env)

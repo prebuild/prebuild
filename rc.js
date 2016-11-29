@@ -25,6 +25,12 @@ for (var j = 0; j < npmconfigs.length; ++j) {
   }
 }
 
+// Ensure that modules used inside electron are build from source
+if (process.env['npm_config_runtime'] === 'electron' &&
+    process.argv.indexOf('--build-from-source') === -1) {
+  process.argv.push('--build-from-source')
+}
+
 var rc = module.exports = require('rc')('prebuild', {
   target: process.version,
   arch: process.arch,
