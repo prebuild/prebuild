@@ -1,20 +1,16 @@
-var ver = require('semver')
 var gypinstall = require('./gypinstall')
 var util = require('./util')
 var error = require('./error')
 
 function getAbiFromTarget (target) {
   if (!target) return process.versions.modules
-  if (!ver.valid(target)) {
-    throw error.noAbi(target)
-  }
-  if (ver.eq(target, process.versions.node)) return process.versions.modules
-  if (ver.satisfies(target, '^7.0.0')) return '51'
-  if (ver.satisfies(target, '^6.0.0')) return '48'
-  if (ver.satisfies(target, '^5.0.0')) return '47'
-  if (ver.satisfies(target, '^4.0.0')) return '46'
-  if (ver.satisfies(target, '^0.12.0')) return '14'
-  if (ver.satisfies(target, '^0.10.0')) return '11'
+  if (target === process.versions.node) return process.versions.modules
+  if (/^7\.[0-9]+\.[0-9]+/.test(target)) return '51'
+  if (/^6\.[0-9]+\.[0-9]+/.test(target)) return '48'
+  if (/^5\.[0-9]+\.[0-9]+/.test(target)) return '47'
+  if (/^4\.[0-9]+\.[0-9]+/.test(target)) return '46'
+  if (/^0\.12\.[0-9]+/.test(target)) return '14'
+  if (/^0\.10\.[0-9]+/.test(target)) return '11'
 
   throw error.noAbi(target)
 }

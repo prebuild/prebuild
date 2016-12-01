@@ -42,7 +42,6 @@
     "a-native-module": "^1.0.0",
     "nsp": "^2.2.0",
     "rimraf": "^2.4.2",
-    "semver": "^5.3.0",
     "standard": "^8.6.0",
     "tape": "^4.0.1"
   },
