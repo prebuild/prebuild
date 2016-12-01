@@ -3,6 +3,26 @@ var util = require('../util')
 var abi = require('../abi')
 var error = require('../error')
 
+test('getAbiFromTarget calculates correct Node ABI', function (t) {
+  t.equal(abi.getAbiFromTarget(undefined), process.versions.modules)
+  t.equal(abi.getAbiFromTarget(null), process.versions.modules)
+  t.throws(function () { abi.getAbiFromTarget('a.b.c') })
+  t.throws(function () { abi.getAbiFromTarget('1.0.0') })
+  t.equal(abi.getAbiFromTarget('7.2.0'), '51')
+  t.equal(abi.getAbiFromTarget('7.0.0'), '51')
+  t.equal(abi.getAbiFromTarget('6.9.9'), '48')
+  t.equal(abi.getAbiFromTarget('6.0.0'), '48')
+  t.equal(abi.getAbiFromTarget('5.9.9'), '47')
+  t.equal(abi.getAbiFromTarget('5.0.0'), '47')
+  t.equal(abi.getAbiFromTarget('4.9.9'), '46')
+  t.equal(abi.getAbiFromTarget('4.0.0'), '46')
+  t.equal(abi.getAbiFromTarget('0.12.17'), '14')
+  t.equal(abi.getAbiFromTarget('0.12.0'), '14')
+  t.equal(abi.getAbiFromTarget('0.10.48'), '11')
+  t.equal(abi.getAbiFromTarget('0.10.0'), '11')
+  t.end()
+})
+
 test('src/node_version.h takes precedence over src/node.h', function (t) {
   var readCount = 0
   var v = 'vX.Y.Z'
