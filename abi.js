@@ -2,6 +2,19 @@ var gypinstall = require('./gypinstall')
 var util = require('./util')
 var error = require('./error')
 
+function getAbiFromTarget (target) {
+  if (!target) return process.versions.modules
+  if (target === process.versions.node) return process.versions.modules
+  if (/^7\./.test(target)) return '51'
+  if (/^6\./.test(target)) return '48'
+  if (/^5\./.test(target)) return '47'
+  if (/^4\./.test(target)) return '46'
+  if (/^0\.12\./.test(target)) return '14'
+  if (/^0\.10\./.test(target)) return '11'
+
+  throw error.noAbi(target)
+}
+
 function getAbi (opts, version, cb) {
   var log = opts.log
   var install = opts.install || gypinstall
@@ -50,4 +63,5 @@ function getAbi (opts, version, cb) {
   }
 }
 
-module.exports = getAbi
+exports.getAbi = getAbi
+exports.getAbiFromTarget = getAbiFromTarget

@@ -102,7 +102,7 @@ The following placeholders can be used:
 * `{patch}`: patch version taken from `version`
 * `{prerelease}`: prelease version taken from `version`
 * `{build}`: build version taken from `version`
-* `{abi}` or `{node_abi}`: ABI version of node/iojs taken from current `--target` or `process.version` if not specified, see `ABI` section below for more information
+* `{abi}` or `{node_abi}`: ABI version of node/iojs taken from current `--target` or `process.versions.node` if not specified, see `ABI` section below for more information
 * `{platform}`: platform taken from `--platform` or `process.platform` if not specified
 * `{arch}`: architecture taken from `--arch` or `process.arch` if not specified
 * `{libc}`: libc setting for alternative libc taken from `--libc` or LIBC env var or blank if not specified
@@ -143,7 +143,6 @@ prebuild [options]
   --preinstall  -i  script      (run this script before prebuilding)
   --compile     -c              (compile your project using node-gyp)
   --no-compile                  (skip compile fallback when downloading)
-  --abi                         (use provided abi rather than system abi)
   --libc                        (use provided libc rather than system default)
   --backend                     (specify build backend, default is 'node-gyp')
   --strip                       (strip debug information)

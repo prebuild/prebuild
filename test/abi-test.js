@@ -1,7 +1,27 @@
 var test = require('tape')
 var util = require('../util')
-var getAbi = require('../abi')
+var abi = require('../abi')
 var error = require('../error')
+
+test('getAbiFromTarget calculates correct Node ABI', function (t) {
+  t.equal(abi.getAbiFromTarget(undefined), process.versions.modules)
+  t.equal(abi.getAbiFromTarget(null), process.versions.modules)
+  t.throws(function () { abi.getAbiFromTarget('a.b.c') })
+  t.throws(function () { abi.getAbiFromTarget('1.0.0') })
+  t.equal(abi.getAbiFromTarget('7.2.0'), '51')
+  t.equal(abi.getAbiFromTarget('7.0.0'), '51')
+  t.equal(abi.getAbiFromTarget('6.9.9'), '48')
+  t.equal(abi.getAbiFromTarget('6.0.0'), '48')
+  t.equal(abi.getAbiFromTarget('5.9.9'), '47')
+  t.equal(abi.getAbiFromTarget('5.0.0'), '47')
+  t.equal(abi.getAbiFromTarget('4.9.9'), '46')
+  t.equal(abi.getAbiFromTarget('4.0.0'), '46')
+  t.equal(abi.getAbiFromTarget('0.12.17'), '14')
+  t.equal(abi.getAbiFromTarget('0.12.0'), '14')
+  t.equal(abi.getAbiFromTarget('0.10.48'), '11')
+  t.equal(abi.getAbiFromTarget('0.10.0'), '11')
+  t.end()
+})
 
 test('src/node_version.h takes precedence over src/node.h', function (t) {
   var readCount = 0
@@ -17,7 +37,7 @@ test('src/node_version.h takes precedence over src/node.h', function (t) {
       process.nextTick(cb.bind(null, null, '#define NODE_MODULE_VERSION 314'))
     }
   }
-  getAbi({}, v, function (err, abi) {
+  abi.getAbi({}, v, function (err, abi) {
     t.error(err, 'getAbi should not fail')
     t.equal(abi, '666', 'abi version taken from src/node_version.h')
     util.readGypFile = _readGypFile
@@ -36,7 +56,7 @@ test('abi taken from src/node.h if no define in src/node_version.h', function (t
       process.nextTick(cb.bind(null, null, '#define NODE_MODULE_VERSION 314'))
     }
   }
-  getAbi({}, v, function (err, abi) {
+  abi.getAbi({}, v, function (err, abi) {
     t.error(err, 'getAbi should not fail')
     t.equal(abi, '314', 'abi version taken from src/node.h')
     util.readGypFile = _readGypFile
@@ -50,7 +70,7 @@ test('getAbi calls back with error if no abi could be found', function (t) {
   util.readGypFile = function (opts, cb) {
     process.nextTick(cb.bind(null, null, 'no proper define here!'))
   }
-  getAbi({}, v, function (err, abi) {
+  abi.getAbi({}, v, function (err, abi) {
     t.same(err, error.noAbi(v), 'correct error')
     util.readGypFile = _readGypFile
     t.end()
@@ -76,7 +96,7 @@ test('missing src/node_version.h will run node-gyp-install and retry', function 
       process.nextTick(cb)
     }
   }
-  getAbi(opts, v, function (err, abi) {
+  abi.getAbi(opts, v, function (err, abi) {
     t.error(err, 'getAbi should not fail')
     t.equal(readCount, 3, 'read three times')
     t.equal(abi, '555', 'abi version after retry')
