@@ -1,6 +1,23 @@
+var ver = require('semver')
 var gypinstall = require('./gypinstall')
 var util = require('./util')
 var error = require('./error')
+
+function getAbiFromTarget (target) {
+  if (!target) return process.versions.modules
+  if (!ver.valid(target)) {
+    throw error.noAbi(target)
+  }
+  if (ver.eq(target, process.versions.node)) return process.versions.modules
+  if (ver.satisfies(target, '^7.0.0')) return '51'
+  if (ver.satisfies(target, '^6.0.0')) return '48'
+  if (ver.satisfies(target, '^5.0.0')) return '47'
+  if (ver.satisfies(target, '^4.0.0')) return '46'
+  if (ver.satisfies(target, '^0.12.0')) return '14'
+  if (ver.satisfies(target, '^0.10.0')) return '11'
+
+  throw error.noAbi(target)
+}
 
 function getAbi (opts, version, cb) {
   var log = opts.log
@@ -50,4 +67,5 @@ function getAbi (opts, version, cb) {
   }
 }
 
-module.exports = getAbi
+exports.getAbi = getAbi
+exports.getAbiFromTarget = getAbiFromTarget

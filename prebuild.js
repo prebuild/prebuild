@@ -1,6 +1,6 @@
 var fs = require('fs')
 var async = require('async')
-var getAbi = require('./abi')
+var getAbi = require('./abi').getAbi
 var getTarPath = require('./util').getTarPath
 var build = require('./build')
 var strip = require('./strip')

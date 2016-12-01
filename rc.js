@@ -16,7 +16,7 @@ if (process.env.npm_config_argv) {
   } catch (e) { }
 }
 
-var npmconfigs = ['proxy', 'https-proxy', 'local-address', 'target', 'abi']
+var npmconfigs = ['proxy', 'https-proxy', 'local-address', 'target']
 for (var j = 0; j < npmconfigs.length; ++j) {
   var envname = 'npm_config_' + npmconfigs[j].replace('-', '_')
   if (process.env[envname]) {
@@ -32,11 +32,10 @@ if (process.env['npm_config_runtime'] === 'electron' &&
 }
 
 var rc = module.exports = require('rc')('prebuild', {
-  target: process.version,
+  target: process.versions.node,
   arch: process.arch,
   libc: process.env.LIBC,
   platform: process.platform,
-  abi: process.versions.modules,
   all: false,
   force: false,
   debug: false,
