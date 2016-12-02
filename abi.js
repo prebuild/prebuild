@@ -2,6 +2,7 @@ var error = require('./error')
 
 function getAbi (target, runtime) {
   if (runtime === 'electron') {
+    if (/^1\.5\./.test(target)) return '51'
     if (/^1\.4\./.test(target)) return '50'
     if (/^1\.3\./.test(target)) return '49'
     if (/^1\.[1-2]\./.test(target)) return '48'
@@ -13,6 +14,7 @@ function getAbi (target, runtime) {
   } else {
     if (!target) return process.versions.modules
     if (target === process.versions.node) return process.versions.modules
+    if (/^8\./.test(target)) return '52'
     if (/^7\./.test(target)) return '51'
     if (/^6\./.test(target)) return '48'
     if (/^5\./.test(target)) return '47'
