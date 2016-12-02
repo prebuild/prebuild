@@ -7,10 +7,6 @@ exports.noPrebuilts = function (opts) {
   ].join(' '))
 }
 
-exports.missingHeaders = function () {
-  return new Error('Failed to locate `node.h` and `node_version.h`.')
-}
-
 exports.noAbi = function (v) {
   return new Error('Could not detect abi for version ' + v)
 }

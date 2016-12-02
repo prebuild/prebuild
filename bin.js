@@ -87,9 +87,7 @@ if (opts.compile) {
 } else {
   var files = []
   async.eachSeries(opts.prebuild, function (target, next) {
-    if (opts.all === true) opts.runtime = target.runtime
-    opts.abi = getAbiFromTarget(target.target, target.runtime)
-    prebuild(opts, target.target, function (err, tarGz) {
+    prebuild(opts, target.target, target.runtime, function (err, tarGz) {
       if (err) return next(err)
       files.push(tarGz)
       next()

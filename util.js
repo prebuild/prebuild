@@ -1,4 +1,3 @@
-var fs = require('fs')
 var path = require('path')
 var github = require('github-from-package')
 var home = require('os-homedir')
@@ -84,27 +83,6 @@ function localPrebuild (url) {
   return path.join('prebuilds', path.basename(url))
 }
 
-function readGypFile (opts, cb) {
-  var version = opts.version
-  var file = opts.file
-  var dir = '.' + (opts.backend || 'node-gyp')
-  fs.exists(path.join(nodeGypPath(dir), 'iojs-' + version), function (isIojs) {
-    if (isIojs) version = 'iojs-' + version
-    fs.exists(nodeGypPath(dir, version, 'include/node'), function (exists) {
-      if (exists) {
-        fs.readFile(nodeGypPath(dir, version, 'include/node', file), 'utf-8', cb)
-      } else {
-        fs.readFile(nodeGypPath(dir, version, 'src', file), 'utf-8', cb)
-      }
-    })
-  })
-}
-
-function nodeGypPath () {
-  var args = [].slice.call(arguments)
-  return path.join(home(), args.join('/'))
-}
-
 function spawn (cmd, args, cb) {
   return cp.spawn(cmd, args).on('exit', function (code) {
     if (code === 0) return cb()
@@ -141,9 +119,7 @@ exports.prebuildCache = prebuildCache
 exports.npmCache = npmCache
 exports.tempFile = tempFile
 exports.getTarPath = getTarPath
-exports.readGypFile = readGypFile
 exports.spawn = spawn
 exports.exec = exec
 exports.platform = platform
 exports.releaseFolder = releaseFolder
-exports.nodeGypPath = nodeGypPath

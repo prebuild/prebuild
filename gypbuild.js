@@ -33,7 +33,6 @@ function runGyp (opts, version, cb) {
       backend: opts.backend,
       log: opts.log,
       args: args,
-      version: version,
       filter: function (command) {
         if (command.name === 'configure') {
           return configurePreGyp(command, opts)

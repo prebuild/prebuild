@@ -180,36 +180,6 @@ test('getTarPath based on package.json and rc config', function (t) {
   t.end()
 })
 
-test('readGypFile reads file based on correct version', function (t) {
-  var v = 'X.Y.Z'
-  var file = 'node_version.h'
-  var _readFile = fs.readFile
-  fs.readFile = function (fpath, encoding, cb) {
-    t.equal(fpath, home() + '/.node-gyp/' + v + '/src/' + file, 'corect file name')
-    cb()
-  }
-  util.readGypFile({version: v, file: file}, function (err, data) {
-    t.error(err, 'readGypFile should succeed')
-    fs.readFile = _readFile
-    t.end()
-  })
-})
-
-test('readGypFile errors if fs.readFile errors', function (t) {
-  var v = 'X.Y.Z'
-  var file = 'src/node_version.h'
-  var _readFile = fs.readFile
-  var error = new Error('sorry dude, no such file')
-  fs.readFile = function (fpath, encoding, cb) {
-    process.nextTick(cb.bind(null, error))
-  }
-  util.readGypFile({version: v, file: file}, function (err, data) {
-    fs.readFile = _readFile
-    t.same(err, error, 'expected error')
-    t.end()
-  })
-})
-
 // skipping these 3 tests as it is using execspawn now
 
 test.skip('spawn(): no args default to empty array', function (t) {
@@ -261,17 +231,5 @@ test('releaseFolder(): depends on package.json and --debug', function (t) {
     debug: true,
     pkg: { binary: { module_path: 'foo/bar' } }
   }), 'foo/bar', 'using binary property from package.json')
-  t.end()
-})
-
-test('nodeGypPath(): accepts any arguments', function (t) {
-  var nodeGypPath = util.nodeGypPath
-  t.equal(nodeGypPath('.node-gyp', '0.10.40', 'include/node'),
-          home() + '/.node-gyp/0.10.40/include/node')
-  t.equal(nodeGypPath('.node-gyp', '4.1.0', 'include/node', 'node.h'),
-          home() + '/.node-gyp/4.1.0/include/node/node.h')
-  t.equal(nodeGypPath('.node-gyp', '/iojs-1.0.4/', '/include/node/', '/node.h'),
-          home() + '/.node-gyp/iojs-1.0.4/include/node/node.h',
-          'trailing slashes should not matter')
   t.end()
 })
