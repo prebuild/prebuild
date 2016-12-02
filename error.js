@@ -2,6 +2,7 @@ exports.noPrebuilts = function (opts) {
   return new Error([
     'No prebuilt binaries found',
     '(target=' + opts.target,
+    'runtime=' + opts.runtime,
     'arch=' + opts.arch,
     'platform=' + opts.platform + ')'
   ].join(' '))
