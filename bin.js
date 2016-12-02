@@ -60,16 +60,13 @@ if (rc.install) {
 }
 
 var buildLog = log.info.bind(log, 'build')
-var opts = extend(rc, {
-  abi: getAbiFromTarget(rc.target, rc.runtime),
-  pkg: pkg,
-  log: log,
-  buildLog: buildLog
-})
+var opts = extend(rc, {pkg: pkg, log: log, buildLog: buildLog})
 
 if (opts.compile) {
+  opts.abi = getAbiFromTarget(rc.target, rc.runtime)
   build(opts, rc.target, onbuilderror)
 } else if (opts.download) {
+  opts.abi = getAbiFromTarget(rc.target, rc.runtime)
   download(opts, function (err) {
     if (err) {
       log.warn('install', err.message)
@@ -91,6 +88,7 @@ if (opts.compile) {
   var files = []
   async.eachSeries(opts.prebuild, function (target, next) {
     if (opts.all === true) opts.runtime = target.runtime
+    opts.abi = getAbiFromTarget(target.target, target.runtime)
     prebuild(opts, target.target, function (err, tarGz) {
       if (err) return next(err)
       files.push(tarGz)
