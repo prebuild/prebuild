@@ -21,7 +21,7 @@ function getAbiFromTarget (target, runtime) {
     if (/^0\.10\./.test(target)) return '11'
   }
 
-  throw error.noAbi(target)
+  throw error.noAbi(target, runtime)
 }
 
 exports.getAbiFromTarget = getAbiFromTarget
