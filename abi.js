@@ -26,4 +26,4 @@ function getAbi (target, runtime) {
   throw error.noAbi(target, runtime)
 }
 
-exports.getAbi = getAbi
+module.exports = getAbi

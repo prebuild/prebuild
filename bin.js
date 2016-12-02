@@ -6,7 +6,7 @@ var fs = require('fs')
 var async = require('async')
 var extend = require('xtend')
 
-var getAbi = require('./abi').getAbi
+var getAbi = require('./abi')
 var rc = require('./rc')
 var download = require('./download')
 var prebuild = require('./prebuild')
