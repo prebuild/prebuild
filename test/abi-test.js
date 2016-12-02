@@ -23,6 +23,25 @@ test('getAbiFromTarget calculates correct Node ABI', function (t) {
   t.end()
 })
 
+test('getAbiFromTarget calculates correct Electron ABI', function (t) {
+  t.throws(function () { abi.getAbiFromTarget(undefined, 'electron') })
+  t.throws(function () { abi.getAbiFromTarget('7.2.0', 'electron') })
+  t.equal(abi.getAbiFromTarget('1.4.0', 'electron'), '50')
+  t.equal(abi.getAbiFromTarget('1.3.0', 'electron'), '49')
+  t.equal(abi.getAbiFromTarget('1.2.0', 'electron'), '48')
+  t.equal(abi.getAbiFromTarget('1.1.0', 'electron'), '48')
+  t.equal(abi.getAbiFromTarget('1.0.0', 'electron'), '47')
+  t.equal(abi.getAbiFromTarget('0.37.0', 'electron'), '47')
+  t.equal(abi.getAbiFromTarget('0.36.0', 'electron'), '47')
+  t.equal(abi.getAbiFromTarget('0.35.0', 'electron'), '46')
+  t.equal(abi.getAbiFromTarget('0.34.0', 'electron'), '46')
+  t.equal(abi.getAbiFromTarget('0.33.0', 'electron'), '46')
+  t.equal(abi.getAbiFromTarget('0.32.0', 'electron'), '45')
+  t.equal(abi.getAbiFromTarget('0.31.0', 'electron'), '45')
+  t.equal(abi.getAbiFromTarget('0.30.0', 'electron'), '44')
+  t.end()
+})
+
 test('src/node_version.h takes precedence over src/node.h', function (t) {
   var readCount = 0
   var v = 'vX.Y.Z'
