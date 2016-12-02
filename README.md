@@ -103,6 +103,7 @@ The following placeholders can be used:
 * `{prerelease}`: prelease version taken from `version`
 * `{build}`: build version taken from `version`
 * `{abi}` or `{node_abi}`: ABI version of node/iojs taken from current `--target` or `process.versions.node` if not specified, see `ABI` section below for more information
+* `{runtime}`: Node runtime taken from `--runtime`, default is `node`
 * `{platform}`: platform taken from `--platform` or `process.platform` if not specified
 * `{arch}`: architecture taken from `--arch` or `process.arch` if not specified
 * `{libc}`: libc setting for alternative libc taken from `--libc` or LIBC env var or blank if not specified
@@ -134,7 +135,7 @@ prebuild [options]
 
   --path        -p  path        (make a prebuild here)
   --target      -t  version     (version to build or install for)
-  --runtime     -r  runtime     (runtime [node or electron] to build or install for, default is node)
+  --runtime     -r  runtime     (Node runtime [node or electron] to build or install for, default is node)
   --prebuild    -b  version     (version to prebuild against)
   --all                         (prebuild for all known abi versions)
   --install                     (download when using npm, compile otherwise)
@@ -168,6 +169,7 @@ Options:
 - `.updateName` Function to update the binary name (optional)
 - `.path` Location of the module (default: `"."`)
 - `.abi` Node ABI version (default: `process.versions.modules`)
+- `.runtime` Node runtime (default: `node`)
 - `.libc` OS libc (default: blank)
 - `.platform` OS platform (default: `process.platform`)
 - `.download` Precomputed url to download the binary from (optional)
