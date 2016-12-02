@@ -44,7 +44,6 @@ test('custom config and aliases', function (t) {
     t.equal(rc.path, rc.p, 'path alias')
     t.equal(rc.preinstall, 'somescript.js', 'correct script')
     t.equal(rc.preinstall, rc.i, 'preinstall alias')
-    t.deepEqual(rc.prebuild, rc.pb, 'prebuild alias')
     t.equal(rc.target, 'X.Y.Z', 'correct target')
     t.equal(rc.target, rc.t, 'target alias')
     t.equal(rc.runtime, 'electron', 'correct runtime')

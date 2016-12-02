@@ -67,14 +67,6 @@ if (rc.path === true) {
   delete rc.path
 }
 
-if (rc.prebuild) {
-  rc.pb = rc.prebuild
-}
-
-if (rc.pb) {
-  rc.prebuild = rc.pb
-}
-
 if (rc.all === true) {
   delete rc.prebuild
   rc.prebuild = targets
