@@ -6,8 +6,6 @@ var targets = require('../targets')
 
 test('custom config and aliases', function (t) {
   var args = [
-    '--prebuild vX.Y.Z',
-    '--prebuild vZ.Y.X',
     '--arch ARCH',
     '--platform PLATFORM',
     '--download https://foo.bar',
@@ -54,13 +52,29 @@ test('custom config and aliases', function (t) {
 
 test('using --all will build for all targets', function (t) {
   var args = [
-    '--prebuild vX.Y.Z',
-    '--prebuild vZ.Y.X',
+    '--prebuild X.Y.Z',
+    '--prebuild Z.Y.X',
     '--all'
   ]
   runRc(t, args.join(' '), {}, function (rc) {
     t.equal(rc.all, true, 'should be true')
     t.deepEqual(rc.prebuild, targets, 'targets picked from targets.js')
+    t.end()
+  })
+})
+
+test('using --prebuild respects runtime', function (t) {
+  var args = [
+    '--prebuild X.Y.Z',
+    '--prebuild Z.Y.X',
+    '--runtime electron'
+  ]
+  runRc(t, args.join(' '), {}, function (rc) {
+    var fixture = [
+      {runtime: 'electron', target: 'X.Y.Z'},
+      {runtime: 'electron', target: 'Z.Y.X'}
+    ]
+    t.deepEqual(rc.prebuild, fixture, 'runtime parsed')
     t.end()
   })
 })
@@ -105,16 +119,6 @@ test('npm_config_* are passed on from environment into rc', function (t) {
     t.equal(rc['local-address'], 'LOCAL_ADDRESS', 'local-address is set')
     t.equal(rc.target, '7.0.0', 'target is set')
     t.equal(rc.runtime, 'electron', 'runtime is set')
-    t.end()
-  })
-})
-
-test('modules are build from source when used inside electron', function (t) {
-  var env = {
-    npm_config_runtime: 'electron'
-  }
-  runRc(t, '', env, function (rc) {
-    t.equal(rc.compile, true, 'compile is set')
     t.end()
   })
 })

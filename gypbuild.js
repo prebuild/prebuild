@@ -22,6 +22,10 @@ function runGyp (opts, version, cb) {
     }
     args.push('--target=' + version)
     args.push('--target_arch=' + opts.arch)
+    if (opts.runtime === 'electron') {
+      args.push('--runtime=electron')
+      args.push('--dist-url=https://atom.io/download/electron')
+    }
     if (opts.debug) args.push('--debug')
 
     gyp({

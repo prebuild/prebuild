@@ -20,6 +20,7 @@ function getDownloadUrl (opts) {
     build: opts.pkg.version.split('+')[1],
     abi: opts.abi || process.versions.modules,
     node_abi: process.versions.modules,
+    runtime: opts.runtime || 'node',
     platform: opts.platform,
     arch: opts.arch,
     libc: opts.libc || process.env.LIBC || '',
@@ -33,7 +34,7 @@ function urlTemplate (opts) {
     return opts.download
   }
 
-  var packageName = '{name}-v{version}-node-v{abi}-{platform}{libc}-{arch}.tar.gz'
+  var packageName = '{name}-v{version}-{runtime}-v{abi}-{platform}{libc}-{arch}.tar.gz'
   if (opts.pkg.binary) {
     return [
       opts.pkg.binary.host,
@@ -70,7 +71,8 @@ function getTarPath (opts, abi) {
   return path.join('prebuilds', [
     opts.pkg.name,
     '-v', opts.pkg.version,
-    '-node-v', abi,
+    '-', opts.runtime || 'node',
+    '-v', abi,
     '-', opts.platform,
     opts.libc,
     '-', opts.arch,

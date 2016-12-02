@@ -61,7 +61,7 @@ if (rc.install) {
 
 var buildLog = log.info.bind(log, 'build')
 var opts = extend(rc, {
-  abi: getAbiFromTarget(rc.target),
+  abi: getAbiFromTarget(rc.target, rc.runtime),
   pkg: pkg,
   log: log,
   buildLog: buildLog
@@ -89,8 +89,9 @@ if (opts.compile) {
   })
 } else {
   var files = []
-  async.eachSeries([].concat(opts.prebuild), function (target, next) {
-    prebuild(opts, target, function (err, tarGz) {
+  async.eachSeries(opts.prebuild, function (target, next) {
+    if (opts.all === true) opts.runtime = target.runtime
+    prebuild(opts, target.target, function (err, tarGz) {
       if (err) return next(err)
       files.push(tarGz)
       next()
