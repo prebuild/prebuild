@@ -134,6 +134,7 @@ prebuild [options]
 
   --path        -p  path        (make a prebuild here)
   --target      -t  version     (version to build or install for)
+  --runtime     -r  runtime     (runtime [node or electron] to build or install for, default is node)
   --prebuild    -b  version     (version to prebuild against)
   --all                         (prebuild for all known abi versions)
   --install                     (download when using npm, compile otherwise)

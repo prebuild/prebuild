@@ -18,7 +18,9 @@ test('custom config and aliases', function (t) {
     '--version',
     '--help',
     '--path ../some/other/path',
-    '--preinstall somescript.js'
+    '--preinstall somescript.js',
+    '--target X.Y.Z',
+    '--runtime electron'
   ]
   runRc(t, args.join(' '), {}, function (rc) {
     t.equal(rc.all, false, 'default is not building all targets')
@@ -43,6 +45,10 @@ test('custom config and aliases', function (t) {
     t.equal(rc.preinstall, 'somescript.js', 'correct script')
     t.equal(rc.preinstall, rc.i, 'preinstall alias')
     t.deepEqual(rc.prebuild, rc.pb, 'prebuild alias')
+    t.equal(rc.target, 'X.Y.Z', 'correct target')
+    t.equal(rc.target, rc.t, 'target alias')
+    t.equal(rc.runtime, 'electron', 'correct runtime')
+    t.equal(rc.runtime, rc.r, 'runtime alias')
     t.end()
   })
 })
@@ -91,13 +97,15 @@ test('npm_config_* are passed on from environment into rc', function (t) {
     npm_config_proxy: 'PROXY',
     npm_config_https_proxy: 'HTTPS_PROXY',
     npm_config_local_address: 'LOCAL_ADDRESS',
-    npm_config_target: '7.0.0'
+    npm_config_target: '7.0.0',
+    npm_config_runtime: 'electron'
   }
   runRc(t, '', env, function (rc) {
     t.equal(rc.proxy, 'PROXY', 'proxy is set')
     t.equal(rc['https-proxy'], 'HTTPS_PROXY', 'https-proxy is set')
     t.equal(rc['local-address'], 'LOCAL_ADDRESS', 'local-address is set')
     t.equal(rc.target, '7.0.0', 'target is set')
+    t.equal(rc.runtime, 'electron', 'runtime is set')
     t.end()
   })
 })
