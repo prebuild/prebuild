@@ -1,6 +1,6 @@
 var error = require('./error')
 
-function getAbiFromTarget (target, runtime) {
+function getAbi (target, runtime) {
   if (runtime === 'electron') {
     if (/^1\.4\./.test(target)) return '50'
     if (/^1\.3\./.test(target)) return '49'
@@ -24,4 +24,4 @@ function getAbiFromTarget (target, runtime) {
   throw error.noAbi(target, runtime)
 }
 
-exports.getAbiFromTarget = getAbiFromTarget
+exports.getAbi = getAbi

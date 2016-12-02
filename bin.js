@@ -6,7 +6,7 @@ var fs = require('fs')
 var async = require('async')
 var extend = require('xtend')
 
-var getAbiFromTarget = require('./abi').getAbiFromTarget
+var getAbi = require('./abi').getAbi
 var rc = require('./rc')
 var download = require('./download')
 var prebuild = require('./prebuild')
@@ -63,10 +63,10 @@ var buildLog = log.info.bind(log, 'build')
 var opts = extend(rc, {pkg: pkg, log: log, buildLog: buildLog})
 
 if (opts.compile) {
-  opts.abi = getAbiFromTarget(rc.target, rc.runtime)
+  opts.abi = getAbi(rc.target, rc.runtime)
   build(opts, rc.target, onbuilderror)
 } else if (opts.download) {
-  opts.abi = getAbiFromTarget(rc.target, rc.runtime)
+  opts.abi = getAbi(rc.target, rc.runtime)
   download(opts, function (err) {
     if (err) {
       log.warn('install', err.message)
