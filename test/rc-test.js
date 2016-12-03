@@ -52,8 +52,8 @@ test('custom config and aliases', function (t) {
 
 test('using --all will build for all targets', function (t) {
   var args = [
-    '--prebuild X.Y.Z',
-    '--prebuild Z.Y.X',
+    '--prebuild vX.Y.Z',
+    '--prebuild vZ.Y.X',
     '--all'
   ]
   runRc(t, args.join(' '), {}, function (rc) {
