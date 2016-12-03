@@ -8,10 +8,6 @@ exports.noPrebuilts = function (opts) {
   ].join(' '))
 }
 
-exports.noAbi = function (v, r) {
-  return new Error('Could not detect abi for version ' + v + ' and runtime ' + r)
-}
-
 exports.noBuild = function (folder) {
   return new Error('Could not find build in ' + folder)
 }

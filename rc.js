@@ -1,5 +1,5 @@
 var minimist = require('minimist')
-var targets = require('./targets')
+var targets = require('node-abi').allTargets
 
 if (process.env.npm_config_argv) {
   var npmargs = ['compile', 'build-from-source', 'debug']

@@ -2,7 +2,7 @@ var test = require('tape')
 var path = require('path')
 var exec = require('child_process').exec
 var xtend = require('xtend')
-var targets = require('../targets')
+var targets = require('node-abi').allTargets
 
 test('custom config and aliases', function (t) {
   var args = [
