@@ -1,6 +1,6 @@
 # prebuild
 
-A command line tool for easily doing prebuilds for multiple version of node/iojs on a specific platform.
+A command line tool for easily doing prebuilds for multiple versions of [Node.js](https://nodejs.org/en/), [io.js](https://iojs.org/en/) and [Electron](http://electron.atom.io/) on a specific platform.
 
 ```
 $ npm install -g prebuild
@@ -10,7 +10,7 @@ $ npm install -g prebuild
 
 ## Features
 
-* Builds native modules for any version of node/iojs, without having to switch between different versions of node/iojs to do so. This works by only downloading the correct headers and telling `node-gyp` to use those instead of the ones installed on your system.
+* Builds native modules for any version of Node.js, io.js or Electron, without having to switch between different versions to do so. This works by only downloading the correct headers and telling `node-gyp` to use those instead of the ones installed on your system.
 * Upload (`--upload`) prebuilt binaries to GitHub.
 * Installs (`--install`) prebuilt binaries from GitHub by default or from a host of your choice. The url format can be customized as you see fit.
 * Installed binaries are cached in `~/.npm/_prebuilds/` so you only need to download them once.
@@ -18,7 +18,7 @@ $ npm install -g prebuild
 
 ## Building
 
-Building is only required for targets with different [ABI](https://en.wikipedia.org/wiki/Application_binary_interface) versions. To build for all *supported* abi versions greater than `0.8` ([example from leveldown](https://github.com/Level/leveldown/blob/ea5999dbd5fddf8f811b6c14162a3282b24ef7a9/package.json#L55)):
+Building is only required for targets with different [ABI](https://en.wikipedia.org/wiki/Application_binary_interface) versions. To build for all *supported* ABI versions greater than `0.8` ([example from leveldown](https://github.com/Level/leveldown/blob/ea5999dbd5fddf8f811b6c14162a3282b24ef7a9/package.json#L55)):
 
 ```
 prebuild --all
@@ -30,7 +30,13 @@ Alternatively, to build for some specific versions you can do:
 prebuild -b 0.10.42 -b 0.12.10 -b 4.3.0
 ```
 
-See [`targets.js`](https://github.com/mafintosh/prebuild/blob/master/targets.js) for currently available versions.
+To build against Electron headers, do:
+
+```
+prebuild -b 1.4.10 -r electron
+```
+
+See [`allTargets`](https://github.com/lgeiger/node-abi#usage) for currently available versions.
 
 For more options run `prebuild --help`. The prebuilds created are compatible with [node-pre-gyp](https://github.com/mapbox/node-pre-gyp)
 
@@ -80,6 +86,17 @@ Add `prebuild --install` to your `package.json` so the binaries will be installe
   }
 }
 ```
+
+To install a module for usage in Electron, do:
+```
+npm install some-native-module --target=1.4.10 --runtime=electron --dist-url=https://atom.io/download/electron
+```
+If the module is already installed, do:
+```
+npm rebuild some-native-module --target=1.4.10 --runtime=electron --dist-url=https://atom.io/download/electron
+```
+
+Modules installed via [`apm`](https://github.com/atom/apm) or [`electron-builder`](https://github.com/electron-userland/electron-builder) will automatically use the correct binary for Electron.
 
 If you are hosting your binaries elsewhere you can provide a host to the `--install` flag. The host string can also be a template for constructing more intrinsic urls. Install from `example.com` with a custom format for the binary name:
 
@@ -235,7 +252,7 @@ $ prebuild --all --strip -u <github-token>
 
 This command would:
 
-* Build `some-native-module` for all targets listed in `targets.js` and store them in `./prebuilds/`
+* Build `some-native-module` for all supported targets and store them in `./prebuilds/`
 * Strip binaries from debug information
 * Create a release on GitHub, if needed
 * Upload all binaries to that release, if not already uploaded
