@@ -20,7 +20,8 @@
     "electron"
   ],
   "dependencies": {
-    "async": "^2.1.4",
+    "async-each-series": "^1.1.0",
+    "async-waterfall": "^0.1.5",
     "execspawn": "^1.0.1",
     "ghreleases": "^1.0.2",
     "github-from-package": "0.0.0",

@@ -3,7 +3,7 @@
 var path = require('path')
 var log = require('npmlog')
 var fs = require('fs')
-var async = require('async')
+var eachSeries = require('async-each-series')
 var extend = require('xtend')
 
 var pkg = require(path.resolve('package.json'))
@@ -50,7 +50,7 @@ if (opts['upload-all']) {
   })
 } else {
   var files = []
-  async.eachSeries(opts.prebuild, function (target, next) {
+  eachSeries(opts.prebuild, function (target, next) {
     prebuild(opts, target.target, target.runtime, function (err, tarGz) {
       if (err) return next(err)
       files.push(tarGz)

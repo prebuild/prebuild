@@ -1,5 +1,5 @@
 var fs = require('fs')
-var async = require('async')
+var waterfall = require('async-waterfall')
 var getAbi = require('node-abi').getAbi
 var getTarPath = require('./util').getTarPath
 var build = require('./build')
@@ -49,7 +49,7 @@ function prebuild (opts, target, runtime, callback) {
       })
     }
 
-    async.waterfall(tasks, callback)
+    waterfall(tasks, callback)
   })
 }
 
