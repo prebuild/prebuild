@@ -140,7 +140,7 @@ To create a token:
 * Click the `Generate new token` button
 * Give the token a name and click the `Generate token` button, see below
 
-![create token](images/create-token.png)
+![prebuild-token](https://cloud.githubusercontent.com/assets/13285808/20844584/d0b85268-b8c0-11e6-8b08-2b19522165a9.png)
 
 The default scopes should be fine.
 
