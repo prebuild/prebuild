@@ -1,4 +1,3 @@
-require('./abi-test')
 require('./download-test')
 require('./gypbuild-test')
 require('./pack-test')

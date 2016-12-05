@@ -46,7 +46,7 @@ test('urlTemplate() returns different templates based on pkg and rc', function (
     pkg: {binary: {host: 'http://foo.com'}}
   }
   var t2 = util.urlTemplate(o2)
-  t.equal(t2, 'http://foo.com/{name}-v{version}-node-v{abi}-{platform}{libc}-{arch}.tar.gz', 'template based on pkg.binary properties')
+  t.equal(t2, 'http://foo.com/{name}-v{version}-{runtime}-v{abi}-{platform}{libc}-{arch}.tar.gz', 'template based on pkg.binary properties')
   var o3 = {
     pkg: {binary: {host: 'http://foo.com'}},
     download: true
@@ -63,32 +63,32 @@ test('urlTemplate() returns different templates based on pkg and rc', function (
     pkg: {binary: {host: 'http://foo.com', remote_path: 'w00t'}}
   }
   var t5 = util.urlTemplate(o5)
-  t.equal(t5, 'http://foo.com/w00t/{name}-v{version}-node-v{abi}-{platform}{libc}-{arch}.tar.gz', 'pkg.binary.remote_path is added after host, default format')
+  t.equal(t5, 'http://foo.com/w00t/{name}-v{version}-{runtime}-v{abi}-{platform}{libc}-{arch}.tar.gz', 'pkg.binary.remote_path is added after host, default format')
   var o6 = {
     pkg: {
       binary: {
         host: 'http://foo.com',
         remote_path: 'w00t',
-        package_name: '{name}-{major}.{minor}-node-v{abi}-{platform}-{arch}.tar.gz'
+        package_name: '{name}-{major}.{minor}-{runtime}-v{abi}-{platform}-{arch}.tar.gz'
       }
     }
   }
   var t6 = util.urlTemplate(o6)
-  t.equal(t6, 'http://foo.com/w00t/{name}-{major}.{minor}-node-v{abi}-{platform}-{arch}.tar.gz', 'pkg.binary.package_name is added after host and remote_path, custom format')
+  t.equal(t6, 'http://foo.com/w00t/{name}-{major}.{minor}-{runtime}-v{abi}-{platform}-{arch}.tar.gz', 'pkg.binary.package_name is added after host and remote_path, custom format')
   var o7 = {pkg: require('../package.json'), download: true}
   var t7 = util.urlTemplate(o7)
-  t.equal(t7, 'https://github.com/mafintosh/prebuild/releases/download/v{version}/{name}-v{version}-node-v{abi}-{platform}{libc}-{arch}.tar.gz', '--download with no arguments, no pkg.binary, default format')
+  t.equal(t7, 'https://github.com/mafintosh/prebuild/releases/download/v{version}/{name}-v{version}-{runtime}-v{abi}-{platform}{libc}-{arch}.tar.gz', '--download with no arguments, no pkg.binary, default format')
   t.end()
 })
 
 test('urlTemplate() with pkg.binary cleans up leading ./ or / and trailing /', function (t) {
-  var expected = 'http://foo.com/w00t/{name}-{major}.{minor}-node-v{abi}-{platform}-{arch}.tar.gz'
+  var expected = 'http://foo.com/w00t/{name}-{major}.{minor}-{runtime}-v{abi}-{platform}-{arch}.tar.gz'
   var o = {
     pkg: {
       binary: {
         host: 'http://foo.com/',
         remote_path: '/w00t',
-        package_name: '/{name}-{major}.{minor}-node-v{abi}-{platform}-{arch}.tar.gz'
+        package_name: '/{name}-{major}.{minor}-{runtime}-v{abi}-{platform}-{arch}.tar.gz'
       }
     }
   }
@@ -96,19 +96,19 @@ test('urlTemplate() with pkg.binary cleans up leading ./ or / and trailing /', f
   o.pkg.binary = {
     host: 'http://foo.com/',
     remote_path: './w00t/',
-    package_name: './{name}-{major}.{minor}-node-v{abi}-{platform}-{arch}.tar.gz'
+    package_name: './{name}-{major}.{minor}-{runtime}-v{abi}-{platform}-{arch}.tar.gz'
   }
   t.equal(util.urlTemplate(o), expected)
   o.pkg.binary = {
     host: 'http://foo.com/',
     remote_path: 'w00t/',
-    package_name: '{name}-{major}.{minor}-node-v{abi}-{platform}-{arch}.tar.gz/'
+    package_name: '{name}-{major}.{minor}-{runtime}-v{abi}-{platform}-{arch}.tar.gz/'
   }
   t.equal(util.urlTemplate(o), expected)
   o.pkg.binary = {
     host: 'http://foo.com',
     remote_path: './w00t',
-    package_name: '/{name}-{major}.{minor}-node-v{abi}-{platform}-{arch}.tar.gz/'
+    package_name: '/{name}-{major}.{minor}-{runtime}-v{abi}-{platform}-{arch}.tar.gz/'
   }
   t.equal(util.urlTemplate(o), expected)
   t.end()
@@ -180,36 +180,6 @@ test('getTarPath based on package.json and rc config', function (t) {
   t.end()
 })
 
-test('readGypFile reads file based on correct version', function (t) {
-  var v = 'X.Y.Z'
-  var file = 'node_version.h'
-  var _readFile = fs.readFile
-  fs.readFile = function (fpath, encoding, cb) {
-    t.equal(fpath, home() + '/.node-gyp/' + v + '/src/' + file, 'corect file name')
-    cb()
-  }
-  util.readGypFile({version: v, file: file}, function (err, data) {
-    t.error(err, 'readGypFile should succeed')
-    fs.readFile = _readFile
-    t.end()
-  })
-})
-
-test('readGypFile errors if fs.readFile errors', function (t) {
-  var v = 'X.Y.Z'
-  var file = 'src/node_version.h'
-  var _readFile = fs.readFile
-  var error = new Error('sorry dude, no such file')
-  fs.readFile = function (fpath, encoding, cb) {
-    process.nextTick(cb.bind(null, error))
-  }
-  util.readGypFile({version: v, file: file}, function (err, data) {
-    fs.readFile = _readFile
-    t.same(err, error, 'expected error')
-    t.end()
-  })
-})
-
 // skipping these 3 tests as it is using execspawn now
 
 test.skip('spawn(): no args default to empty array', function (t) {
@@ -261,17 +231,5 @@ test('releaseFolder(): depends on package.json and --debug', function (t) {
     debug: true,
     pkg: { binary: { module_path: 'foo/bar' } }
   }), 'foo/bar', 'using binary property from package.json')
-  t.end()
-})
-
-test('nodeGypPath(): accepts any arguments', function (t) {
-  var nodeGypPath = util.nodeGypPath
-  t.equal(nodeGypPath('.node-gyp', '0.10.40', 'include/node'),
-          home() + '/.node-gyp/0.10.40/include/node')
-  t.equal(nodeGypPath('.node-gyp', '4.1.0', 'include/node', 'node.h'),
-          home() + '/.node-gyp/4.1.0/include/node/node.h')
-  t.equal(nodeGypPath('.node-gyp', '/iojs-1.0.4/', '/include/node/', '/node.h'),
-          home() + '/.node-gyp/iojs-1.0.4/include/node/node.h',
-          'trailing slashes should not matter')
   t.end()
 })

@@ -2,6 +2,7 @@ prebuild [options]
 
   --path        -p  path        (make a prebuild here)
   --target      -t  version     (version to build or install for)
+  --runtime     -r  runtime     (Node runtime [node or electron] to build or install for, default is node)
   --prebuild    -b  version     (version to prebuild against)
   --all                         (prebuild for all known abi versions)
   --install                     (download when using npm, compile otherwise)
@@ -11,7 +12,6 @@ prebuild [options]
   --preinstall  -i  script      (run this script before prebuilding)
   --compile     -c              (compile your project using node-gyp)
   --no-compile                  (skip compile fallback when downloading)
-  --abi                         (use provided abi rather than system abi)
   --libc                        (use provided libc rather than system default)
   --backend                     (specify build backend, default is 'node-gyp')
   --strip                       (strip debug information)

@@ -1,7 +1,7 @@
 var gyp = require('./gyp')
 var util = require('./util')
 
-function runGyp (opts, version, cb) {
+function runGyp (opts, target, cb) {
   var log = opts.log
   if (!opts.preinstall) return run()
 
@@ -16,12 +16,16 @@ function runGyp (opts, version, cb) {
     if (opts.backend === 'node-ninja') {
       args.push('configure')
       args.push('build')
-      args.push('--builddir=build/' + version)
+      args.push('--builddir=build/' + target)
     } else {
       args.push('rebuild')
     }
-    args.push('--target=' + version)
+    args.push('--target=' + target)
     args.push('--target_arch=' + opts.arch)
+    if (opts.runtime === 'electron') {
+      args.push('--runtime=electron')
+      args.push('--dist-url=https://atom.io/download/electron')
+    }
     if (opts.debug) args.push('--debug')
 
     gyp({
@@ -29,7 +33,6 @@ function runGyp (opts, version, cb) {
       backend: opts.backend,
       log: opts.log,
       args: args,
-      version: version,
       filter: function (command) {
         if (command.name === 'configure') {
           return configurePreGyp(command, opts)

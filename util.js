@@ -1,4 +1,3 @@
-var fs = require('fs')
 var path = require('path')
 var github = require('github-from-package')
 var home = require('os-homedir')
@@ -20,6 +19,7 @@ function getDownloadUrl (opts) {
     build: opts.pkg.version.split('+')[1],
     abi: opts.abi || process.versions.modules,
     node_abi: process.versions.modules,
+    runtime: opts.runtime || 'node',
     platform: opts.platform,
     arch: opts.arch,
     libc: opts.libc || process.env.LIBC || '',
@@ -33,7 +33,7 @@ function urlTemplate (opts) {
     return opts.download
   }
 
-  var packageName = '{name}-v{version}-node-v{abi}-{platform}{libc}-{arch}.tar.gz'
+  var packageName = '{name}-v{version}-{runtime}-v{abi}-{platform}{libc}-{arch}.tar.gz'
   if (opts.pkg.binary) {
     return [
       opts.pkg.binary.host,
@@ -70,7 +70,8 @@ function getTarPath (opts, abi) {
   return path.join('prebuilds', [
     opts.pkg.name,
     '-v', opts.pkg.version,
-    '-node-v', abi,
+    '-', opts.runtime || 'node',
+    '-v', abi,
     '-', opts.platform,
     opts.libc,
     '-', opts.arch,
@@ -80,27 +81,6 @@ function getTarPath (opts, abi) {
 
 function localPrebuild (url) {
   return path.join('prebuilds', path.basename(url))
-}
-
-function readGypFile (opts, cb) {
-  var version = opts.version
-  var file = opts.file
-  var dir = '.' + (opts.backend || 'node-gyp')
-  fs.exists(path.join(nodeGypPath(dir), 'iojs-' + version), function (isIojs) {
-    if (isIojs) version = 'iojs-' + version
-    fs.exists(nodeGypPath(dir, version, 'include/node'), function (exists) {
-      if (exists) {
-        fs.readFile(nodeGypPath(dir, version, 'include/node', file), 'utf-8', cb)
-      } else {
-        fs.readFile(nodeGypPath(dir, version, 'src', file), 'utf-8', cb)
-      }
-    })
-  })
-}
-
-function nodeGypPath () {
-  var args = [].slice.call(arguments)
-  return path.join(home(), args.join('/'))
 }
 
 function spawn (cmd, args, cb) {
@@ -139,9 +119,7 @@ exports.prebuildCache = prebuildCache
 exports.npmCache = npmCache
 exports.tempFile = tempFile
 exports.getTarPath = getTarPath
-exports.readGypFile = readGypFile
 exports.spawn = spawn
 exports.exec = exec
 exports.platform = platform
 exports.releaseFolder = releaseFolder
-exports.nodeGypPath = nodeGypPath

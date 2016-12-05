@@ -1,5 +1,5 @@
 var minimist = require('minimist')
-var targets = require('./targets')
+var targets = require('node-abi').allTargets
 
 if (process.env.npm_config_argv) {
   var npmargs = ['compile', 'build-from-source', 'debug']
@@ -16,7 +16,7 @@ if (process.env.npm_config_argv) {
   } catch (e) { }
 }
 
-var npmconfigs = ['proxy', 'https-proxy', 'local-address', 'target', 'abi']
+var npmconfigs = ['proxy', 'https-proxy', 'local-address', 'target', 'runtime']
 for (var j = 0; j < npmconfigs.length; ++j) {
   var envname = 'npm_config_' + npmconfigs[j].replace('-', '_')
   if (process.env[envname]) {
@@ -25,18 +25,12 @@ for (var j = 0; j < npmconfigs.length; ++j) {
   }
 }
 
-// Ensure that modules used inside electron are build from source
-if (process.env['npm_config_runtime'] === 'electron' &&
-    process.argv.indexOf('--build-from-source') === -1) {
-  process.argv.push('--build-from-source')
-}
-
 var rc = module.exports = require('rc')('prebuild', {
-  target: process.version,
+  target: process.versions.node,
+  runtime: 'node',
   arch: process.arch,
   libc: process.env.LIBC,
   platform: process.platform,
-  abi: process.versions.modules,
   all: false,
   force: false,
   debug: false,
@@ -48,6 +42,7 @@ var rc = module.exports = require('rc')('prebuild', {
 }, minimist(process.argv, {
   alias: {
     target: 't',
+    runtime: 'r',
     prebuild: 'b',
     help: 'h',
     arch: 'a',
@@ -67,11 +62,16 @@ if (rc.path === true) {
 }
 
 if (rc.prebuild) {
-  rc.pb = rc.prebuild
-}
-
-if (rc.pb) {
-  rc.prebuild = rc.pb
+  var arr = [].concat(rc.prebuild)
+  var prebuilds = []
+  for (var k = 0, len = arr.length; k < len; k++) {
+    prebuilds.push({
+      runtime: rc.runtime,
+      target: arr[k]
+    })
+  }
+  delete rc.prebuild
+  rc.prebuild = prebuilds
 }
 
 if (rc.all === true) {

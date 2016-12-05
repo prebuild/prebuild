@@ -2,12 +2,10 @@ var test = require('tape')
 var path = require('path')
 var exec = require('child_process').exec
 var xtend = require('xtend')
-var targets = require('../targets')
+var targets = require('node-abi').allTargets
 
 test('custom config and aliases', function (t) {
   var args = [
-    '--prebuild vX.Y.Z',
-    '--prebuild vZ.Y.X',
     '--arch ARCH',
     '--platform PLATFORM',
     '--download https://foo.bar',
@@ -18,7 +16,9 @@ test('custom config and aliases', function (t) {
     '--version',
     '--help',
     '--path ../some/other/path',
-    '--preinstall somescript.js'
+    '--preinstall somescript.js',
+    '--target X.Y.Z',
+    '--runtime electron'
   ]
   runRc(t, args.join(' '), {}, function (rc) {
     t.equal(rc.all, false, 'default is not building all targets')
@@ -42,7 +42,10 @@ test('custom config and aliases', function (t) {
     t.equal(rc.path, rc.p, 'path alias')
     t.equal(rc.preinstall, 'somescript.js', 'correct script')
     t.equal(rc.preinstall, rc.i, 'preinstall alias')
-    t.deepEqual(rc.prebuild, rc.pb, 'prebuild alias')
+    t.equal(rc.target, 'X.Y.Z', 'correct target')
+    t.equal(rc.target, rc.t, 'target alias')
+    t.equal(rc.runtime, 'electron', 'correct runtime')
+    t.equal(rc.runtime, rc.r, 'runtime alias')
     t.end()
   })
 })
@@ -56,6 +59,22 @@ test('using --all will build for all targets', function (t) {
   runRc(t, args.join(' '), {}, function (rc) {
     t.equal(rc.all, true, 'should be true')
     t.deepEqual(rc.prebuild, targets, 'targets picked from targets.js')
+    t.end()
+  })
+})
+
+test('using --prebuild respects runtime', function (t) {
+  var args = [
+    '--prebuild X.Y.Z',
+    '--prebuild Z.Y.X',
+    '--runtime electron'
+  ]
+  runRc(t, args.join(' '), {}, function (rc) {
+    var fixture = [
+      {runtime: 'electron', target: 'X.Y.Z'},
+      {runtime: 'electron', target: 'Z.Y.X'}
+    ]
+    t.deepEqual(rc.prebuild, fixture, 'runtime parsed')
     t.end()
   })
 })
@@ -90,22 +109,16 @@ test('npm_config_* are passed on from environment into rc', function (t) {
   var env = {
     npm_config_proxy: 'PROXY',
     npm_config_https_proxy: 'HTTPS_PROXY',
-    npm_config_local_address: 'LOCAL_ADDRESS'
+    npm_config_local_address: 'LOCAL_ADDRESS',
+    npm_config_target: '7.0.0',
+    npm_config_runtime: 'electron'
   }
   runRc(t, '', env, function (rc) {
     t.equal(rc.proxy, 'PROXY', 'proxy is set')
     t.equal(rc['https-proxy'], 'HTTPS_PROXY', 'https-proxy is set')
     t.equal(rc['local-address'], 'LOCAL_ADDRESS', 'local-address is set')
-    t.end()
-  })
-})
-
-test('modules are build from source when used inside electron', function (t) {
-  var env = {
-    npm_config_runtime: 'electron'
-  }
-  runRc(t, '', env, function (rc) {
-    t.equal(rc.compile, true, 'compile is set')
+    t.equal(rc.target, '7.0.0', 'target is set')
+    t.equal(rc.runtime, 'electron', 'runtime is set')
     t.end()
   })
 })

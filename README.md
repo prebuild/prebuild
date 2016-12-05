@@ -1,6 +1,6 @@
 # prebuild
 
-A command line tool for easily doing prebuilds for multiple version of node/iojs on a specific platform.
+A command line tool for easily doing prebuilds for multiple versions of [Node.js](https://nodejs.org/en/), [io.js](https://iojs.org/en/) and [Electron](http://electron.atom.io/) on a specific platform.
 
 ```
 $ npm install -g prebuild
@@ -10,7 +10,7 @@ $ npm install -g prebuild
 
 ## Features
 
-* Builds native modules for any version of node/iojs, without having to switch between different versions of node/iojs to do so. This works by only downloading the correct headers and telling `node-gyp` to use those instead of the ones installed on your system.
+* Builds native modules for any version of Node.js, io.js or Electron, without having to switch between different versions to do so. This works by only downloading the correct headers and telling `node-gyp` to use those instead of the ones installed on your system.
 * Upload (`--upload`) prebuilt binaries to GitHub.
 * Installs (`--install`) prebuilt binaries from GitHub by default or from a host of your choice. The url format can be customized as you see fit.
 * Installed binaries are cached in `~/.npm/_prebuilds/` so you only need to download them once.
@@ -18,7 +18,7 @@ $ npm install -g prebuild
 
 ## Building
 
-Building is only required for targets with different [ABI](https://en.wikipedia.org/wiki/Application_binary_interface) versions. To build for all *supported* abi versions greater than `0.8` ([example from leveldown](https://github.com/Level/leveldown/blob/ea5999dbd5fddf8f811b6c14162a3282b24ef7a9/package.json#L55)):
+Building is only required for targets with different [ABI](https://en.wikipedia.org/wiki/Application_binary_interface) versions. To build for all *supported* ABI versions greater than `0.8` ([example from leveldown](https://github.com/Level/leveldown/blob/ea5999dbd5fddf8f811b6c14162a3282b24ef7a9/package.json#L55)):
 
 ```
 prebuild --all
@@ -30,7 +30,13 @@ Alternatively, to build for some specific versions you can do:
 prebuild -b 0.10.42 -b 0.12.10 -b 4.3.0
 ```
 
-See [`targets.js`](https://github.com/mafintosh/prebuild/blob/master/targets.js) for currently available versions.
+To build against Electron headers, do:
+
+```
+prebuild -b 1.4.10 -r electron
+```
+
+See [`allTargets`](https://github.com/lgeiger/node-abi#usage) for currently available versions.
 
 For more options run `prebuild --help`. The prebuilds created are compatible with [node-pre-gyp](https://github.com/mapbox/node-pre-gyp)
 
@@ -81,6 +87,17 @@ Add `prebuild --install` to your `package.json` so the binaries will be installe
 }
 ```
 
+To install a module for usage in Electron, do:
+```
+npm install some-native-module --target=1.4.10 --runtime=electron --dist-url=https://atom.io/download/electron
+```
+If the module is already installed, do:
+```
+npm rebuild some-native-module --target=1.4.10 --runtime=electron --dist-url=https://atom.io/download/electron
+```
+
+Modules installed via [`apm`](https://github.com/atom/apm) or [`electron-builder`](https://github.com/electron-userland/electron-builder) will automatically use the correct binary for Electron.
+
 If you are hosting your binaries elsewhere you can provide a host to the `--install` flag. The host string can also be a template for constructing more intrinsic urls. Install from `example.com` with a custom format for the binary name:
 
 ```
@@ -102,7 +119,8 @@ The following placeholders can be used:
 * `{patch}`: patch version taken from `version`
 * `{prerelease}`: prelease version taken from `version`
 * `{build}`: build version taken from `version`
-* `{abi}` or `{node_abi}`: ABI version of node/iojs taken from current `--target` or `process.version` if not specified, see `ABI` section below for more information
+* `{abi}` or `{node_abi}`: ABI version of node/iojs taken from current `--target` or `process.versions.node` if not specified, see `ABI` section below for more information
+* `{runtime}`: Node runtime taken from `--runtime`, default is `node`
 * `{platform}`: platform taken from `--platform` or `process.platform` if not specified
 * `{arch}`: architecture taken from `--arch` or `process.arch` if not specified
 * `{libc}`: libc setting for alternative libc taken from `--libc` or LIBC env var or blank if not specified
@@ -134,6 +152,7 @@ prebuild [options]
 
   --path        -p  path        (make a prebuild here)
   --target      -t  version     (version to build or install for)
+  --runtime     -r  runtime     (Node runtime [node or electron] to build or install for, default is node)
   --prebuild    -b  version     (version to prebuild against)
   --all                         (prebuild for all known abi versions)
   --install                     (download when using npm, compile otherwise)
@@ -143,7 +162,6 @@ prebuild [options]
   --preinstall  -i  script      (run this script before prebuilding)
   --compile     -c              (compile your project using node-gyp)
   --no-compile                  (skip compile fallback when downloading)
-  --abi                         (use provided abi rather than system abi)
   --libc                        (use provided libc rather than system default)
   --backend                     (specify build backend, default is 'node-gyp')
   --strip                       (strip debug information)
@@ -168,6 +186,7 @@ Options:
 - `.updateName` Function to update the binary name (optional)
 - `.path` Location of the module (default: `"."`)
 - `.abi` Node ABI version (default: `process.versions.modules`)
+- `.runtime` Node runtime (default: `node`)
 - `.libc` OS libc (default: blank)
 - `.platform` OS platform (default: `process.platform`)
 - `.download` Precomputed url to download the binary from (optional)
@@ -233,7 +252,7 @@ $ prebuild --all --strip -u <github-token>
 
 This command would:
 
-* Build `some-native-module` for all targets listed in `targets.js` and store them in `./prebuilds/`
+* Build `some-native-module` for all supported targets and store them in `./prebuilds/`
 * Strip binaries from debug information
 * Create a release on GitHub, if needed
 * Upload all binaries to that release, if not already uploaded

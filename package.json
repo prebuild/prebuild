@@ -1,7 +1,7 @@
 {
   "name": "prebuild",
   "version": "4.5.0",
-  "description": "A command line tool for easily doing prebuilds for multiple version of node/iojs on a specific platform",
+  "description": "A command line tool for easily doing prebuilds for multiple versions of node/iojs or electron on a specific platform",
   "scripts": {
     "test": "tape test && npm run audit && npm run lint",
     "audit": "nsp check",
@@ -16,7 +16,8 @@
     "c",
     "c++",
     "bindings",
-    "devops"
+    "devops",
+    "electron"
   ],
   "dependencies": {
     "async": "^2.1.4",
@@ -26,6 +27,7 @@
     "github-from-package": "0.0.0",
     "minimist": "^1.1.2",
     "mkdirp": "^0.5.1",
+    "node-abi": "^1.0.3",
     "node-gyp": "^3.0.3",
     "node-ninja": "^1.0.1",
     "noop-logger": "^0.1.0",
