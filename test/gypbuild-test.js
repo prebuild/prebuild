@@ -1,7 +1,7 @@
 var test = require('tape')
 var runGyp = require('../gypbuild')
 var util = require('../util')
-// TODO use noop-logger when it supports verbose
+var noop = require('noop-logger')
 
 test('gyp is invoked with correct arguments, release mode', function (t) {
   t.plan(6)
@@ -40,11 +40,7 @@ test('gyp is invoked with correct arguments, release mode', function (t) {
       },
       todo: [{ name: 'rebuild', args: [ '--rebuildarg' ] }]
     },
-    log: {
-      http: function () { },
-      info: function () { },
-      verbose: function () { }
-    }
+    log: noop
   }
   runGyp(opts, 'x.y.z', function (err) {
     t.error(err, 'no error')
@@ -67,11 +63,7 @@ test('gyp is invoked with correct arguments, debug mode', function (t) {
       },
       todo: [{ name: 'rebuild', args: ['--rebuildarg'] }]
     },
-    log: {
-      http: function () { },
-      info: function () { },
-      verbose: function () { }
-    }
+    log: noop
   }
   runGyp(opts, 'x.y.z')
 })
@@ -85,11 +77,7 @@ test('--preinstall script is spawned, calls back with error if fails', function 
   }
   var opts = {
     preinstall: 'somescript.sh',
-    log: {
-      http: function () { },
-      info: function () { },
-      verbose: function () { }
-    }
+    log: noop
   }
   runGyp(opts, 'x.y.z', function (err) {
     t.equal(err.message, 'some error', 'correct error')
