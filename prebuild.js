@@ -33,7 +33,8 @@ function prebuild (opts, target, runtime, callback) {
         buildLog('Packing ' + filename + ' into ' + tarPath)
         pack(filename, tarPath, function (err) {
           if (err) return cb(err)
-          cb(null)
+          buildLog('Prebuild written to ' + tarPath)
+          cb(null, tarPath)
         })
       }
     ]
@@ -48,13 +49,7 @@ function prebuild (opts, target, runtime, callback) {
       })
     }
 
-    // TODO if we can move out buildLog() to the caller, we can simply do
-    // async.waterfall(tasks, callback)
-    async.waterfall(tasks, function (err) {
-      if (err) return callback(err)
-      buildLog('Prebuild written to ' + tarPath)
-      callback(null, tarPath)
-    })
+    async.waterfall(tasks, callback)
   })
 }
 
