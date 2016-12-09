@@ -1,4 +1,17 @@
 language: node_js
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - g++-4.9
+      - gcc-4.9
+
+env:
+  global:
+    - CXX: g++-4.9
+    - CC: gcc-4.9
+
 node_js:
   - '7'
   - '6'
