@@ -6,6 +6,13 @@ A command line tool for easily doing prebuilds for multiple versions of [Node.js
 $ npm install -g prebuild
 ```
 
+If you only use `prebuild` in `npm` scripts inside your `package.json` it will use the bundled `node-gyp` of `npm`.
+
+If you want to use `prebuild` from the command line you'll need to install `node-gyp` separately:
+
+```
+$ npm install -g node-gyp
+```
 [![build status](http://img.shields.io/travis/mafintosh/prebuild.svg?style=flat)](http://travis-ci.org/mafintosh/prebuild) [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com/)
 
 ## Features
@@ -89,7 +96,6 @@ prebuild [options]
   --preinstall  -i  script      (run this script before prebuilding)
   --path        -p  path        (make a prebuild here)
   --libc                        (use provided libc rather than system default)
-  --backend                     (specify build backend, default is 'node-gyp')
   --strip                       (strip debug information)
   --debug                       (set Debug or Release configuration)
   --verbose                     (log verbosely)
@@ -108,9 +114,6 @@ Options:
 
 - `.log` (optional)
 - `.preinstall` (optional)
-- `.gyp` Provide a custom `node-gyp` instance (optional)
-- `.backend` Provide a custom `node-gyp` instance via string. Alternatives are `'node-gyp'` and `'node-ninja'` (optional, defaults to `'node-gyp'`)
-- `.args` Additional command line arguments to `node-gyp` (optional)
 - `.debug` Pass in `--debug` on command line to gyp backend (optional)
 
 Example:

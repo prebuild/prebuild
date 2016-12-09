@@ -8,7 +8,6 @@ prebuild [options]
   --preinstall  -i  script      (run this script before prebuilding)
   --path        -p  path        (make a prebuild here)
   --libc                        (use provided libc rather than system default)
-  --backend                     (specify build backend, default is 'node-gyp')
   --strip                       (strip debug information)
   --debug                       (set Debug or Release configuration)
   --verbose                     (log verbosely)
