@@ -96,6 +96,10 @@ prebuild [options]
   --preinstall  -i  script      (run this script before prebuilding)
   --path        -p  path        (make a prebuild here)
   --libc                        (use provided libc rather than system default)
+  --backend                     (specify build backend, default is 'node-gyp'.
+                                 If a backend other than node-gyp is used,
+                                 it has to be installed separately or included
+                                 as a dependency of your native module.)
   --strip                       (strip debug information)
   --debug                       (set Debug or Release configuration)
   --verbose                     (log verbosely)
@@ -114,6 +118,7 @@ Options:
 
 - `.log` (optional)
 - `.preinstall` (optional)
+- `.backend` Provide a custom `node-gyp` instance via string. Alternatives are `'node-gyp'` and `'node-ninja'` (optional, defaults to `'node-gyp'`)
 - `.debug` Pass in `--debug` on command line to gyp backend (optional)
 
 Example:

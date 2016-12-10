@@ -14,7 +14,22 @@ test('can prebuild a native module for electron', function (t) {
   rm.sync(path.join(cwd, 'prebuilds'))
   var file = 'native-v1.0.0-electron-v50-' + process.platform + '-' + process.arch + '.tar.gz'
   var prebuild = path.join(cwd, 'prebuilds', file)
-  exec('npm run prebuild', { cwd: cwd }, function (error, stdout, stderr) {
+  exec('npm run build', { cwd: cwd }, function (error, stdout, stderr) {
+    t.equal(error, null)
+    t.equal(fs.existsSync(prebuild), true)
+    t.end()
+  })
+})
+
+test('can prebuild a native module with node-ninja', function (t) {
+  if (process.versions.modules === '11') {
+    console.log('Skipping test on node 0.10!')
+    return t.end()
+  }
+  rm.sync(path.join(cwd, 'prebuilds'))
+  var file = 'native-v1.0.0-node-v51-' + process.platform + '-' + process.arch + '.tar.gz'
+  var prebuild = path.join(cwd, 'prebuilds', file)
+  exec('npm run build:ninja', { cwd: cwd }, function (error, stdout, stderr) {
     t.equal(error, null)
     t.equal(fs.existsSync(prebuild), true)
     t.end()

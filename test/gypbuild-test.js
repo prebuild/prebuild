@@ -21,11 +21,11 @@ test('node-gyp script is spawned, calls back with error if fails', function (t) 
   })
 })
 
-test('node-gyp script is spawned, respects runtime and debug setting', function (t) {
+test('node-gyp script is spawned, respects runtime, debug and backend setting', function (t) {
   t.plan(2)
   var _exec = util.exec
   util.exec = function (cmd, cb) {
-    var command = 'node-gyp rebuild --target=x.y.z --target_arch=fooarch --runtime=electron --dist-url=https://atom.io/download/electron --debug'
+    var command = 'node-ninja rebuild --builddir=build/x.y.z --target=x.y.z --target_arch=fooarch --runtime=electron --dist-url=https://atom.io/download/electron --debug'
     t.equal(cmd, command, 'correct command')
     process.nextTick(cb.bind(null, new Error('node-gyp error')))
   }
@@ -33,6 +33,7 @@ test('node-gyp script is spawned, respects runtime and debug setting', function 
     arch: 'fooarch',
     runtime: 'electron',
     debug: true,
+    backend: 'node-ninja',
     log: noop
   }
   runGyp(opts, 'x.y.z', function (err) {

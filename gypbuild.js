@@ -11,7 +11,9 @@ function runGyp (opts, target, cb) {
   })
 
   function run () {
-    var args = ['node-gyp', 'rebuild']
+    var args = [opts.backend || 'node-gyp']
+    args.push('rebuild')
+    if (opts.backend === 'node-ninja') args.push('--builddir=build/' + target)
     args.push('--target=' + target)
     args.push('--target_arch=' + opts.arch)
     if (opts.runtime === 'electron') {
