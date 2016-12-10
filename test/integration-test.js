@@ -8,7 +8,7 @@ var cwd = path.join(__dirname, 'native-module')
 
 test('can prebuild a native module for electron', function (t) {
   if (process.versions.modules === '11') {
-    console.log('Skipping test on node 0.10!')
+    console.log('Skipping test on Node 0.10!')
     return t.end()
   }
   rm.sync(path.join(cwd, 'prebuilds'))
@@ -22,8 +22,8 @@ test('can prebuild a native module for electron', function (t) {
 })
 
 test('can prebuild a native module with node-ninja', function (t) {
-  if (process.versions.modules === '11') {
-    console.log('Skipping test on node 0.10!')
+  if (process.versions.modules === '11' || process.versions.modules === '14') {
+    console.log('Skipping test on Node 0.10 and 0.12!')
     return t.end()
   }
   rm.sync(path.join(cwd, 'prebuilds'))
