@@ -7,6 +7,10 @@ var rm = require('rimraf')
 var cwd = path.join(__dirname, 'native-module')
 
 test('can install a native module', function (t) {
+  if (process.versions.modules === '11') {
+    console.log('Skipping test on node 0.10!')
+    return t.end()
+  }
   rm.sync(path.join(cwd, 'build'))
   exec('npm install', { cwd: cwd }, function (error, stdout, stderr) {
     t.equal(error, null)
@@ -16,6 +20,10 @@ test('can install a native module', function (t) {
 })
 
 test('can prebuild a native module for electron', function (t) {
+  if (process.versions.modules === '11') {
+    console.log('Skipping test on node 0.10!')
+    return t.end()
+  }
   rm.sync(path.join(cwd, 'prebuilds'))
   var file = 'native-v1.0.0-electron-v50-' + process.platform + '-' + process.arch + '.tar.gz'
   var prebuild = path.join(cwd, 'prebuilds', file)
