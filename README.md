@@ -159,6 +159,7 @@ prebuild [options]
   --download    -d  [url]       (download prebuilds, no url means github)
   --upload      -u  [gh-token]  (upload prebuilds to github)
   --upload-all  -u  [gh-token]  (upload all files from ./prebuilds folder to github)
+  --prerelease                  (mark as prerelease, also set the prerelease field)
   --preinstall  -i  script      (run this script before prebuilding)
   --compile     -c              (compile your project using node-gyp)
   --no-compile                  (skip compile fallback when downloading)
@@ -223,6 +224,26 @@ prebuild.build({}, version, function (err) {
   // ...
 })
 ```
+
+### .upload(opts, cb)
+
+Options:
+
+- `.pkg` Object with info from `package.json` of the module to upload
+- `.files` List of files to add to the release
+- `.upload` User auth token
+- `.gh` Provide a custom `ghreleases` instance (optional)
+- `.prerelease` Mark as a prerelease. Could be used too to append an entry to the version prerelease field (optional)
+
+Example:
+
+```js
+prebuild.upload({pkg: {version: '1.0.0'}, files: [<files>], upload: <token>},
+  function (err) {
+  // ...
+})
+```
+
 ### Global options:
 
 - `.debug` Download or build a debug build (default: `false`)
