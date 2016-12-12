@@ -3,7 +3,6 @@
 var path = require('path')
 var log = require('npmlog')
 var fs = require('fs')
-var home = require('os-homedir')
 var async = require('async')
 var extend = require('xtend')
 
@@ -51,7 +50,7 @@ delete process.env.NVM_NODEJS_ORG_MIRROR
 var execPath = process.env.npm_execpath || process.env.NPM_CLI_JS
 
 if (rc.install) {
-  if (util.isYarnPath(execPath) && /node_modules/.test(home())) {
+  if (util.isYarnPath(execPath) && /node_modules/.test(process.cwd())) {
     // From yarn repository
     rc.download = rc.install
   } else if (!(typeof pkg._from === 'string')) {
