@@ -233,3 +233,12 @@ test('releaseFolder(): depends on package.json and --debug', function (t) {
   }), 'foo/bar', 'using binary property from package.json')
   t.end()
 })
+
+test('isYarnPath(): returns correct value', function (t) {
+  var yarn = util.isYarnPath
+  t.equal(yarn(null), false)
+  t.equal(yarn(undefined), false)
+  t.equal(yarn('/usr/local/lib/node_modules/npm/bin/npm-cli.js'), false)
+  t.equal(yarn('/usr/local/opt/yarn/libexec/lib/node_modules/yarn/bin/yarn.js'), true)
+  t.end()
+})
