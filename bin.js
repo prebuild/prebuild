@@ -3,6 +3,7 @@
 var path = require('path')
 var log = require('npmlog')
 var fs = require('fs')
+var home = require('os-homedir')
 var async = require('async')
 var extend = require('xtend')
 
@@ -12,6 +13,7 @@ var download = require('./download')
 var prebuild = require('./prebuild')
 var build = require('./build')
 var upload = require('./upload')
+var util = require('./util')
 
 var prebuildVersion = require('./package.json').version
 if (rc.version) {
@@ -46,8 +48,13 @@ log.info('begin', 'Prebuild version', prebuildVersion)
 delete process.env.NVM_IOJS_ORG_MIRROR
 delete process.env.NVM_NODEJS_ORG_MIRROR
 
+var execPath = process.env.npm_execpath || process.env.NPM_CLI_JS
+
 if (rc.install) {
-  if (!(typeof pkg._from === 'string')) {
+  if (util.isYarnPath(execPath) && /node_modules/.test(home())) {
+    // From yarn repository
+    rc.download = rc.install
+  } else if (!(typeof pkg._from === 'string')) {
     // From Git directly
     rc.compile = true
   } else if (pkg._from.length > 4 && pkg._from.substr(0, 4) === 'git+') {

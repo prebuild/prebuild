@@ -111,6 +111,10 @@ function releaseFolder (opts, version) {
   }
 }
 
+function isYarnPath (execPath) {
+  return execPath ? /^yarn/.test(path.basename(execPath)) : false
+}
+
 exports.getDownloadUrl = getDownloadUrl
 exports.urlTemplate = urlTemplate
 exports.cachedPrebuild = cachedPrebuild
@@ -123,3 +127,4 @@ exports.spawn = spawn
 exports.exec = exec
 exports.platform = platform
 exports.releaseFolder = releaseFolder
+exports.isYarnPath = isYarnPath
