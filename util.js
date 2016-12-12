@@ -112,7 +112,7 @@ function releaseFolder (opts, version) {
 }
 
 function isYarnPath (execPath) {
-  return execPath != null && path.basename(execPath).startsWith('yarn')
+  return execPath ? /^yarn/.test(path.basename(execPath)) : false
 }
 
 exports.getDownloadUrl = getDownloadUrl
