@@ -123,6 +123,21 @@ test('npm_config_* are passed on from environment into rc', function (t) {
   })
 })
 
+test('can pass in external package config to rc', function (t) {
+  var pkg = {
+    config: {
+      target: 'woohoo-target',
+      runtime: 'woohoo-runtime',
+      arch: 'woohoo-arch'
+    }
+  }
+  var rc = require('../rc')(pkg)
+  t.equal(rc.target, 'woohoo-target', 'correct target')
+  t.equal(rc.runtime, 'woohoo-runtime', 'correct runtime')
+  t.equal(rc.arch, 'woohoo-arch', 'correct arch')
+  t.end()
+})
+
 function runRc (t, args, env, cb) {
   var cmd = 'node ' + path.resolve(__dirname, '..', 'rc.js') + ' ' + args
   env = xtend(process.env, env)
