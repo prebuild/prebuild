@@ -25,64 +25,69 @@ for (var j = 0; j < npmconfigs.length; ++j) {
   }
 }
 
-var rc = module.exports = require('rc')('prebuild', {
-  target: process.versions.node,
-  runtime: 'node',
-  arch: process.arch,
-  libc: process.env.LIBC,
-  platform: process.platform,
-  all: false,
-  force: false,
-  debug: false,
-  verbose: false,
-  path: '.',
-  backend: 'node-gyp',
-  proxy: process.env['HTTP_PROXY'],
-  'https-proxy': process.env['HTTPS_PROXY']
-}, minimist(process.argv, {
-  alias: {
-    target: 't',
-    runtime: 'r',
-    prebuild: 'b',
-    help: 'h',
-    arch: 'a',
-    path: 'p',
-    force: 'f',
-    version: 'v',
-    upload: 'u',
-    download: 'd',
-    'build-from-source': 'compile',
-    compile: 'c',
-    preinstall: 'i'
+module.exports = function (pkg) {
+  var pkgConf = pkg.config || {}
+  var rc = require('rc')('prebuild', {
+    target: pkgConf.target || process.versions.node,
+    runtime: pkgConf.runtime || 'node',
+    arch: pkgConf.arch || process.arch,
+    libc: process.env.LIBC,
+    platform: process.platform,
+    all: false,
+    force: false,
+    debug: false,
+    verbose: false,
+    path: '.',
+    backend: 'node-gyp',
+    proxy: process.env['HTTP_PROXY'],
+    'https-proxy': process.env['HTTPS_PROXY']
+  }, minimist(process.argv, {
+    alias: {
+      target: 't',
+      runtime: 'r',
+      prebuild: 'b',
+      help: 'h',
+      arch: 'a',
+      path: 'p',
+      force: 'f',
+      version: 'v',
+      upload: 'u',
+      download: 'd',
+      'build-from-source': 'compile',
+      compile: 'c',
+      preinstall: 'i'
+    }
+  }))
+
+  if (rc.path === true) {
+    delete rc.path
   }
-}))
 
-if (rc.path === true) {
-  delete rc.path
-}
-
-if (rc.prebuild) {
-  var arr = [].concat(rc.prebuild)
-  var prebuilds = []
-  for (var k = 0, len = arr.length; k < len; k++) {
-    prebuilds.push({
-      runtime: rc.runtime,
-      target: arr[k]
-    })
+  if (rc.prebuild) {
+    var arr = [].concat(rc.prebuild)
+    var prebuilds = []
+    for (var k = 0, len = arr.length; k < len; k++) {
+      prebuilds.push({
+        runtime: rc.runtime,
+        target: arr[k]
+      })
+    }
+    delete rc.prebuild
+    rc.prebuild = prebuilds
   }
-  delete rc.prebuild
-  rc.prebuild = prebuilds
-}
 
-if (rc.all === true) {
-  delete rc.prebuild
-  rc.prebuild = targets
-}
+  if (rc.all === true) {
+    delete rc.prebuild
+    rc.prebuild = targets
+  }
 
-if (rc['upload-all']) {
-  rc.upload = rc['upload-all']
+  if (rc['upload-all']) {
+    rc.upload = rc['upload-all']
+  }
+
+  return rc
 }
 
 if (!module.parent) {
-  console.log(JSON.stringify(module.exports, null, 2))
+  console.log(JSON.stringify(module.exports({}), null, 2))
 }
