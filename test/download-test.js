@@ -77,7 +77,7 @@ test('downloading from GitHub, not cached', function (t) {
   var _request = https.request
   https.request = function (opts) {
     https.request = _request
-    t.equal('https://' + opts.hostname + opts.path, downloadUrl, 'correct url')
+    t.equal('https://' + opts.uri.hostname + opts.uri.path, downloadUrl, 'correct url')
     return _request.apply(https, arguments)
   }
 
@@ -168,7 +168,7 @@ test('missing .node file in .tar.gz should fail', function (t) {
 })
 
 test('non existing host should fail with no dangling temp file', function (t) {
-  t.plan(3)
+  t.plan(4)
 
   var opts = getOpts()
   opts.pkg.binary = {
@@ -177,19 +177,14 @@ test('non existing host should fail with no dangling temp file', function (t) {
 
   var downloadUrl = util.getDownloadUrl(opts)
   var cachedPrebuild = util.cachedPrebuild(downloadUrl)
-
-  var _createWriteStream = fs.createWriteStream.bind(fs)
-  fs.createWriteStream = function (path) {
-    t.ok(false, 'no temporary file should be written')
-    return _createWriteStream(path)
-  }
+  var tempFile = util.tempFile(cachedPrebuild)
 
   t.equal(fs.existsSync(cachedPrebuild), false, 'nothing cached')
 
   download(opts, function (err) {
     t.ok(err, 'should error')
+    t.equal(fs.existsSync(tempFile), false, 'no temporary file should be written')
     t.equal(fs.existsSync(cachedPrebuild), false, 'nothing cached')
-    fs.createWriteStream = _createWriteStream
   })
 })
 
@@ -212,7 +207,7 @@ test('existing host but invalid url should fail', function (t) {
     res.end()
   }).listen(8888, function () {
     download(opts, function (err) {
-      t.same(err, error.noPrebuilts(opts))
+      t.same(err, error.noPrebuilts(opts), 'got a cool error')
       t.equal(fs.existsSync(cachedPrebuild), false, 'nothing cached')
       t.end()
       server.unref()
@@ -221,9 +216,7 @@ test('existing host but invalid url should fail', function (t) {
 })
 
 test('error during download should fail with no dangling temp file', function (t) {
-  t.plan(7)
-
-  var downloadError = new Error('something went wrong during download')
+  t.plan(6)
 
   var opts = getOpts()
   opts.pkg.binary = {
@@ -246,14 +239,7 @@ test('error during download should fail with no dangling temp file', function (t
   var _request = http.request
   http.request = function (opts) {
     http.request = _request
-    t.equal('http://' + opts.hostname + ':' + opts.port + opts.path, downloadUrl, 'correct url')
-    var wrapped = arguments[1]
-    arguments[1] = function (res) {
-      t.equal(res.statusCode, 200, 'correct statusCode')
-      // simulates error during download
-      setTimeout(function () { res.emit('error', downloadError) }, 10)
-      wrapped(res)
-    }
+    t.equal('http://' + opts.uri.hostname + ':' + opts.uri.port + opts.uri.path, downloadUrl, 'correct url')
     return _request.apply(http, arguments)
   }
 
@@ -263,7 +249,7 @@ test('error during download should fail with no dangling temp file', function (t
     res.write('yep') // simulates hanging request
   }).listen(8889, function () {
     download(opts, function (err) {
-      t.equal(err.message, downloadError.message, 'correct error')
+      t.equal(err.message, 'ESOCKETTIMEDOUT', 'correct error')
       t.equal(fs.existsSync(tempFile), false, 'no dangling temp file')
       t.equal(fs.existsSync(cachedPrebuild), false, 'nothing cached')
       t.end()

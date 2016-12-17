@@ -1,6 +1,6 @@
 var path = require('path')
 var fs = require('fs')
-var get = require('simple-get')
+var request = require('request')
 var pump = require('pump')
 var tfs = require('tar-fs')
 var noop = require('noop-logger')
@@ -40,26 +40,29 @@ function downloadPrebuild (opts, cb) {
           return unpack()
         }
 
-        log.http('request', 'GET ' + downloadUrl)
-        var req = get(downloadUrl, function (err, res) {
-          if (err) return onerror(err)
-          log.http(res.statusCode, downloadUrl)
-          if (res.statusCode !== 200) return onerror()
-          fs.mkdir(util.prebuildCache(), function () {
-            log.info('downloading to @', tempFile)
-            pump(res, fs.createWriteStream(tempFile), function (err) {
-              if (err) return onerror(err)
-              fs.rename(tempFile, cachedPrebuild, function (err) {
-                if (err) return cb(err)
-                log.info('renaming to @', cachedPrebuild)
-                unpack()
-              })
-            })
-          })
-        })
+        fs.mkdir(util.prebuildCache(), function () {
+          var stream = fs.createWriteStream(tempFile)
+          stream.on('open', function () {
+            request({
+              url: downloadUrl,
+              encoding: null,
+              timeout: 3 * 1000
+            }).on('error', onerror)
+            .on('response', function (res) {
+              log.http(res.statusCode, downloadUrl)
+              if (res.statusCode !== 200) return onerror()
+              log.info('downloading to @', tempFile)
 
-        req.setTimeout(30 * 1000, function () {
-          req.abort()
+              stream.on('close', function () {
+                fs.rename(tempFile, cachedPrebuild, function (err) {
+                  if (err) return cb(err)
+                  log.info('renaming to @', cachedPrebuild)
+                  unpack()
+                })
+              })
+            }).pipe(stream)
+          })
+          stream.on('error', onerror)
         })
       })
 
