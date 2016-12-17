@@ -20,8 +20,9 @@ function upload (opts, cb) {
 
   var semver = SemVer(pkg.version)
   var prerelease = opts.prerelease
-  if (prerelease && prerelease !== true || prerelease === 0)
+  if (prerelease && prerelease !== true || prerelease === 0) {
     semver.prerelease.push(prerelease)
+  }
 
   var user = url.split('/')[3]
   var repo = url.split('/')[4]
