@@ -30,7 +30,7 @@ module.exports = function (pkg) {
   var rc = require('rc')('prebuild', {
     target: pkgConf.target || process.versions.node,
     runtime: pkgConf.runtime || 'node',
-    arch: pkgConf.arch || process.arch,
+    arch: pkgConf.arch || process.env.npm_config_arch || process.arch,
     libc: process.env.LIBC,
     platform: process.platform,
     all: false,
