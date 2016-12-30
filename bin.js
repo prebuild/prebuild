@@ -8,7 +8,7 @@ var extend = require('xtend')
 
 var getAbi = require('node-abi').getAbi
 var pkg = require(path.resolve('package.json'))
-var rc = require('./rc')(pkg)
+var rc = require('./rc')
 var download = require('./download')
 var prebuild = require('./prebuild')
 var build = require('./build')
