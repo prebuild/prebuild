@@ -31,10 +31,7 @@
     "node-ninja": "^1.0.1",
     "noop-logger": "^0.1.0",
     "npmlog": "^4.0.1",
-    "pump": "^1.0.0",
     "rc": "^1.0.3",
-    "simple-get": "^1.4.2",
-    "tar-fs": "^1.7.0",
     "tar-stream": "^1.2.1",
     "xtend": "^4.0.1"
   },
