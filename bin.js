@@ -6,14 +6,10 @@ var fs = require('fs')
 var async = require('async')
 var extend = require('xtend')
 
-var getAbi = require('node-abi').getAbi
 var pkg = require(path.resolve('package.json'))
 var rc = require('./rc')
-var download = require('./download')
 var prebuild = require('./prebuild')
-var build = require('./build')
 var upload = require('./upload')
-var util = require('./util')
 
 var prebuildVersion = require('./package.json').version
 if (rc.version) {
@@ -44,45 +40,10 @@ log.info('begin', 'Prebuild version', prebuildVersion)
 delete process.env.NVM_IOJS_ORG_MIRROR
 delete process.env.NVM_NODEJS_ORG_MIRROR
 
-var execPath = process.env.npm_execpath || process.env.NPM_CLI_JS
-
-if (rc.install) {
-  if (util.isYarnPath(execPath) && /node_modules/.test(process.cwd())) {
-    // From yarn repository
-    rc.download = rc.install
-  } else if (!(typeof pkg._from === 'string')) {
-    // From Git directly
-    rc.compile = true
-  } else if (pkg._from.length > 4 && pkg._from.substr(0, 4) === 'git+') {
-    // From npm install git+
-    rc.compile = true
-  } else {
-    // From npm repository
-    rc.download = rc.install
-  }
-}
-
 var buildLog = log.info.bind(log, 'build')
 var opts = extend(rc, {pkg: pkg, log: log, buildLog: buildLog})
 
-if (opts.compile) {
-  opts.abi = getAbi(rc.target, rc.runtime)
-  build(opts, rc.target, onbuilderror)
-} else if (opts.download) {
-  opts.abi = getAbi(rc.target, rc.runtime)
-  download(opts, function (err) {
-    if (err) {
-      log.warn('install', err.message)
-      if (opts.compile === false) {
-        log.info('install', 'no-compile specified, not attempting build.')
-        return
-      }
-      log.info('install', 'We will now try to compile from source.')
-      return build(opts, rc.target, onbuilderror)
-    }
-    log.info('install', 'Prebuild successfully installed!')
-  })
-} else if (opts['upload-all']) {
+if (opts['upload-all']) {
   fs.readdir('prebuilds', function (err, pbFiles) {
     if (err) return onbuilderror(err)
     uploadFiles(pbFiles.map(function (file) { return 'prebuilds/' + file }))
