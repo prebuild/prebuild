@@ -58,25 +58,6 @@ Note that `--upload` will only upload the targets that was built and stored in `
 
 You can use `prebuild --upload-all` to upload all files from the `./prebuilds` folder.
 
-### Formatting urls
-
-The following placeholders can be used:
-
-* `{name}` or `{package_name}`: the package name taken from `package.json`
-* `{version}`: package version taken from `package.json`
-* `{major}`: major version taken from `version`
-* `{minor}`: minor version taken from `version`
-* `{patch}`: patch version taken from `version`
-* `{prerelease}`: prelease version taken from `version`
-* `{build}`: build version taken from `version`
-* `{abi}` or `{node_abi}`: ABI version of node/iojs taken from current `--target` or `process.versions.node` if not specified, see `ABI` section below for more information
-* `{runtime}`: Node runtime taken from `--runtime`, default is `node`
-* `{platform}`: platform taken from `--platform` or `process.platform` if not specified
-* `{arch}`: architecture taken from `--arch` or `process.arch` if not specified
-* `{libc}`: libc setting for alternative libc taken from `--libc` or LIBC env var or blank if not specified
-* `{configuration}`: `'Debug'` if `--debug` is specified, otherwise `'Release'`
-* `{module_name}`: taken from `binary.module_name` property from `package.json`
-
 ## Create GitHub Token
 
 A GitHub token is needed for two reasons:
