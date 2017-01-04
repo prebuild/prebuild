@@ -12,9 +12,8 @@ $ npm install -g prebuild
 
 * Builds native modules for any version of Node.js, io.js or Electron, without having to switch between different versions to do so. This works by only downloading the correct headers and telling `node-gyp` to use those instead of the ones installed on your system.
 * Upload (`--upload`) prebuilt binaries to GitHub.
-* Installs (`--install`) prebuilt binaries from GitHub by default or from a host of your choice. The url format can be customized as you see fit.
-* Installed binaries are cached in `~/.npm/_prebuilds/` so you only need to download them once.
 * Support for stripping (`--strip`) debug information.
+* Install prebuilt modules via [`prebuild-install`](https://github.com/mafintosh/prebuild-install).
 
 ## Building
 
@@ -27,16 +26,16 @@ prebuild --all
 Alternatively, to build for some specific versions you can do:
 
 ```
-prebuild -b 0.10.42 -b 0.12.10 -b 4.3.0
+prebuild -t 0.10.42 -t 0.12.10 -t 4.3.0
 ```
 
 To build against Electron headers, do:
 
 ```
-prebuild -b 1.4.10 -r electron
+prebuild -t 1.4.10 -r electron
 ```
 
-See [`allTargets`](https://github.com/lgeiger/node-abi#usage) for currently available versions.
+See [`allTargets`](https://github.com/lgeiger/node-abi#usage) for all available versions.
 
 For more options run `prebuild --help`. The prebuilds created are compatible with [node-pre-gyp](https://github.com/mapbox/node-pre-gyp)
 
@@ -55,77 +54,9 @@ If you don't want to use the token on cli you can put it in `~/.prebuildrc`:
 upload=<github-token>
 ```
 
-Note that `--upload` will only upload the targets that was built and stored in `./prebuilds`, so `prebuild -u <github-token> -b 4.3.0` will only upload the binary for the `4.3.0` target.
+Note that `--upload` will only upload the targets that was built and stored in `./prebuilds`, so `prebuild -u <github-token> -t 4.3.0` will only upload the binary for the `4.3.0` target.
 
 You can use `prebuild --upload-all` to upload all files from the `./prebuilds` folder.
-
-## Installing
-
-`prebuild` supports installing prebuilt binaries from GitHub by default. To install for your platform, use the `--install` flag.
-
-```
-$ prebuild --install
-```
-
-If no suitable binary can be found, `prebuild` will fallback to `node-gyp rebuild`. Native modules that have a javascript fallback can use `--no-compile` to prevent this.
-
-Once a binary has been downloaded `prebuild` will `require()` the module and if that fails it will also fallback to building it.
-
-Installed binaries are cached in your npm cache meaning you'll only have to download them once.
-
-Add `prebuild --install` to your `package.json` so the binaries will be installed when the module is installed
-
-```json
-{
-  "name": "a-native-module",
-  "scripts": {
-    "install": "prebuild --install"
-  },
-  "dependencies": {
-    "prebuild": "^4.0.0"
-  }
-}
-```
-
-To install a module for usage in Electron, do:
-```
-npm install some-native-module --target=1.4.10 --runtime=electron --dist-url=https://atom.io/download/electron
-```
-If the module is already installed, do:
-```
-npm rebuild some-native-module --target=1.4.10 --runtime=electron --dist-url=https://atom.io/download/electron
-```
-
-Modules installed via [`apm`](https://github.com/atom/apm) or [`electron-builder`](https://github.com/electron-userland/electron-builder) will automatically use the correct binary for Electron.
-
-If you are hosting your binaries elsewhere you can provide a host to the `--install` flag. The host string can also be a template for constructing more intrinsic urls. Install from `example.com` with a custom format for the binary name:
-
-```
-$ prebuild --install https://example.com/{name}-{version}-{abi}-{platform}{libc}-{arch}.tar.gz
-```
-
-`--install` will download binaries when installing from npm and compile in other cases. If you want `prebuild` to always download binaries you can use `--download` instead of `--install`. Either way, if downloading fails for any reason, it will fallback to compiling the code.
-
-There's also support for `node-pre-gyp` style by utilizing the `binary` property in `package.json`.
-
-### Formatting urls
-
-The following placeholders can be used:
-
-* `{name}` or `{package_name}`: the package name taken from `package.json`
-* `{version}`: package version taken from `package.json`
-* `{major}`: major version taken from `version`
-* `{minor}`: minor version taken from `version`
-* `{patch}`: patch version taken from `version`
-* `{prerelease}`: prelease version taken from `version`
-* `{build}`: build version taken from `version`
-* `{abi}` or `{node_abi}`: ABI version of node/iojs taken from current `--target` or `process.versions.node` if not specified, see `ABI` section below for more information
-* `{runtime}`: Node runtime taken from `--runtime`, default is `node`
-* `{platform}`: platform taken from `--platform` or `process.platform` if not specified
-* `{arch}`: architecture taken from `--arch` or `process.arch` if not specified
-* `{libc}`: libc setting for alternative libc taken from `--libc` or LIBC env var or blank if not specified
-* `{configuration}`: `'Debug'` if `--debug` is specified, otherwise `'Release'`
-* `{module_name}`: taken from `binary.module_name` property from `package.json`
 
 ## Create GitHub Token
 
@@ -150,18 +81,13 @@ The default scopes should be fine.
 $ prebuild -h
 prebuild [options]
 
-  --path        -p  path        (make a prebuild here)
   --target      -t  version     (version to build or install for)
   --runtime     -r  runtime     (Node runtime [node or electron] to build or install for, default is node)
-  --prebuild    -b  version     (version to prebuild against)
   --all                         (prebuild for all known abi versions)
-  --install                     (download when using npm, compile otherwise)
-  --download    -d  [url]       (download prebuilds, no url means github)
   --upload      -u  [gh-token]  (upload prebuilds to github)
   --upload-all  -u  [gh-token]  (upload all files from ./prebuilds folder to github)
   --preinstall  -i  script      (run this script before prebuilding)
-  --compile     -c              (compile your project using node-gyp)
-  --no-compile                  (skip compile fallback when downloading)
+  --path        -p  path        (make a prebuild here)
   --libc                        (use provided libc rather than system default)
   --backend                     (specify build backend, default is 'node-gyp')
   --strip                       (strip debug information)
@@ -174,35 +100,6 @@ prebuild [options]
 
 ```js
 var prebuild = require('prebuild')
-```
-
-### .download(opts, cb)
-
-Options:
-
-- `.pkg` the parsed `package.json`
-- `.log` (optional)
-- `.nolocal` Don't check for cached builds (optional)
-- `.updateName` Function to update the binary name (optional)
-- `.path` Location of the module (default: `"."`)
-- `.abi` Node ABI version (default: `process.versions.modules`)
-- `.runtime` Node runtime (default: `node`)
-- `.libc` OS libc (default: blank)
-- `.platform` OS platform (default: `process.platform`)
-- `.download` Precomputed url to download the binary from (optional)
-- `.all` (default: `false`)
-- `.force` (default: `false`)
-- `.proxy` (default: `process.env['HTTP_PROXY']`)
-- `.https-proxy` (default: `process.env['HTTP-PROXY']`)`
-
-Example:
-
-```js
-prebuild.download({
-  pkg: require('./package.json')
-}, function (err) {
-  // ...
-})
 ```
 
 ### .build(opts, version, cb)
