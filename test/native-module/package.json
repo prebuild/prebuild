@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "main": "./index.js",
   "scripts": {
-    "install": "../../bin.js --install",
-    "prebuild": "../../bin.js --prebuild 1.4.11 --runtime electron"
+    "prebuild": "../../bin.js --target 1.4.11 --runtime electron"
   }
 }

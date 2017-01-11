@@ -1,19 +1,5 @@
-exports.noPrebuilts = function (opts) {
-  return new Error([
-    'No prebuilt binaries found',
-    '(target=' + opts.target,
-    'runtime=' + opts.runtime,
-    'arch=' + opts.arch,
-    'platform=' + opts.platform + ')'
-  ].join(' '))
-}
-
 exports.noBuild = function (folder) {
   return new Error('Could not find build in ' + folder)
-}
-
-exports.invalidArchive = function () {
-  return new Error('Missing .node file in archive')
 }
 
 exports.noRepository = function () {

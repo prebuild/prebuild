@@ -8,9 +8,7 @@ test('custom config and aliases', function (t) {
   var args = [
     '--arch ARCH',
     '--platform PLATFORM',
-    '--download https://foo.bar',
     '--upload t00k3n',
-    '--compile',
     '--debug',
     '--force',
     '--version',
@@ -25,12 +23,8 @@ test('custom config and aliases', function (t) {
     t.equal(rc.arch, 'ARCH', 'correct arch')
     t.equal(rc.arch, rc.a, 'arch alias')
     t.equal(rc.platform, 'PLATFORM', 'correct platform')
-    t.equal(rc.download, 'https://foo.bar', 'download is set')
-    t.equal(rc.download, rc.d, 'download alias')
     t.equal(rc.upload, 't00k3n', 'upload token set')
     t.equal(rc.upload, rc.u, 'upload alias')
-    t.equal(rc.compile, true, 'compile is set')
-    t.equal(rc.compile, rc.c, 'compile alias')
     t.equal(rc.debug, true, 'debug is set')
     t.equal(rc.force, true, 'force is set')
     t.equal(rc.force, rc.f, 'force alias')
@@ -52,8 +46,8 @@ test('custom config and aliases', function (t) {
 
 test('using --all will build for all targets', function (t) {
   var args = [
-    '--prebuild vX.Y.Z',
-    '--prebuild vZ.Y.X',
+    '--target vX.Y.Z',
+    '--target vZ.Y.X',
     '--all'
   ]
   runRc(t, args.join(' '), {}, function (rc) {
@@ -65,8 +59,8 @@ test('using --all will build for all targets', function (t) {
 
 test('using --prebuild respects runtime', function (t) {
   var args = [
-    '--prebuild X.Y.Z',
-    '--prebuild Z.Y.X',
+    '--target X.Y.Z',
+    '--target Z.Y.X',
     '--runtime electron'
   ]
   runRc(t, args.join(' '), {}, function (rc) {
@@ -85,57 +79,6 @@ test('using --upload-all will set token for --upload', function (t) {
     t.equal(rc.upload, 't00k3n', 'upload should have the same token set')
     t.end()
   })
-})
-
-test('npm args are passed on from npm environment into rc', function (t) {
-  var env = {
-    npm_config_argv: JSON.stringify({
-      cooked: [
-        '--compile',
-        '--build-from-source',
-        '--debug'
-      ]
-    })
-  }
-  runRc(t, '', env, function (rc) {
-    t.equal(rc['build-from-source'], true, '--build-from-source works')
-    t.equal(rc.compile, true, 'compile should be true')
-    t.equal(rc.debug, true, 'debug should be true')
-    t.end()
-  })
-})
-
-test('npm_config_* are passed on from environment into rc', function (t) {
-  var env = {
-    npm_config_proxy: 'PROXY',
-    npm_config_https_proxy: 'HTTPS_PROXY',
-    npm_config_local_address: 'LOCAL_ADDRESS',
-    npm_config_target: '7.0.0',
-    npm_config_runtime: 'electron'
-  }
-  runRc(t, '', env, function (rc) {
-    t.equal(rc.proxy, 'PROXY', 'proxy is set')
-    t.equal(rc['https-proxy'], 'HTTPS_PROXY', 'https-proxy is set')
-    t.equal(rc['local-address'], 'LOCAL_ADDRESS', 'local-address is set')
-    t.equal(rc.target, '7.0.0', 'target is set')
-    t.equal(rc.runtime, 'electron', 'runtime is set')
-    t.end()
-  })
-})
-
-test('can pass in external package config to rc', function (t) {
-  var pkg = {
-    config: {
-      target: 'woohoo-target',
-      runtime: 'woohoo-runtime',
-      arch: 'woohoo-arch'
-    }
-  }
-  var rc = require('../rc')(pkg)
-  t.equal(rc.target, 'woohoo-target', 'correct target')
-  t.equal(rc.runtime, 'woohoo-runtime', 'correct runtime')
-  t.equal(rc.arch, 'woohoo-arch', 'correct arch')
-  t.end()
 })
 
 function runRc (t, args, env, cb) {
