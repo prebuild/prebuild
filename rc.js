@@ -24,7 +24,10 @@ var rc = require('rc')('prebuild', {
     version: 'v',
     upload: 'u',
     preinstall: 'i'
-  }
+  },
+  string: [
+    'target'
+  ]
 }))
 
 if (rc.path === true) {
