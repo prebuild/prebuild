@@ -1,6 +1,7 @@
 var fs = require('fs')
 var async = require('async')
 var getAbi = require('node-abi').getAbi
+var getTarget = require('node-abi').getTarget
 var getTarPath = require('./util').getTarPath
 var build = require('./build')
 var strip = require('./strip')
@@ -15,7 +16,11 @@ function prebuild (opts, target, runtime, callback) {
   var buildLogMessage = 'Preparing to prebuild ' + pkg.name + '@' + pkg.version + ' for ' + runtime + ' ' + target + ' on ' + opts.platform + '-' + opts.arch + ' using ' + opts.backend
   if (opts.libc && opts.libc.length > 0) buildLogMessage += 'using libc ' + opts.libc
   buildLog(buildLogMessage)
+
+  // --target can be target or abi
+  target = getTarget(target, runtime)
   var abi = getAbi(target, runtime)
+
   var tarPath = getTarPath(opts, abi)
   fs.stat(tarPath, function (err, st) {
     if (!err && !opts.force) {

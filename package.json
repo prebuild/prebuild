@@ -26,7 +26,7 @@
     "github-from-package": "0.0.0",
     "minimist": "^1.1.2",
     "mkdirp": "^0.5.1",
-    "node-abi": "^1.0.3",
+    "node-abi": "^1.3.0",
     "node-gyp": "^3.0.3",
     "node-ninja": "^1.0.1",
     "noop-logger": "^0.1.0",
