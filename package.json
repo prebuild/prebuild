@@ -20,15 +20,14 @@
     "electron"
   ],
   "dependencies": {
-    "async": "^2.1.4",
+    "async-each-series": "^1.1.0",
+    "async-waterfall": "^0.1.5",
     "execspawn": "^1.0.1",
     "ghreleases": "^1.0.2",
     "github-from-package": "0.0.0",
     "minimist": "^1.1.2",
     "mkdirp": "^0.5.1",
     "node-abi": "^1.0.3",
-    "node-gyp": "^3.0.3",
-    "node-ninja": "^1.0.1",
     "noop-logger": "^0.1.0",
     "npmlog": "^4.0.1",
     "rc": "^1.0.3",

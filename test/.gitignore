@@ -1,3 +1,7 @@
 build/
 prebuilds/
 invalid.node
+native-module/*.Makefile
+native-module/gyp-mac-tool
+native-module/Makefile
+native-module/*.mk

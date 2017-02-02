@@ -3,6 +3,11 @@
   "version": "1.0.0",
   "main": "./index.js",
   "scripts": {
-    "prebuild": "../../bin.js --target 1.4.11 --runtime electron"
+    "prebuild": "npm install",
+    "build": "../../bin.js --target 1.4.11 --runtime electron",
+    "build:ninja": "../../bin.js --target 7.2.1 --backend node-ninja"
+  },
+  "dependencies": {
+    "node-ninja": "^1.0.2"
   }
 }
