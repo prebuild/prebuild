@@ -1,5 +1,5 @@
 var minimist = require('minimist')
-var targets = require('node-abi').allTargets
+var targets = require('node-abi').supportedTargets
 
 var rc = require('rc')('prebuild', {
   target: process.versions.node,
