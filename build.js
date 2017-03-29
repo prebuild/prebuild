@@ -19,12 +19,16 @@ function build (opts, version, cb) {
   function done () {
     fs.readdir(release, function (err, files) {
       if (err) return cb(err)
+      var nodeFiles = [];
       for (var i = 0; i < files.length; i++) {
         if (/\.node$/i.test(files[i])) {
-          return cb(null, path.join(release, files[i]), files[i])
+          nodeFiles.push(path.join(release, files[i]))
         }
       }
-      cb(error.noBuild(release))
+      if (nodeFiles.length === 0) {
+        return cb(error.noBuild(release))
+      }
+      return cb(null, nodeFiles)
     })
   }
 }
