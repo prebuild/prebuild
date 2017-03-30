@@ -1,9 +1,7 @@
-var path = require('path')
-var fs = require('fs')
 var noop = require('noop-logger')
 var releaseFolder = require('./util').releaseFolder
 var gypbuild = require('./gypbuild')
-var error = require('./error')
+var collectArtifacts = require('./collect-artifacts')
 
 function build (opts, version, cb) {
   var log = opts.log || noop
@@ -13,20 +11,8 @@ function build (opts, version, cb) {
   gypbuild(opts, version, function (err) {
     if (err) return cb(err)
     log.verbose('done node-gyp\'ing')
-    done()
+    collectArtifacts(release, opts, cb)
   })
-
-  function done () {
-    fs.readdir(release, function (err, files) {
-      if (err) return cb(err)
-      for (var i = 0; i < files.length; i++) {
-        if (/\.node$/i.test(files[i])) {
-          return cb(null, path.join(release, files[i]), files[i])
-        }
-      }
-      cb(error.noBuild(release))
-    })
-  }
 }
 
 module.exports = build
