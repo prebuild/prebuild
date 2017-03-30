@@ -3,6 +3,7 @@ var path = require('path')
 var mkdirp = require('mkdirp')
 var tar = require('tar-stream')
 var zlib = require('zlib')
+var async = require('async')
 
 function mode(octal) {
   return parseInt(octal, 8)
