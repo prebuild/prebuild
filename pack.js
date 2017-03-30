@@ -5,11 +5,11 @@ var tar = require('tar-stream')
 var zlib = require('zlib')
 var async = require('async')
 
-function mode(octal) {
+function mode (octal) {
   return parseInt(octal, 8)
 }
 
-function pack(filenames, tarPath, cb) {
+function pack (filenames, tarPath, cb) {
   mkdirp(path.dirname(tarPath), function () {
     var tarStream = tar.pack()
     var ws = fs.createWriteStream(tarPath)
@@ -17,7 +17,13 @@ function pack(filenames, tarPath, cb) {
     var tasks = filenames.map(function (filename) {
       return function (done) {
         fs.stat(filename, function (err, st) {
-          if (err) return cb(err)
+          if (err) {
+            // done(err) to stop the waterfall ???
+            fs.unlink(tarPath, function () {
+              cb(err)
+            })
+            return
+          }
 
           var stream = tarStream.entry({
             name: filename.replace(/\\/g, '/').replace(/:/g, '_'),
@@ -28,7 +34,7 @@ function pack(filenames, tarPath, cb) {
           })
 
           fs.createReadStream(filename).pipe(stream).on('finish', function () {
-            //call async.waterfall cb
+            // call async.waterfall cb
             done()
           })
         })

@@ -19,7 +19,7 @@ function build (opts, version, cb) {
   function done () {
     fs.readdir(release, function (err, files) {
       if (err) return cb(err)
-      var nodeFiles = [];
+      var nodeFiles = []
       for (var i = 0; i < files.length; i++) {
         if (/\.node$/i.test(files[i])) {
           nodeFiles.push(path.join(release, files[i]))
