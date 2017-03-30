@@ -9,7 +9,7 @@ var tar = require('tar-stream')
 var output = path.join(__dirname, 'prebuilds')
 
 test('missing file calls back with error', function (t) {
-  pack('thisfilesurelydoesnotexists', 'foo', function (err) {
+  pack(['thisfilesurelydoesnotexists'], 'foo', function (err) {
     t.ok(err, 'should error')
     t.end()
   })
@@ -89,7 +89,7 @@ test('resulting file is a gzipped tar archive', function (t) {
     return tarStream
   }
 
-  pack(filename, tarPath, function (err) {
+  pack([filename], tarPath, function (err) {
     t.error(err, 'no error')
     t.equal(fs.existsSync(tarPath), true, 'file created')
     fs.stat = _stat

@@ -3,31 +3,47 @@ var path = require('path')
 var mkdirp = require('mkdirp')
 var tar = require('tar-stream')
 var zlib = require('zlib')
+var async = require('async')
 
 function mode (octal) {
   return parseInt(octal, 8)
 }
 
-function pack (filename, tarPath, cb) {
+function pack (filenames, tarPath, cb) {
   mkdirp(path.dirname(tarPath), function () {
-    fs.stat(filename, function (err, st) {
-      if (err) return cb(err)
+    var tarStream = tar.pack()
+    var ws = fs.createWriteStream(tarPath)
 
-      var tarStream = tar.pack()
-      var ws = fs.createWriteStream(tarPath)
-      var stream = tarStream.entry({
-        name: filename.replace(/\\/g, '/').replace(/:/g, '_'),
-        size: st.size,
-        mode: st.mode | mode('444') | mode('222'),
-        gid: st.gid,
-        uid: st.uid
-      })
+    var tasks = filenames.map(function (filename) {
+      return function (done) {
+        fs.stat(filename, function (err, st) {
+          if (err) {
+            // done(err) to stop the waterfall ???
+            fs.unlink(tarPath, function () {
+              cb(err)
+            })
+            return
+          }
 
-      fs.createReadStream(filename).pipe(stream).on('finish', function () {
-        tarStream.finalize()
-      })
+          var stream = tarStream.entry({
+            name: filename.replace(/\\/g, '/').replace(/:/g, '_'),
+            size: st.size,
+            mode: st.mode | mode('444') | mode('222'),
+            gid: st.gid,
+            uid: st.uid
+          })
 
-      tarStream.pipe(zlib.createGzip()).pipe(ws).on('close', cb)
+          fs.createReadStream(filename).pipe(stream).on('finish', function () {
+            // call async.waterfall cb
+            done()
+          })
+        })
+      }
+    })
+
+    async.waterfall(tasks, function () {
+      tarStream.finalize()  // finalize archive
+      tarStream.pipe(zlib.createGzip()).pipe(ws).on('close', cb)  // compress
     })
   })
 }
