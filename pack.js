@@ -13,8 +13,8 @@ function pack(filenames, tarPath, cb) {
     var tarStream = tar.pack()
     var ws = fs.createWriteStream(tarPath)
 
-    var tasks = fileNames.map(function (filename) {
-      return function (cbWaterfall) {
+    var tasks = filenames.map(function (filename) {
+      return function (done) {
         fs.stat(filename, function (err, st) {
           if (err) return cb(err)
 
@@ -28,18 +28,16 @@ function pack(filenames, tarPath, cb) {
 
           fs.createReadStream(filename).pipe(stream).on('finish', function () {
             //call async.waterfall cb
-            cbWaterfall()
+            done()
           })
         })
       }
     })
 
-    tasks.push(function () {
+    async.waterfall(tasks, function () {
       tarStream.finalize()  // finalize archive
-      tarStream.pipe(zlib.createGzip()).pipe(ws).on('close', cbWaterfall)  // compress
+      tarStream.pipe(zlib.createGzip()).pipe(ws).on('close', cb)  // compress
     })
-
-    async.waterfall(tasks, cb)
   })
 }
 
