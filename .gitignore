@@ -1,7 +1,4 @@
 node_modules
 npm-debug.log
-<<<<<<< HEAD
 yarn.lock
-=======
 foo
->>>>>>> tmpvar/configurable-file-regex
