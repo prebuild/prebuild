@@ -2,9 +2,10 @@ var test = require('tape')
 var runGyp = require('../gypbuild')
 var util = require('../util')
 var noop = require('noop-logger')
+var osenv = require('osenv')
 
 test('gyp is invoked with correct arguments, release mode', function (t) {
-  t.plan(6)
+  t.plan(7)
   var opts = {
     pkg: {binary: {
       module_name: 'module_name',
@@ -43,6 +44,8 @@ test('gyp is invoked with correct arguments, release mode', function (t) {
     log: noop
   }
   runGyp(opts, 'x.y.z', function (err) {
+    var devDir = opts.gyp.devDir
+    t.equal(devDir.indexOf(osenv.home()), 0, devDir + ' should start with home folder')
     t.error(err, 'no error')
   })
 })
