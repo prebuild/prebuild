@@ -47,6 +47,7 @@ test('resulting file is a gzipped tar archive', function (t) {
 
   var gzipStream
   var _createGzip = zlib.createGzip
+  if (Object.defineProperty) Object.defineProperty(zlib, 'createGzip', {writable: true})
   zlib.createGzip = function () {
     t.pass('should be called')
     gzipStream = _createGzip()
@@ -66,11 +67,11 @@ test('resulting file is a gzipped tar archive', function (t) {
 
     var _entry = tarStream.entry.bind(tarStream)
     tarStream.entry = function (opts) {
-      t.equal(opts.name, filename, 'correct filename')
-      t.ok(opts.size, '.size is set')
-      t.ok(opts.mode, '.mode is set')
-      t.ok(opts.gid, '.gid is set')
-      t.ok(opts.uid, '.uid is set')
+      t.equal(opts.name, filename.replace(/\\/g, '/').replace(/:/g, '_'), 'correct filename')
+      t.notEqual(opts.size, undefined, '.size is set')
+      t.notEqual(opts.mode, undefined, '.mode is set')
+      t.notEqual(opts.gid, undefined, '.gid is set')
+      t.notEqual(opts.uid, undefined, '.uid is set')
       return _entry(opts)
     }
 

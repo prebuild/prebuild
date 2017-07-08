@@ -3,6 +3,7 @@ var cp = require('child_process')
 var EventEmitter = require('events').EventEmitter
 var util = require('../util')
 var error = require('../error')
+var path = require('path')
 
 var spawn = util.spawn
 
@@ -16,7 +17,7 @@ test('getTarPath based on package.json and rc config', function (t) {
     arch: 'x64'
   }
   var tarPath = util.getTarPath(opts, 314)
-  t.equal(tarPath, 'prebuilds/foo-vX.Y.Z-node-v314-fakeos-x64.tar.gz', 'correct tar path')
+  t.equal(tarPath, path.join('prebuilds', 'foo-vX.Y.Z-node-v314-fakeos-x64.tar.gz'), 'correct tar path')
   t.end()
 })
 
