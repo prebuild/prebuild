@@ -1,5 +1,6 @@
 var assert = require('assert')
 var path = require('path')
+var osenv = require('osenv')
 
 var backends = {
   'node-gyp': require('node-gyp')(),
@@ -23,6 +24,7 @@ function runGyp (opts, cb) {
 
   log.verbose('execute ' + backend + ' with `' + args.join(' ') + '`')
   gyp.parseArgv(args)
+  gyp.devDir = devDir()
 
   function runStep () {
     var command = gyp.todo.shift()
@@ -56,6 +58,10 @@ function runGyp (opts, cb) {
     log.verbose('no gyp tasks needed')
     cb()
   }
+}
+
+function devDir () {
+  return path.resolve(osenv.home(), '.node-gyp')
 }
 
 module.exports = runGyp
