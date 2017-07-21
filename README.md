@@ -17,11 +17,12 @@ $ npm install -g prebuild
 
 ## Building
 
-Building is only required for targets with different [ABI](https://en.wikipedia.org/wiki/Application_binary_interface) versions. To build for all *supported* ABI versions greater than `0.8` ([example from leveldown](https://github.com/Level/leveldown/blob/ea5999dbd5fddf8f811b6c14162a3282b24ef7a9/package.json#L55)):
+Building is only required for targets with different [ABI](https://en.wikipedia.org/wiki/Application_binary_interface) versions. To build for all *supported* ABI versions ([example from leveldown](https://github.com/Level/leveldown/blob/ea5999dbd5fddf8f811b6c14162a3282b24ef7a9/package.json#L55)):
 
 ```
 prebuild --all
 ```
+*Supported* ABI versions may change over time without a new prebuild release.
 
 Alternatively, to build for some specific versions you can do:
 
