@@ -30,6 +30,8 @@ function runGyp (opts, target, cb) {
     }
     if (opts.debug) args.push('--debug')
 
+    if (opts.format) args.push('--', '--format', opts.format)
+
     gyp({
       gyp: opts.gyp,
       backend: opts.backend,

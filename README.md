@@ -65,6 +65,15 @@ loaded:
 prebuild-install --binary-name main-binary.node
 ```
 
+The build file format is selected automatically by `node-gyp`, however it is possible to specify needed format explicitly with `--format` parameter.
+This is particularly useful if unusual flavor is required, which could be specified in 'format-flavor' form
+(there is no comprehensive list of formats/flavors available so one has to find possible combinations from `node-gyp` source code).
+For example, in order to build using Makefiles but assume Android cross-compilation:
+
+```
+prebuild --format make-android
+```
+
 ## Uploading
 
 `prebuild` supports uploading prebuilds to GitHub releases. If the release doesn't exist, it will be created for you. To upload prebuilds simply add the `-u <github-token>` option:

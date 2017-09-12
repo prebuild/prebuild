@@ -16,6 +16,7 @@ var rc = require('rc')('prebuild', {
   verbose: false,
   path: '.',
   backend: 'node-gyp',
+  format: false,
   'include-regex': '\\.node$'
 }, minimist(process.argv, {
   alias: {
