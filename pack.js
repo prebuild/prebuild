@@ -27,7 +27,7 @@ function pack (filename, tarPath, cb) {
         tarStream.finalize()
       })
 
-      tarStream.pipe(zlib.createGzip()).pipe(ws).on('close', cb)
+      tarStream.pipe(zlib.createGzip({ level: 9 })).pipe(ws).on('close', cb)
     })
   })
 }
