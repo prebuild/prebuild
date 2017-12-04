@@ -1,12 +1,13 @@
 # prebuild
 
-A command line tool for easily doing prebuilds for multiple versions of [Node.js](https://nodejs.org/en/), [io.js](https://iojs.org/en/) and [Electron](http://electron.atom.io/) on a specific platform.
+> A command line tool for easily doing prebuilds for multiple versions of [Node.js](https://nodejs.org/en/), [io.js](https://iojs.org/en/) and [Electron](http://electron.atom.io/) on a specific platform.
 
 ```
 $ npm install -g prebuild
 ```
 
-[![build status](http://img.shields.io/travis/mafintosh/prebuild.svg?style=flat)](http://travis-ci.org/mafintosh/prebuild) [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com/)
+[![build status](http://img.shields.io/travis/prebuild/prebuild.svg?style=flat)](http://travis-ci.org/prebuild/prebuild)
+[![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com/)
 
 ## Features
 
