@@ -1,11 +1,14 @@
 var minimist = require('minimist')
 var targets = require('node-abi').supportedTargets
+var detectLibc = require('detect-libc')
+
+var libc = process.env.LIBC || (detectLibc.isNonGlibcLinux && detectLibc.family) || ''
 
 var rc = require('rc')('prebuild', {
   target: process.versions.node,
   runtime: 'node',
   arch: process.arch,
-  libc: process.env.LIBC,
+  libc: libc,
   platform: process.platform,
   all: false,
   force: false,
