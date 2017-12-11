@@ -21,6 +21,7 @@
   ],
   "dependencies": {
     "async": "^2.1.4",
+    "detect-libc": "^1.0.3",
     "execspawn": "^1.0.1",
     "ghreleases": "^1.0.2",
     "github-from-package": "0.0.0",
