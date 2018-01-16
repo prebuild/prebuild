@@ -29,14 +29,14 @@ function prebuild (opts, target, runtime, callback) {
     }
     var tasks = [
       function (cb) {
-        build(opts, target, function (err, filename) {
+        build(opts, target, function (err, filenames) {
           if (err) return cb(err)
-          cb(null, filename)
+          cb(null, filenames)
         })
       },
-      function (filename, cb) {
-        buildLog('Packing ' + filename + ' into ' + tarPath)
-        pack(filename, tarPath, function (err) {
+      function (filenames, cb) {
+        buildLog('Packing ' + filenames.join(', ') + ' into ' + tarPath)
+        pack(filenames, tarPath, function (err) {
           if (err) return cb(err)
           buildLog('Prebuild written to ' + tarPath)
           cb(null, tarPath)

@@ -12,7 +12,8 @@ var rc = require('rc')('prebuild', {
   debug: false,
   verbose: false,
   path: '.',
-  backend: 'node-gyp'
+  backend: 'node-gyp',
+  'include-regex': '\\.node$'
 }, minimist(process.argv, {
   alias: {
     target: 't',
@@ -53,6 +54,8 @@ if (rc.all === true) {
 if (rc['upload-all']) {
   rc.upload = rc['upload-all']
 }
+
+rc['include-regex'] = new RegExp(rc['include-regex'], 'i')
 
 module.exports = rc
 

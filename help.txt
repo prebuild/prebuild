@@ -7,6 +7,7 @@ prebuild [options]
   --upload-all  -u  [gh-token]  (upload all files from ./prebuilds folder to github)
   --preinstall  -i  script      (run this script before prebuilding)
   --path        -p  path        (make a prebuild here)
+  --include-regex               (regex to match files that will be distributed [default: '\.node$'])
   --libc                        (use provided libc rather than system default)
   --backend                     (specify build backend, default is 'node-gyp')
   --strip                       (strip debug information)
