@@ -38,9 +38,9 @@
   },
   "devDependencies": {
     "a-native-module": "^1.0.0",
-    "nsp": "^2.2.0",
+    "nsp": "^3.1.0",
     "rimraf": "^2.4.2",
-    "standard": "^8.6.0",
+    "standard": "^10.0.3",
     "tape": "^4.0.1"
   },
   "bin": {
