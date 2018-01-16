@@ -17,7 +17,7 @@ test('normal mode, only collect .node', function (t) {
 test('collect .node and .out', function (t) {
   var release = path.join(__dirname, 'fixture', 'multiple-files')
   var opts = {
-    'collect-files-filter': /\.(out|node)$/i
+    'include-regex': /\.(out|node)$/i
   }
   collectArtifacts(release, opts, function (err, collected) {
     t.error(err, 'collected files')

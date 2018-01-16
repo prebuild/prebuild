@@ -43,10 +43,10 @@ For more options run `prebuild --help`. The prebuilds created are compatible wit
 
 If you'd like to include other files with your prebuilds like additional
 `.node` files or other native libraries, you can pass a file-matching regular
-expression to `--collect-files-filter`:
+expression to `--include-regex`:
 
 ```
-prebuild -t 8.0.0 --collect-files-filter "\.(node|a)$"
+prebuild -t 8.0.0 --include-regex "\.(node|a)$"
 ```
 
 Note that if you include multiple `.node` files, you will need to use the
@@ -105,7 +105,7 @@ prebuild [options]
   --upload-all  -u  [gh-token]  (upload all files from ./prebuilds folder to github)
   --preinstall  -i  script      (run this script before prebuilding)
   --path        -p  path        (make a prebuild here)
-  --collect-files-filter        (regex to match files that will be distributed [default: '\.node$'])
+  --include-regex               (regex to match files that will be distributed [default: '\.node$'])
   --libc                        (use provided libc rather than system default)
   --backend                     (specify build backend, default is 'node-gyp')
   --strip                       (strip debug information)

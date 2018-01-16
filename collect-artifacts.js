@@ -5,7 +5,7 @@ var error = require('./error')
 module.exports = collectArtifacts
 
 function collectArtifacts (release, opts, cb) {
-  var fileExp = opts['collect-files-filter']
+  var fileExp = opts['include-regex']
   fs.readdir(release, function (err, files) {
     if (err) return cb(err)
 
