@@ -27,4 +27,4 @@ matrix:
 
 script:
   - npm run test
-  - test $NSP && npm run audit || echo "skip audit"
+  - if [[ $NSP ]]; then npm run audit; else echo "skip audit"; fi
