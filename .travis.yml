@@ -7,6 +7,10 @@ addons:
       - g++-4.9
       - gcc-4.9
 
+os:
+  - linux
+  - osx
+
 env:
   global:
     - CXX: g++-4.9
