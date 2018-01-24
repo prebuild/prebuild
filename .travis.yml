@@ -15,15 +15,37 @@ env:
 matrix:
   include:
   - node_js: '9'
+    os: linux
     env: [NSP=true]
   - node_js: '8'
+    os: linux
     env: [NSP=true]
   - node_js: '7'
+    os: linux
     env: [NSP=true]
   - node_js: '6'
+    os: linux
     env: [NSP=true]
   - node_js: '5'
+    os: linux
   - node_js: '4'
+    os: linux
+  - node_js: '9'
+    os: osx
+    env: [NSP=true]
+  - node_js: '8'
+    os: osx
+    env: [NSP=true]
+  - node_js: '7'
+    os: osx
+    env: [NSP=true]
+  - node_js: '6'
+    os: osx
+    env: [NSP=true]
+  - node_js: '5'
+    os: osx
+  - node_js: '4'
+    os: osx
 
 script:
   - npm run test
