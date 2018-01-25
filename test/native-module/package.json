@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "main": "./index.js",
   "scripts": {
-    "prebuild": "node ../../bin.js --target 1.4.11 --runtime electron"
+    "prebuild": "node ../../bin.js --target 1.4.11 --runtime electron",
+    "prebuild-node-webkit": "node ../../bin.js --target 0.26.6 --runtime node-webkit"
   }
 }

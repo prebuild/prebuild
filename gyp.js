@@ -4,7 +4,8 @@ var osenv = require('osenv')
 
 var backends = {
   'node-gyp': require('node-gyp')(),
-  'node-ninja': require('node-ninja')()
+  'node-ninja': require('node-ninja')(),
+  'nw-gyp': require('nw-gyp')()
 }
 
 // Use system installed node-gyp for other JS engines
