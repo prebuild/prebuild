@@ -1,7 +1,7 @@
 {
   "name": "prebuild",
   "version": "7.2.2",
-  "description": "A command line tool for easily doing prebuilds for multiple versions of node/iojs or electron on a specific platform",
+  "description": "A command line tool for easily making prebuilt binaries for multiple versions of node or electron on a specific platform",
   "scripts": {
     "test": "tape test && npm run lint",
     "audit": "nsp check",
