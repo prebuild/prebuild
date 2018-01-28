@@ -1,7 +1,7 @@
 prebuild [options]
 
   --target      -t  version     (version to build or install for)
-  --runtime     -r  runtime     (Node runtime [node or electron] to build or install for, default is node)
+  --runtime     -r  runtime     (Node runtime [node, electron or node-webkit] to build or install for, default is node)
   --all                         (prebuild for all known abi versions)
   --upload      -u  [gh-token]  (upload prebuilds to github)
   --upload-all  -u  [gh-token]  (upload all files from ./prebuilds folder to github)
