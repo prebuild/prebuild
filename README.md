@@ -7,6 +7,7 @@ $ npm install -g prebuild
 ```
 
 [![build status](http://img.shields.io/travis/prebuild/prebuild.svg?style=flat)](http://travis-ci.org/prebuild/prebuild)
+[![Build status](https://ci.appveyor.com/api/projects/status/oy1kk4fpy51net0v/branch/master?svg=true)](https://ci.appveyor.com/project/mathiask88/prebuild)
 [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com/)
 
 ## Features
