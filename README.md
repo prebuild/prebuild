@@ -1,6 +1,6 @@
 # prebuild
 
-> A command line tool for easily making prebuilt binaries for multiple versions of [Node.js](https://nodejs.org/en/) and [Electron](http://electron.atom.io/) on a specific platform.
+> A command line tool for easily making prebuilt binaries for multiple versions of [Node.js](https://nodejs.org/en/), [Electron](http://electron.atom.io/) and [NW.js](https://nwjs.io/) on a specific platform.
 
 ```
 $ npm install -g prebuild
@@ -24,6 +24,7 @@ Building is only required for targets with different [ABI](https://en.wikipedia.
 ```
 prebuild --all
 ```
+
 *Supported* ABI versions may change over time without a new prebuild release.
 
 Alternatively, to build for some specific versions you can do:
