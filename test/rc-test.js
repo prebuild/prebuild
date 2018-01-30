@@ -17,7 +17,8 @@ test('custom config and aliases', function (t) {
     '--preinstall somescript.js',
     '--target 13',
     '--runtime electron',
-    '--libc testlibc'
+    '--libc testlibc',
+    '--format msvs'
   ]
   runRc(t, args.join(' '), {}, function (rc) {
     t.equal(rc.all, false, 'default is not building all targets')
@@ -42,6 +43,7 @@ test('custom config and aliases', function (t) {
     t.equal(rc.runtime, 'electron', 'correct runtime')
     t.equal(rc.runtime, rc.r, 'runtime alias')
     t.equal(rc.libc, 'testlibc', 'libc family')
+    t.equal(rc.format, 'msvs', 'correct node-gyp format')
     t.end()
   })
 })
