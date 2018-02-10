@@ -3,7 +3,7 @@
   "version": "7.4.0",
   "description": "A command line tool for easily making prebuilt binaries for multiple versions of node, electron or node-webkit on a specific platform",
   "scripts": {
-    "test": "tape test && npm run lint",
+    "test": "verify-travis-appveyor && tape test && npm run lint",
     "audit": "nsp check",
     "lint": "standard"
   },
@@ -44,7 +44,8 @@
     "nsp": "^3.1.0",
     "rimraf": "^2.4.2",
     "standard": "^10.0.3",
-    "tape": "^4.0.1"
+    "tape": "^4.0.1",
+    "verify-travis-appveyor": "^2.0.1"
   },
   "bin": {
     "prebuild": "./bin.js"
