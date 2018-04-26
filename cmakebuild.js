@@ -14,11 +14,11 @@ function runGyp (opts, target, cb) {
 
   function run () {
     let cmakeJsPath = path.join(
-			__dirname,
-			'../',
-			'.bin',
-			process.platform === 'win32' ? 'cmake-js.cmd' : 'cmake-js'
-		)
+      __dirname,
+      '../',
+      '.bin',
+      process.platform === 'win32' ? 'cmake-js.cmd' : 'cmake-js'
+    )
 
     var args = ['rebuild']
     args.push('--runtime-version=' + target)
