@@ -17,7 +17,8 @@ var rc = require('rc')('prebuild', {
   path: '.',
   backend: 'node-gyp',
   format: false,
-  'include-regex': '\\.node$'
+  'include-regex': '\\.node$',
+  toolset: null
 }, minimist(process.argv, {
   alias: {
     target: 't',
@@ -28,7 +29,8 @@ var rc = require('rc')('prebuild', {
     force: 'f',
     version: 'v',
     upload: 'u',
-    preinstall: 'i'
+    preinstall: 'i',
+    toolset: 'T'
   },
   string: [
     'target'

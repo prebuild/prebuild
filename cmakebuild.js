@@ -13,7 +13,7 @@ function runGyp (opts, target, cb) {
   })
 
   function run () {
-    let cmakeJsPath = path.join(
+    var cmakeJsPath = path.join(
       __dirname,
       '../',
       '.bin',
@@ -24,11 +24,10 @@ function runGyp (opts, target, cb) {
     args.push('--runtime-version=' + target)
     args.push('--target_arch=' + opts.arch)
     args.push('--runtime=' + opts.runtime)
+
     if (opts.debug) args.push('--debug')
 
-    if (process.platform === 'win32') {
-      args.push('--toolset=v140,host=x64')
-    }
+    if (opts.toolset) args.push('--toolset=' + opts.toolset)
 
     if (target.split('.')[0] > 4) {
       process.env.msvs_toolset = 14
@@ -38,7 +37,7 @@ function runGyp (opts, target, cb) {
       process.env.msvs_version = 2013
     }
 
-    let proc = spawn(cmakeJsPath, args, {
+    var proc = spawn(cmakeJsPath, args, {
       env: process.env
     })
     proc.stdout.pipe(process.stdout)
