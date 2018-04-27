@@ -42,7 +42,17 @@ function runGyp (opts, target, cb) {
           return configurePreGyp(command, opts)
         }
       }
-    }, cb)
+    }, function (err) {
+      if (err) return cb(err)
+
+      if (!opts.precompress) return cb()
+
+      log.verbose('executing precompress')
+      util.exec(opts.precompress, function (err) {
+        if (err) return cb(err)
+        cb()
+      })
+    })
   }
 }
 

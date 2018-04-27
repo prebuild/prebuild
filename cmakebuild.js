@@ -46,7 +46,14 @@ function runGyp (opts, target, cb) {
       if (code === 1) {
         return cb(new Error('Failed to build...'))
       }
-      cb()
+
+      if (!opts.precompress) return cb()
+
+      log.verbose('executing precompress')
+      util.exec(opts.precompress, function (err) {
+        if (err) return cb(err)
+        cb()
+      })
     })
   }
 }

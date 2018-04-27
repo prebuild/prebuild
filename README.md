@@ -121,6 +121,7 @@ prebuild [options]
   --upload      -u  [gh-token]  (upload prebuilds to github)
   --upload-all  -u  [gh-token]  (upload all files from ./prebuilds folder to github)
   --preinstall  -i  script      (run this script before prebuilding)
+  --precompress -c  script      (run this script before compression)
   --path        -p  path        (make a prebuild here)
   --include-regex               (regex to match files that will be distributed [default: '\.node$'])
   --libc                        (use provided libc rather than system default)
