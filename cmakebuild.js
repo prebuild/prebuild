@@ -2,7 +2,7 @@ var util = require('./util')
 var path = require('path')
 var spawn = require('child_process').spawn
 
-function runGyp (opts, target, cb) {
+function runCmake (opts, target, cb) {
   var log = opts.log
   if (!opts.preinstall) return run()
 
@@ -15,8 +15,7 @@ function runGyp (opts, target, cb) {
   function run () {
     var cmakeJsPath = path.join(
       __dirname,
-      '../',
-      '.bin',
+      '../.bin',
       process.platform === 'win32' ? 'cmake-js.cmd' : 'cmake-js'
     )
 
@@ -58,4 +57,4 @@ function runGyp (opts, target, cb) {
   }
 }
 
-module.exports = runGyp
+module.exports = runCmake
