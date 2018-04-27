@@ -28,14 +28,6 @@ function runCmake (opts, target, cb) {
 
     if (opts.toolset) args.push('--toolset=' + opts.toolset)
 
-    if (target.split('.')[0] > 4) {
-      process.env.msvs_toolset = 14
-      process.env.msvs_version = 2015
-    } else {
-      process.env.msvs_toolset = 12
-      process.env.msvs_version = 2013
-    }
-
     var proc = spawn(cmakeJsPath, args, {
       env: process.env
     })
