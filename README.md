@@ -74,6 +74,12 @@ For example, in order to build using Makefiles but assume Android cross-compilat
 prebuild --format make-android
 ```
 
+When using the `cmake-js` backend the same `--format` parameter can be used to pass in additional commer separated parameters.
+
+```
+prebuild --format --prefer-clang,-CDUV_INCLUDE_DIR="..."
+```
+
 ## Uploading
 
 `prebuild` supports uploading prebuilds to GitHub releases. If the release doesn't exist, it will be created for you. To upload prebuilds simply add the `-u <github-token>` option:
@@ -125,6 +131,7 @@ prebuild [options]
   --include-regex               (regex to match files that will be distributed [default: '\.node$'])
   --libc                        (use provided libc rather than system default)
   --backend                     (specify build backend, default is 'node-gyp')
+  --format                      (specify additional parameters for chosen backend)
   --strip                       (strip debug information)
   --debug                       (set Debug or Release configuration)
   --verbose                     (log verbosely)

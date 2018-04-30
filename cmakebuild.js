@@ -4,10 +4,7 @@ var which = require('npm-which')(process.cwd())
 function runCmake (opts, target, cb) {
   which('cmake-js', function (err, cmakeJsPath) {
     if (err) return cb(err)
-    run(cmakeJsPath)
-  })
 
-  function run (cmakeJsPath) {
     var args = ['rebuild']
     args.push('--runtime-version=' + target)
     args.push('--target_arch=' + opts.arch)
@@ -15,7 +12,7 @@ function runCmake (opts, target, cb) {
 
     if (opts.debug) args.push('--debug')
 
-    if (opts.format) args = args.concat(opts.format.split(' '))
+    if (opts.format) args = args.concat(opts.format.split(','))
 
     var proc = spawn(cmakeJsPath, args, {
       env: process.env
