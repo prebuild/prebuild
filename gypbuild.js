@@ -32,6 +32,12 @@ function runGyp (opts, target, cb) {
 
     if (opts.format) args.push('--', '--format', opts.format)
 
+    for (var key of Object.keys(opts)) {
+      if (key.substr(0, 2) === 'BK') {
+        args.push('--' + key.substr(2) + '=' + opts[key])
+      }
+    }
+
     gyp({
       gyp: opts.gyp,
       backend: opts.backend,

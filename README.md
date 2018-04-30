@@ -125,6 +125,7 @@ prebuild [options]
   --include-regex               (regex to match files that will be distributed [default: '\.node$'])
   --libc                        (use provided libc rather than system default)
   --backend                     (specify build backend, default is 'node-gyp')
+  --BK...                       (pass additional arguments to the chosen backend [eg: --BKmsvs_version 2013])
   --strip                       (strip debug information)
   --debug                       (set Debug or Release configuration)
   --verbose                     (log verbosely)
@@ -144,7 +145,7 @@ Options:
 - `.log` (optional)
 - `.preinstall` (optional)
 - `.gyp` Provide a custom `node-gyp` instance (optional)
-- `.backend` Provide a custom `node-gyp` instance via string. Alternatives are `'node-gyp'`, `'node-ninja'` and `'nw-gyp'` (optional, defaults to `'node-gyp'`)
+- `.backend` Provide a custom `node-gyp` instance via string. Alternatives are `'node-gyp'`, `'node-ninja'`, `'nw-gyp'` and `'cmake-js'` (optional, defaults to `'node-gyp'`)
 - `.args` Additional command line arguments to `node-gyp` (optional)
 - `.debug` Pass in `--debug` on command line to gyp backend (optional)
 

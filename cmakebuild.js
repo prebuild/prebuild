@@ -26,7 +26,11 @@ function runCmake (opts, target, cb) {
 
     if (opts.debug) args.push('--debug')
 
-    if (opts.toolset) args.push('--toolset=' + opts.toolset)
+    for (var key of Object.keys(opts)) {
+      if (key.substr(0, 2) === 'BK') {
+        args.push('--' + key.substr(2) + '=' + opts[key])
+      }
+    }
 
     var proc = spawn(cmakeJsPath, args, {
       env: process.env

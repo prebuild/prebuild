@@ -29,8 +29,7 @@ var rc = require('rc')('prebuild', {
     version: 'v',
     upload: 'u',
     preinstall: 'i',
-    precompress: 'c',
-    toolset: 'T'
+    precompress: 'c'
   },
   string: [
     'target'
