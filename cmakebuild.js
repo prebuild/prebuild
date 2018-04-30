@@ -1,24 +1,23 @@
 var util = require('./util')
-var path = require('path')
 var spawn = require('child_process').spawn
+var which = require('npm-which')(process.cwd())
 
 function runCmake (opts, target, cb) {
   var log = opts.log
-  if (!opts.preinstall) return run()
 
-  log.verbose('executing preinstall')
-  util.exec(opts.preinstall, function (err) {
+  which('cmake-js', function (err, cmakeJsPath) {
     if (err) return cb(err)
-    run()
+
+    if (!opts.preinstall) return run(cmakeJsPath)
+
+    log.verbose('executing preinstall')
+    util.exec(opts.preinstall, function (err) {
+      if (err) return cb(err)
+      run(cmakeJsPath)
+    })
   })
 
-  function run () {
-    var cmakeJsPath = path.join(
-      __dirname,
-      '../.bin',
-      process.platform === 'win32' ? 'cmake-js.cmd' : 'cmake-js'
-    )
-
+  function run (cmakeJsPath) {
     var args = ['rebuild']
     args.push('--runtime-version=' + target)
     args.push('--target_arch=' + opts.arch)
