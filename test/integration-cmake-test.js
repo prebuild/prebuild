@@ -18,7 +18,7 @@ test('can prebuild a cmake-js native module for electron', function (t) {
   })
 })
 
-test('can prebuild a native module for node', function (t) {
+test('can prebuild a cmake-js native module for node', function (t) {
   rm.sync(path.join(cwd, 'prebuilds'))
   var file = 'native-v1.0.0-node-v57-' + process.platform + '-' + process.arch + '.tar.gz'
   var prebuild = path.join(cwd, 'prebuilds', file)

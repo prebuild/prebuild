@@ -6,7 +6,7 @@ var rm = require('rimraf')
 
 var cwd = path.join(__dirname, 'native-module-gyp')
 
-test('can prebuild a native module for electron', function (t) {
+test('can prebuild a gyp native module for electron', function (t) {
   rm.sync(path.join(cwd, 'prebuilds'))
   var file = 'native-v1.0.0-electron-v50-' + process.platform + '-' + process.arch + '.tar.gz'
   var prebuild = path.join(cwd, 'prebuilds', file)
@@ -19,7 +19,7 @@ test('can prebuild a native module for electron', function (t) {
   })
 })
 
-test('can prebuild a native module for node-webkit', function (t) {
+test('can prebuild a gyp native module for node-webkit', function (t) {
   rm.sync(path.join(cwd, 'prebuilds'))
   var file = 'native-v1.0.0-node-webkit-v59-' + process.platform + '-' + process.arch + '.tar.gz'
   var prebuild = path.join(cwd, 'prebuilds', file)
