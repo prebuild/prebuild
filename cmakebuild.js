@@ -14,9 +14,7 @@ function runCmake (opts, target, cb) {
 
     if (opts.format) args = args.concat(opts.format.split(' '))
 
-    var proc = spawn(cmakeJsPath, args, {
-      env: process.env
-    })
+    var proc = spawn(cmakeJsPath, args)
     proc.stdout.pipe(process.stdout)
     proc.stderr.pipe(process.stderr)
     proc.on('exit', function (code, sig) {
