@@ -17,9 +17,9 @@ function runCmake (opts, target, cb) {
     var proc = spawn(cmakeJsPath, args)
     proc.stdout.pipe(process.stdout)
     proc.stderr.pipe(process.stderr)
-    proc.on('exit', function (code, sig) {
-      if (code === 1) {
-        return cb(new Error('Failed to build...'))
+    proc.on('exit', function (code) {
+      if (code !== 0) {
+        return cb(new Error('Failed to build cmake with exit code ' + code))
       }
       cb()
     })
