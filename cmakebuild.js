@@ -13,7 +13,7 @@ function runCmake (opts, target, cb) {
     if (opts.debug) args.push('--debug')
 
     var foundRest = false
-    for (var arg of process.argv){
+    for (var arg of process.argv) {
       !foundRest && arg === '--' ? foundRest = true : args.push(arg)
     }
 
