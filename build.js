@@ -12,7 +12,7 @@ function build (opts, version, cb) {
     var release = releaseFolder(opts, version)
     var build = opts.backend === 'cmake-js' ? cmakebuild : gypbuild
 
-    log.verbose('starting build process ' + opts.backend
+    log.verbose('starting build process ' + opts.backend)
     build(opts, version, function (err) {
       if (err) return cb(err)
       log.verbose('completed building ' + opts.backend)
