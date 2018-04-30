@@ -1,20 +1,10 @@
-var util = require('./util')
 var spawn = require('child_process').spawn
 var which = require('npm-which')(process.cwd())
 
 function runCmake (opts, target, cb) {
-  var log = opts.log
-
   which('cmake-js', function (err, cmakeJsPath) {
     if (err) return cb(err)
-
-    if (!opts.preinstall) return run(cmakeJsPath)
-
-    log.verbose('executing preinstall')
-    util.exec(opts.preinstall, function (err) {
-      if (err) return cb(err)
-      run(cmakeJsPath)
-    })
+    run(cmakeJsPath)
   })
 
   function run (cmakeJsPath) {
@@ -25,11 +15,7 @@ function runCmake (opts, target, cb) {
 
     if (opts.debug) args.push('--debug')
 
-    for (var key of Object.keys(opts)) {
-      if (key.substr(0, 2) === 'BK') {
-        args.push('--' + key.substr(2) + '=' + opts[key])
-      }
-    }
+    if (opts.format) args.push('--', '--format', opts.format)
 
     var proc = spawn(cmakeJsPath, args, {
       env: process.env

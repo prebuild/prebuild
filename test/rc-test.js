@@ -18,8 +18,7 @@ test('custom config and aliases', function (t) {
     '--target 13',
     '--runtime electron',
     '--libc testlibc',
-    '--format msvs',
-    '--BKmsvs_version 2013'
+    '--format msvs'
   ]
   runRc(t, args.join(' '), {}, function (rc) {
     t.equal(rc.all, false, 'default is not building all targets')
@@ -45,7 +44,6 @@ test('custom config and aliases', function (t) {
     t.equal(rc.runtime, rc.r, 'runtime alias')
     t.equal(rc.libc, 'testlibc', 'libc family')
     t.equal(rc.format, 'msvs', 'correct node-gyp format')
-    t.equal(rc.BKmsvs_version, 2013, 'correct backend parameter')
     t.end()
   })
 })

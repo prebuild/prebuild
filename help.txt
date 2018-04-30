@@ -10,7 +10,6 @@ prebuild [options]
   --include-regex               (regex to match files that will be distributed [default: '\.node$'])
   --libc                        (use provided libc rather than system default)
   --backend                     (specify build backend, default is 'node-gyp')
-  --BK...                       (pass additional arguments to the chosen backend [eg: --BKmsvs_version 2013])
   --strip                       (strip debug information)
   --debug                       (set Debug or Release configuration)
   --verbose                     (log verbosely)
