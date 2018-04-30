@@ -28,14 +28,7 @@ function runCmake (opts, target, cb) {
       if (code !== 0) {
         return cb(new Error('Failed to build cmake with exit code ' + code))
       }
-
-      if (!opts.precompress) return cb()
-
-      log.verbose('executing precompress')
-      util.exec(opts.precompress, function (err) {
-        if (err) return cb(err)
-        cb()
-      })
+      cb()
     })
   })
 }

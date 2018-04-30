@@ -16,7 +16,14 @@ function build (opts, version, cb) {
     build(opts, version, function (err) {
       if (err) return cb(err)
       log.verbose('completed building ' + opts.backend)
-      collectArtifacts(release, opts, cb)
+
+      if (!opts.prepack) return collectArtifacts(release, opts, cb)
+
+      log.verbose('executing prepack')
+      util.exec(opts.prepack, function (err) {
+        if (err) return cb(err)
+        collectArtifacts(release, opts, cb)
+      })
     })
   }
 
