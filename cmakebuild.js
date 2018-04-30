@@ -12,7 +12,10 @@ function runCmake (opts, target, cb) {
 
     if (opts.debug) args.push('--debug')
 
-    if (opts.format) args = args.concat(opts.format.split(' '))
+    var foundRest = false
+    for (var arg of process.argv){
+      !foundRest && arg === '--' ? foundRest = true : args.push(arg)
+    }
 
     var proc = spawn(cmakeJsPath, args)
     proc.stdout.pipe(process.stdout)
