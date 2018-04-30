@@ -61,6 +61,44 @@ test('using --all will build for all targets', function (t) {
   })
 })
 
+test('using --all=node will build for all node targets', function (t) {
+  var args = [
+    '--target vX.Y.Z',
+    '--target vZ.Y.X',
+    '--all=node'
+  ]
+  runRc(t, args.join(' '), {}, function (rc) {
+    var nodeTargets = []
+    for (var target of targets) {
+      if (target.runtime === 'node') {
+        nodeTargets.push(target)
+      }
+    }
+    t.equal(rc.all, 'node', 'should be true')
+    t.deepEqual(rc.prebuild, nodeTargets, 'targets picked from targets.js')
+    t.end()
+  })
+})
+
+test('using --all=node,electron will build for all node and electron targets', function (t) {
+  var args = [
+    '--target vX.Y.Z',
+    '--target vZ.Y.X',
+    '--all=node,electron'
+  ]
+  runRc(t, args.join(' '), {}, function (rc) {
+    var nodeElectronTargets = []
+    for (var target of targets) {
+      if (target.runtime === 'node' || target.runtime === 'electron') {
+        nodeElectronTargets.push(target)
+      }
+    }
+    t.equal(rc.all, 'node,electron', 'should be true')
+    t.deepEqual(rc.prebuild, nodeElectronTargets, 'targets picked from targets.js')
+    t.end()
+  })
+})
+
 test('using --prebuild respects runtime', function (t) {
   var args = [
     '--target X.Y.Z',

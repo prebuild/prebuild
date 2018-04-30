@@ -27,6 +27,12 @@ prebuild --all
 
 *Supported* ABI versions may change over time without a new prebuild release.
 
+You can also build all ABI versions for specified runtimes.
+
+```
+prebuild --all=node,electron
+```
+
 Alternatively, to build for some specific versions you can do:
 
 ```
@@ -117,7 +123,7 @@ prebuild [options]
 
   --target      -t  version     (version to build or install for)
   --runtime     -r  runtime     (Node runtime [node, electron or node-webkit] to build or install for, default is node)
-  --all                         (prebuild for all known abi versions)
+  --all                         (prebuild for all known abi versions, can take comma separated runtimes)
   --upload      -u  [gh-token]  (upload prebuilds to github)
   --upload-all  -u  [gh-token]  (upload all files from ./prebuilds folder to github)
   --preinstall  -i  script      (run this script before prebuilding)
