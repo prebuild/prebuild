@@ -6,9 +6,9 @@ var rm = require('rimraf')
 
 var cwd = path.join(__dirname, 'native-module-cmake')
 
-test('can prebuild a cmake-js native module for electron', function (t) {
+test('can prebuild a cmake-js native module for node', function (t) {
   rm.sync(path.join(cwd, 'prebuilds'))
-  var file = 'native-v1.0.0-electron-v50-' + process.platform + '-' + process.arch + '.tar.gz'
+  var file = 'native-v1.0.0-node-v57-' + process.platform + '-' + process.arch + '.tar.gz'
   var prebuild = path.join(cwd, 'prebuilds', file)
   // A quick, temporary fix for a node.js bug (https://github.com/prebuild/prebuild/pull/208#issuecomment-361108755)
   exec('npm run prebuild', { cwd: cwd }, function (error, stdout, stderr) {
@@ -18,12 +18,12 @@ test('can prebuild a cmake-js native module for electron', function (t) {
   })
 })
 
-test('can prebuild a cmake-js native module for node', function (t) {
+test('can prebuild a cmake-js native module for electron', function (t) {
   rm.sync(path.join(cwd, 'prebuilds'))
-  var file = 'native-v1.0.0-node-v57-' + process.platform + '-' + process.arch + '.tar.gz'
+  var file = 'native-v1.0.0-electron-v50-' + process.platform + '-' + process.arch + '.tar.gz'
   var prebuild = path.join(cwd, 'prebuilds', file)
   // A quick, temporary fix for a node.js bug (https://github.com/prebuild/prebuild/pull/208#issuecomment-361108755)
-  exec('npm run prebuild-node', { cwd: cwd }, function (error, stdout, stderr) {
+  exec('npm run prebuild-electron', { cwd: cwd }, function (error, stdout, stderr) {
     t.equal(error, null)
     t.equal(fs.existsSync(prebuild), true)
     t.end()
