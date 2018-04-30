@@ -1,23 +1,9 @@
-var util = require('./util')
-var path = require('path')
 var spawn = require('child_process').spawn
+var which = require('npm-which')(process.cwd())
 
 function runCmake (opts, target, cb) {
-  var log = opts.log
-  if (!opts.preinstall) return run()
-
-  log.verbose('executing preinstall')
-  util.exec(opts.preinstall, function (err) {
+  which('cmake-js', function (err, cmakeJsPath) {
     if (err) return cb(err)
-    run()
-  })
-
-  function run () {
-    var cmakeJsPath = path.join(
-      __dirname,
-      '../.bin',
-      process.platform === 'win32' ? 'cmake-js.cmd' : 'cmake-js'
-    )
 
     var args = ['rebuild']
     args.push('--runtime-version=' + target)
@@ -26,16 +12,21 @@ function runCmake (opts, target, cb) {
 
     if (opts.debug) args.push('--debug')
 
-    if (opts.toolset) args.push('--toolset=' + opts.toolset)
+    var foundRest = false
+    for (var arg of process.argv) {
+      if (arg === '--') {
+        foundRest = true
+      } else if (foundRest) {
+        args.push(arg)
+      }
+    }
 
-    var proc = spawn(cmakeJsPath, args, {
-      env: process.env
-    })
+    var proc = spawn(cmakeJsPath, args)
     proc.stdout.pipe(process.stdout)
     proc.stderr.pipe(process.stderr)
-    proc.on('exit', function (code, sig) {
-      if (code === 1) {
-        return cb(new Error('Failed to build...'))
+    proc.on('exit', function (code) {
+      if (code !== 0) {
+        return cb(new Error('Failed to build cmake with exit code ' + code))
       }
 
       if (!opts.precompress) return cb()
@@ -46,7 +37,7 @@ function runCmake (opts, target, cb) {
         cb()
       })
     })
-  }
+  })
 }
 
 module.exports = runCmake
