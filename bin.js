@@ -41,7 +41,7 @@ delete process.env.NVM_IOJS_ORG_MIRROR
 delete process.env.NVM_NODEJS_ORG_MIRROR
 
 var buildLog = log.info.bind(log, 'build')
-var opts = extend(rc, {pkg: pkg, log: log, buildLog: buildLog})
+var opts = extend(rc, {pkg: pkg, log: log, buildLog: buildLog, argv: process.argv})
 
 if (opts['upload-all']) {
   fs.readdir('prebuilds', function (err, pbFiles) {
