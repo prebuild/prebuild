@@ -22,6 +22,7 @@
   ],
   "dependencies": {
     "async": "^2.1.4",
+    "cmake-js": "^3.6.2",
     "detect-libc": "^1.0.3",
     "execspawn": "^1.0.1",
     "ghreleases": "^2.0.0",
@@ -32,6 +33,7 @@
     "node-gyp": "^3.0.3",
     "node-ninja": "^1.0.1",
     "noop-logger": "^0.1.0",
+    "npm-which": "^3.0.1",
     "npmlog": "^4.0.1",
     "nw-gyp": "^3.6.3",
     "osenv": "^0.1.4",
