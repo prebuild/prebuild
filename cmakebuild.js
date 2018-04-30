@@ -25,7 +25,7 @@ function runCmake (opts, target, cb) {
       }
       cb()
     })
-  }
+  })
 }
 
 module.exports = runCmake
