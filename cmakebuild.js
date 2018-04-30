@@ -15,7 +15,7 @@ function runCmake (opts, target, cb) {
 
     if (opts.debug) args.push('--debug')
 
-    if (opts.format) args.push('--', '--format', opts.format)
+    if (opts.format) args = args.concat(opts.format.split(' '))
 
     var proc = spawn(cmakeJsPath, args, {
       env: process.env

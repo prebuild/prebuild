@@ -4,6 +4,6 @@
   "main": "./index.js",
   "scripts": {
     "prebuild": "node ../../bin.js --backend cmake-js --target 8.11.1 --runtime node",
-      "prebuild-electron": "node ../../bin.js --backend cmake-js --target 1.4.11 --runtime electron"
+    "prebuild-electron": "node ../../bin.js --backend cmake-js --target 1.4.11 --runtime electron"
   }
 }
