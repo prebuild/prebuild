@@ -14,7 +14,11 @@ function runCmake (opts, target, cb) {
 
     var foundRest = false
     for (var arg of process.argv) {
-      !foundRest && arg === '--' ? foundRest = true : args.push(arg)
+      if (arg === '--') {
+        foundRest = true
+      } else if (foundRest) {
+        args.push(arg)
+      }
     }
 
     var proc = spawn(cmakeJsPath, args)
