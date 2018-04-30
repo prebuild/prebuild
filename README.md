@@ -74,7 +74,7 @@ For example, in order to build using Makefiles but assume Android cross-compilat
 prebuild --format make-android
 ```
 
-When using the `cmake-js` backend the same `--format` parameter can be used to pass in additional commer separated parameters.
+When using the `cmake-js` backend the same `--format` parameter can be used to pass in additional comma separated parameters.
 
 ```
 prebuild --format --prefer-clang,-CDUV_INCLUDE_DIR="..."
