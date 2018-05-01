@@ -1,5 +1,6 @@
 var test = require('tape')
 var runGyp = require('../gypbuild')
+var build = require('../build')
 var util = require('../util')
 var noop = require('noop-logger')
 var osenv = require('osenv')
@@ -82,7 +83,7 @@ test('--preinstall script is spawned, calls back with error if fails', function 
     preinstall: 'somescript.sh',
     log: noop
   }
-  runGyp(opts, 'x.y.z', function (err) {
+  build(opts, 'x.y.z', function (err) {
     t.equal(err.message, 'some error', 'correct error')
     util.exec = _exec
   })
