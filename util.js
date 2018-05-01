@@ -2,7 +2,6 @@ var path = require('path')
 var cp = require('child_process')
 var execSpawn = require('execspawn')
 var error = require('./error')
-var fs = require('fs')
 
 function getTarPath (opts, abi) {
   return path.join('prebuilds', [
@@ -39,7 +38,7 @@ function exec (cmd, cb) {
 }
 
 function run (item, cb) {
-  if (item.substr(-3) === '.js' && fs.existsSync(item)) {
+  if (path.extname(item) === '.js') {
     return fork(item, cb)
   } else {
     return exec(item, cb)
