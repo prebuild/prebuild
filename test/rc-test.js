@@ -15,6 +15,7 @@ test('custom config and aliases', function (t) {
     '--help',
     '--path ../some/other/path',
     '--preinstall somescript.js',
+    '--prepack someotherscript.js',
     '--target 13',
     '--runtime electron',
     '--libc testlibc',
@@ -36,8 +37,10 @@ test('custom config and aliases', function (t) {
     t.equal(rc.help, rc.h, 'help alias')
     t.equal(rc.path, '../some/other/path', 'correct path')
     t.equal(rc.path, rc.p, 'path alias')
-    t.equal(rc.preinstall, 'somescript.js', 'correct script')
+    t.equal(rc.preinstall, 'somescript.js', 'correct preinstall script')
     t.equal(rc.preinstall, rc.i, 'preinstall alias')
+    t.equal(rc.prepack, 'someotherscript.js', 'correct prepack script')
+    t.equal(rc.prepack, rc.c, 'prepack alias')
     t.equal(rc.target, '13', 'correct target')
     t.equal(rc.target, rc.t, 'target alias')
     t.equal(rc.runtime, 'electron', 'correct runtime')
