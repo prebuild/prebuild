@@ -25,7 +25,6 @@ function spawn (cmd, args, cb) {
 }
 
 function fork (file, cb) {
-  console.log(file)
   return cp.fork(file).on('exit', function (code) {
     if (code === 0) return cb()
     cb(error.spawnFailed(file, code))
