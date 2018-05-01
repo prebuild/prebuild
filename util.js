@@ -2,6 +2,7 @@ var path = require('path')
 var cp = require('child_process')
 var execSpawn = require('execspawn')
 var error = require('./error')
+var fs = require('fs')
 
 function getTarPath (opts, abi) {
   return path.join('prebuilds', [
@@ -23,11 +24,27 @@ function spawn (cmd, args, cb) {
   })
 }
 
+function fork (file, cb) {
+  console.log(file)
+  return cp.fork(file).on('exit', function (code) {
+    if (code === 0) return cb()
+    cb(error.spawnFailed(file, code))
+  })
+}
+
 function exec (cmd, cb) {
   return execSpawn(cmd, {stdio: 'inherit'}).on('exit', function (code) {
     if (code === 0) return cb()
     cb(error.spawnFailed(cmd, [], code))
   })
+}
+
+function run (item, cb) {
+  if (item.substr(-3) === '.js' && fs.existsSync(item)) {
+    return fork(item, cb)
+  } else {
+    return exec(item, cb)
+  }
 }
 
 function platform () {
@@ -46,6 +63,8 @@ function releaseFolder (opts, version) {
 
 exports.getTarPath = getTarPath
 exports.spawn = spawn
+exports.fork = fork
 exports.exec = exec
+exports.run = run
 exports.platform = platform
 exports.releaseFolder = releaseFolder

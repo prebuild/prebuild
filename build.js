@@ -20,7 +20,7 @@ function build (opts, version, cb) {
       if (!opts.prepack) return collectArtifacts(release, opts, cb)
 
       log.verbose('executing prepack')
-      util.exec(opts.prepack, function (err) {
+      util.run(opts.prepack, function (err) {
         if (err) return cb(err)
         collectArtifacts(release, opts, cb)
       })
@@ -30,7 +30,7 @@ function build (opts, version, cb) {
   if (!opts.preinstall) return run()
 
   log.verbose('executing preinstall')
-  util.exec(opts.preinstall, function (err) {
+  util.run(opts.preinstall, function (err) {
     if (err) return cb(err)
     run()
   })
