@@ -68,5 +68,8 @@
   "bugs": {
     "url": "https://github.com/prebuild/prebuild/issues"
   },
-  "homepage": "https://github.com/prebuild/prebuild"
+  "homepage": "https://github.com/prebuild/prebuild",
+  "engines": {
+    "node": ">=4"
+  }
 }

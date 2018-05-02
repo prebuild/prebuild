@@ -6,8 +6,11 @@
 $ npm install -g prebuild
 ```
 
+[![npm](https://img.shields.io/npm/v/prebuild.svg)](https://www.npmjs.com/package/prebuild)
+![Node version](https://img.shields.io/node/v/prebuild.svg)
 [![build status](http://img.shields.io/travis/prebuild/prebuild.svg?style=flat)](http://travis-ci.org/prebuild/prebuild)
 [![Build status](https://ci.appveyor.com/api/projects/status/oy1kk4fpy51net0v/branch/master?svg=true)](https://ci.appveyor.com/project/mathiask88/prebuild)
+[![david](https://david-dm.org/prebuild/prebuild.svg)](https://david-dm.org/prebuild/prebuild)
 [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com/)
 
 ## Features
@@ -15,7 +18,7 @@ $ npm install -g prebuild
 * Builds native modules for any version of Node.js, Electron or NW.js, without having to switch between different versions to do so. This works by only downloading the correct headers and telling `node-gyp` to use those instead of the ones installed on your system.
 * Upload (`--upload`) prebuilt binaries to GitHub.
 * Support for stripping (`--strip`) debug information. Strip command defaults to `strip` but can be overridden by the `STRIP` environment variable.
-* Install prebuilt modules via [`prebuild-install`](https://github.com/mafintosh/prebuild-install).
+* Install prebuilt modules via [`prebuild-install`](https://github.com/prebuild/prebuild-install).
 
 ## Building
 
