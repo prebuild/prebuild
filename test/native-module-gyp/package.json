@@ -5,6 +5,7 @@
   "scripts": {
     "prebuild": "node ../../bin.js --target 8.11.1 --runtime node",
     "prebuild-electron": "node ../../bin.js --target 1.4.11 --runtime electron",
-    "prebuild-node-webkit": "node ../../bin.js --target 0.26.6 --runtime node-webkit"
+    "prebuild-node-webkit": "node ../../bin.js --target 0.26.6 --runtime node-webkit",
+    "prebuild-prepack": "node ../../bin.js --target 8.11.1 --runtime node --prepack prepack.js"
   }
 }

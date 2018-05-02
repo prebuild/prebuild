@@ -80,6 +80,16 @@ When using the [cmake-js](https://www.npmjs.com/package/cmake-js) backend additi
 prebuild --backend cmake-js -- --prefer-clang --CDUV_INCLUDE_DIR=...
 ```
 
+## Scripts
+
+A prepack script can be specified that is executed once the `.node` module has been created but before it is compressed and moved. This can be used to perform code signing.
+
+```
+prebuild --prepack 'codesign -v -s MyCompany'
+```
+
+The `--preinstall` or `--prepack` parameters can take either a shell command or JS file to be executed.
+
 ## Uploading
 
 `prebuild` supports uploading prebuilds to GitHub releases. If the release doesn't exist, it will be created for you. To upload prebuilds simply add the `-u <github-token>` option:
@@ -127,6 +137,7 @@ prebuild [options]
   --upload      -u  [gh-token]  (upload prebuilds to github)
   --upload-all  -u  [gh-token]  (upload all files from ./prebuilds folder to github)
   --preinstall  -i  script      (run this script before prebuilding)
+  --prepack     -c  script      (run this script before packing, can be used to codesign)
   --path        -p  path        (make a prebuild here)
   --include-regex               (regex to match files that will be distributed [default: '\.node$'])
   --libc                        (use provided libc rather than system default)

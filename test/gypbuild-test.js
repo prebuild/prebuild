@@ -74,8 +74,8 @@ test('gyp is invoked with correct arguments, debug mode', function (t) {
 
 test('--preinstall script is spawned, calls back with error if fails', function (t) {
   t.plan(2)
-  var _exec = util.exec
-  util.exec = function (cmd, cb) {
+  var _run = util.run
+  util.run = function (cmd, cb) {
     t.equal(cmd, 'somescript.sh', 'correct script')
     process.nextTick(cb.bind(null, new Error('some error')))
   }
@@ -85,6 +85,6 @@ test('--preinstall script is spawned, calls back with error if fails', function 
   }
   build(opts, 'x.y.z', function (err) {
     t.equal(err.message, 'some error', 'correct error')
-    util.exec = _exec
+    util.run = _run
   })
 })
