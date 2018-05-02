@@ -80,11 +80,15 @@ When using the [cmake-js](https://www.npmjs.com/package/cmake-js) backend additi
 prebuild --backend cmake-js -- --prefer-clang --CDUV_INCLUDE_DIR=...
 ```
 
-A prepack script can be specified that is executed once the `.node` file has been created but before it is compressed and can be used to perform code signing.
+## Scripts
+
+A prepack script can be specified that is executed once the `.node` module has been created but before it is compressed and moved. This can be used to perform code signing.
 
 ```
 prebuild --prepack 'codesign -v -s MyCompany'
 ```
+
+The `--preinstall` or `--prepack` parameters can take either a shell command or JS file to be executed.
 
 ## Uploading
 
