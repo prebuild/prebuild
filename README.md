@@ -18,7 +18,7 @@ $ npm install -g prebuild
 * Builds native modules for any version of Node.js, Electron or NW.js, without having to switch between different versions to do so. This works by only downloading the correct headers and telling `node-gyp` to use those instead of the ones installed on your system.
 * Upload (`--upload`) prebuilt binaries to GitHub.
 * Support for stripping (`--strip`) debug information. Strip command defaults to `strip` but can be overridden by the `STRIP` environment variable.
-* Install prebuilt modules via [`prebuild-install`](https://github.com/mafintosh/prebuild-install).
+* Install prebuilt modules via [`prebuild-install`](https://github.com/prebuild/prebuild-install).
 
 ## Building
 
