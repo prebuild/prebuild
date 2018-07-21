@@ -4,7 +4,6 @@
   "description": "A command line tool for easily making prebuilt binaries for multiple versions of node, electron or node-webkit on a specific platform",
   "scripts": {
     "test": "verify-travis-appveyor && tape test && npm run lint",
-    "audit": "nsp check",
     "lint": "standard"
   },
   "keywords": [
@@ -43,7 +42,6 @@
   },
   "devDependencies": {
     "a-native-module": "^1.0.0",
-    "nsp": "^3.1.0",
     "rimraf": "^2.4.2",
     "standard": "^10.0.3",
     "tape": "^4.0.1",
