@@ -1,6 +1,6 @@
 {
   "name": "prebuild",
-  "version": "7.6.0",
+  "version": "7.6.1",
   "description": "A command line tool for easily making prebuilt binaries for multiple versions of node, electron or node-webkit on a specific platform",
   "scripts": {
     "test": "verify-travis-appveyor && tape test && npm run lint",
