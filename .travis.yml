@@ -1,14 +1,4 @@
 language: node_js
-addons:
-  apt:
-    sources:
-      - ubuntu-toolchain-r-test
-    packages:
-      - g++-4.9
-      - gcc-4.9
-
-before_install:
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then export CXX=g++-4.9; fi
 
 matrix:
   include:
