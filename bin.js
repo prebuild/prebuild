@@ -64,8 +64,14 @@ if (opts['upload-all']) {
 }
 
 function uploadFiles (files) {
-  buildLog('Uploading ' + files.length + ' prebuilds(s) to Github releases')
-  upload(extend(opts, {files: files}), function (err, result) {
+  // NOTE(robinwassen): Only include unique files
+  // See: https://github.com/prebuild/prebuild/issues/221
+  var uniqueFiles = files.filter(function (file, index) {
+    return files.indexOf(file) === index
+  })
+
+  buildLog('Uploading ' + uniqueFiles.length + ' prebuilds(s) to Github releases')
+  upload(extend(opts, {files: uniqueFiles}), function (err, result) {
     if (err) return onbuilderror(err)
     buildLog('Found ' + result.old.length + ' prebuild(s) on Github')
     if (result.old.length) {
