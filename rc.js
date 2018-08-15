@@ -56,10 +56,6 @@ if (rc.all === true) {
   rc.prebuild = targets
 }
 
-if (rc['upload-all']) {
-  rc.upload = rc['upload-all']
-}
-
 rc['include-regex'] = new RegExp(rc['include-regex'], 'i')
 
 module.exports = rc
