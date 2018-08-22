@@ -6,6 +6,7 @@ var getTarPath = require('./util').getTarPath
 var build = require('./build')
 var strip = require('./strip')
 var pack = require('./pack')
+var napi = require('./napi')
 
 function prebuild (opts, target, runtime, callback) {
   var pkg = opts.pkg
@@ -22,7 +23,7 @@ function prebuild (opts, target, runtime, callback) {
   buildLog(buildLogMessage)
 
   // --target can be target or abi
-  target = getTarget(target, runtime)
+  if (!napi.isNapiRuntime(runtime)) target = getTarget(target, runtime)
   var abi = getAbi(target, runtime)
 
   var tarPath = getTarPath(opts, abi)

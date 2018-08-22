@@ -1,4 +1,5 @@
 var gyp = require('./gyp')
+var napi = require('./napi')
 
 function runGyp (opts, target, cb) {
   var args = ['node', 'index.js']
@@ -9,7 +10,11 @@ function runGyp (opts, target, cb) {
   } else {
     args.push('rebuild')
   }
-  args.push('--target=' + target)
+  if (napi.isNapiRuntime(opts.runtime)) {
+    args.push('--napi_build_version=' + target)
+  } else {
+    args.push('--target=' + target)
+  }
   args.push('--target_arch=' + opts.arch)
   if (opts.runtime === 'electron') {
     args.push('--runtime=electron')

@@ -18,7 +18,8 @@
     "bindings",
     "devops",
     "electron",
-    "node-webkit"
+    "node-webkit",
+    "n-api"
   ],
   "dependencies": {
     "async": "^2.1.4",
