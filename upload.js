@@ -7,6 +7,7 @@ function upload (opts, cb) {
   var pkg = opts.pkg
   var files = opts.files
   var gh = opts.gh || ghreleases
+  var tagPrefix = opts['tag-prefix']
 
   var url = github(pkg)
   if (!url) {
@@ -18,7 +19,7 @@ function upload (opts, cb) {
   var user = url.split('/')[3]
   var repo = url.split('/')[4]
   var auth = {user: 'x-oauth', token: opts.upload}
-  var tag = 'v' + pkg.version
+  var tag = `${tagPrefix}${pkg.version}`
 
   gh.create(auth, user, repo, {tag_name: tag}, function () {
     gh.getByTag(auth, user, repo, tag, function (err, release) {

@@ -111,6 +111,8 @@ Note that `--upload` will only upload the targets that was built and stored in `
 
 You can use `prebuild --upload-all` to upload all files from the `./prebuilds` folder.
 
+You can use `prebuild --upload --tag-prefix <prefix>` for specific tag prefixes for the release. The default prefix is `v` and will result in a tag with an appended version number, for example `v1.0.0`. For [lerna](https://github.com/lerna/lerna) you can use the package name e.g. `prebuild --tag-prefix some-package@` and the binaries will be released on the appropriate package's tags, for example `some-package@1.0.0`.
+
 ## Create GitHub Token
 
 A GitHub token is needed for two reasons:
@@ -139,6 +141,7 @@ prebuild [options]
   --all                         (prebuild for all known abi versions)
   --upload      -u  [gh-token]  (upload prebuilds to github)
   --upload-all  -u  [gh-token]  (upload all files from ./prebuilds folder to github)
+  --tag-prefix <prefix>         (github tag prefix, default is "v")
   --preinstall  -i  script      (run this script before prebuilding)
   --prepack     -c  script      (run this script before packing, can be used to codesign)
   --path        -p  path        (make a prebuild here)
