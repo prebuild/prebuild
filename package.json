@@ -68,6 +68,6 @@
   },
   "homepage": "https://github.com/prebuild/prebuild",
   "engines": {
-    "node": ">=4"
+    "node": ">=6"
   }
 }
