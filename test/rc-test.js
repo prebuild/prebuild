@@ -47,6 +47,7 @@ test('custom config and aliases', function (t) {
     t.equal(rc.runtime, rc.r, 'runtime alias')
     t.equal(rc.libc, 'testlibc', 'libc family')
     t.equal(rc.format, 'msvs', 'correct node-gyp format')
+    t.equal(rc['tag-prefix'], 'v', 'correct default tag prefix')
     t.end()
   })
 })
@@ -84,6 +85,14 @@ test('using --upload-all will set token for --upload', function (t) {
   var args = ['--upload-all t00k3n']
   runRc(t, args.join(' '), {}, function (rc) {
     t.equal(rc.upload, 't00k3n', 'upload should have the same token set')
+    t.end()
+  })
+})
+
+test('using --tag-prefix will set the tag prefix', function (t) {
+  var args = ['--tag-prefix @scoped/package@']
+  runRc(t, args.join(' '), {}, function (rc) {
+    t.equal(rc['tag-prefix'], '@scoped/package@', 'tag prefix should be set')
     t.end()
   })
 })
