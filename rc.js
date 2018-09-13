@@ -1,7 +1,7 @@
 var minimist = require('minimist')
 var targets = require('node-abi').supportedTargets
 var detectLibc = require('detect-libc')
-var napi = require('./napi')
+var napi = require('napi-build-utils')
 
 var libc = process.env.LIBC || (detectLibc.isNonGlibcLinux && detectLibc.family) || ''
 

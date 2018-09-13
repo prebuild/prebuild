@@ -5,12 +5,12 @@ var log = require('npmlog')
 var fs = require('fs')
 var async = require('async')
 var extend = require('xtend')
+var napi = require('napi-build-utils')
 
 var pkg = require(path.resolve('package.json'))
 var rc = require('./rc')
 var prebuild = require('./prebuild')
 var upload = require('./upload')
-var napi = require('./napi')
 
 var prebuildVersion = require('./package.json').version
 if (rc.version) {
@@ -44,7 +44,7 @@ delete process.env.NVM_NODEJS_ORG_MIRROR
 var buildLog = log.info.bind(log, 'build')
 var opts = extend(rc, {pkg: pkg, log: log, buildLog: buildLog, argv: process.argv})
 
-if (napi.isNapiRuntime(rc.runtime)) napi.logMissingNapiVersions(rc.target, rc.prebuild)
+if (napi.isNapiRuntime(rc.runtime)) napi.logMissingNapiVersions(rc.target, rc.prebuild, log)
 
 if (opts['upload-all']) {
   fs.readdir('prebuilds', function (err, pbFiles) {

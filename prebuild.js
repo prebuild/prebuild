@@ -2,11 +2,11 @@ var fs = require('fs')
 var async = require('async')
 var getAbi = require('node-abi').getAbi
 var getTarget = require('node-abi').getTarget
+var napi = require('napi-build-utils')
 var getTarPath = require('./util').getTarPath
 var build = require('./build')
 var strip = require('./strip')
 var pack = require('./pack')
-var napi = require('./napi')
 
 function prebuild (opts, target, runtime, callback) {
   var pkg = opts.pkg

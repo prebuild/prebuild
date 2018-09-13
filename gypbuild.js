@@ -1,5 +1,5 @@
+var napi = require('napi-build-utils')
 var gyp = require('./gyp')
-var napi = require('./napi')
 
 function runGyp (opts, target, cb) {
   var args = ['node', 'index.js']
