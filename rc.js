@@ -55,6 +55,14 @@ if (rc.target) {
 if (rc.all === true) {
   delete rc.prebuild
   rc.prebuild = targets
+} else if (typeof rc.all === 'string') {
+  var filter = rc.all.split(',')
+  rc.prebuild = []
+  for (var target of targets) {
+    if (filter.indexOf(target.runtime) > -1) {
+      rc.prebuild.push(target)
+    }
+  }
 }
 
 if (rc['upload-all']) {
