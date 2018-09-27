@@ -1,6 +1,6 @@
 # prebuild
 
-> A command line tool for easily making prebuilt binaries for multiple versions of [Node.js](https://nodejs.org/en/), [Electron](http://electron.atom.io/) and [NW.js](https://nwjs.io/) on a specific platform.
+> A command line tool for easily making prebuilt binaries for multiple versions of [Node.js](https://nodejs.org/en/), [N-API](https://nodejs.org/api/n-api.html), [Electron](http://electron.atom.io/) and [NW.js](https://nwjs.io/) on a specific platform.
 
 ```
 $ npm install -g prebuild
@@ -15,7 +15,7 @@ $ npm install -g prebuild
 
 ## Features
 
-* Builds native modules for any version of Node.js, Electron or NW.js, without having to switch between different versions to do so. This works by only downloading the correct headers and telling `node-gyp` to use those instead of the ones installed on your system.
+* Builds native modules for any version of Node.js, N-API, Electron or NW.js, without having to switch between different versions to do so. This works by only downloading the correct headers and telling `node-gyp` to use those instead of the ones installed on your system.
 * Upload (`--upload`) prebuilt binaries to GitHub.
 * Support for stripping (`--strip`) debug information. Strip command defaults to `strip` but can be overridden by the `STRIP` environment variable.
 * Install prebuilt modules via [`prebuild-install`](https://github.com/prebuild/prebuild-install).
@@ -34,6 +34,12 @@ Alternatively, to build for some specific versions you can do:
 
 ```
 prebuild -t 0.10.42 -t 0.12.10 -t 4.3.0
+```
+
+To build for N-API, do:
+
+```
+prebuild -t 3 -r napi
 ```
 
 To build against Electron headers, do:
@@ -130,6 +136,42 @@ To create a token:
 
 The default scopes should be fine.
 
+## N-API Considerations
+
+### Declaring Supported N-API Versions
+
+Native modules that are designed to work with [N-API](https://nodejs.org/api/n-api.html) must explicitly declare the N-API version(s) against which they can build. This is accomplished by including a `binary` property on the module's `package.json` file. For example:
+
+```json
+"binary": {
+  "napi_versions": [2,3]
+}
+``` 
+
+In the absense of a need to compile against a specific N-API version, the value `3` is a good choice as this is the N-API version that was supported when N-API left experimental status. 
+
+Modules that are built against a specific N-API version will continue to operate indefinitely, even as later versions of N-API are introduced. 
+
+### Defining the `NAPI_VERSION` Value
+
+The following code must be included in the `binding.gyp` file of modules targeting N-API:
+
+```json
+"defines": [
+  "NAPI_VERSION=<(napi_build_version)",
+]
+```
+
+This define insures that the C preprocessor value `NAPI_VERSION` is communicated to the module's C/C++ code. The N-API header files supplied with Node use this value to configure the build for this specific N-API version. In addition, the module's C/C++ code can use this value to conditionally compile code based on the N-API version it is being compiled against. 
+
+### `prebuild` arguments
+
+The `--runtime` argument must be `napi` to request N-API builds. When requesting N-API builds, the module's `package.json` file _must_ include a `binary` property as described above. And the `binding.gyp` file _must_ include a define for `NAPI_VERSION` as described above.
+
+One or more `--target` arguments may be specified to request builds for specific N-API versions. N-API versions are positive integer values. Alternatively, `--all` may be used to request builds for all N-API versions supported by the module. 
+
+In the absence of both `--target` and `--all` arguments, `prebuild` will build the most current version of the module supported by the Node instance performing the build. 
+
 ## Help
 
 ```
@@ -137,7 +179,7 @@ $ prebuild -h
 prebuild [options]
 
   --target      -t  version     (version to build or install for)
-  --runtime     -r  runtime     (Node runtime [node, electron or node-webkit] to build or install for, default is node)
+  --runtime     -r  runtime     (Node runtime [node, napi, electron or node-webkit] to build or install for, default is node)
   --all                         (prebuild for all known abi versions)
   --upload      -u  [gh-token]  (upload prebuilds to github)
   --upload-all  -u  [gh-token]  (upload all files from ./prebuilds folder to github)

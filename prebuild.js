@@ -2,6 +2,7 @@ var fs = require('fs')
 var async = require('async')
 var getAbi = require('node-abi').getAbi
 var getTarget = require('node-abi').getTarget
+var napi = require('napi-build-utils')
 var getTarPath = require('./util').getTarPath
 var build = require('./build')
 var strip = require('./strip')
@@ -22,7 +23,7 @@ function prebuild (opts, target, runtime, callback) {
   buildLog(buildLogMessage)
 
   // --target can be target or abi
-  target = getTarget(target, runtime)
+  if (!napi.isNapiRuntime(runtime)) target = getTarget(target, runtime)
   var abi = getAbi(target, runtime)
 
   var tarPath = getTarPath(opts, abi)

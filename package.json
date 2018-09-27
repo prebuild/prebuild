@@ -17,7 +17,8 @@
     "bindings",
     "devops",
     "electron",
-    "node-webkit"
+    "node-webkit",
+    "n-api"
   ],
   "dependencies": {
     "async": "^2.1.4",
@@ -28,6 +29,7 @@
     "github-from-package": "0.0.0",
     "minimist": "^1.1.2",
     "mkdirp": "^0.5.1",
+    "napi-build-utils": "^1.0.1",
     "node-abi": "^2.2.0",
     "node-gyp": "^3.0.3",
     "node-ninja": "^1.0.1",
