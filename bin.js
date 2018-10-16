@@ -4,7 +4,6 @@ var path = require('path')
 var log = require('npmlog')
 var fs = require('fs')
 var async = require('async')
-var extend = require('xtend')
 var napi = require('napi-build-utils')
 
 var pkg = require(path.resolve('package.json'))
@@ -42,7 +41,7 @@ delete process.env.NVM_IOJS_ORG_MIRROR
 delete process.env.NVM_NODEJS_ORG_MIRROR
 
 var buildLog = log.info.bind(log, 'build')
-var opts = extend(rc, {pkg: pkg, log: log, buildLog: buildLog, argv: process.argv})
+var opts = Object.assign({}, rc, {pkg: pkg, log: log, buildLog: buildLog, argv: process.argv})
 
 if (napi.isNapiRuntime(rc.runtime)) napi.logMissingNapiVersions(rc.target, rc.prebuild, log)
 
@@ -74,7 +73,7 @@ function uploadFiles (files) {
   })
 
   buildLog('Uploading ' + uniqueFiles.length + ' prebuilds(s) to Github releases')
-  upload(extend(opts, {files: uniqueFiles}), function (err, result) {
+  upload(Object.assign({}, opts, {files: uniqueFiles}), function (err, result) {
     if (err) return onbuilderror(err)
     buildLog('Found ' + result.old.length + ' prebuild(s) on Github')
     if (result.old.length) {
