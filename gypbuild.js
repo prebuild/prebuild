@@ -24,6 +24,8 @@ function runGyp (opts, target, cb) {
   } else if (opts.runtime === 'node') {
     // work around bug introduced in node 10's build https://github.com/nodejs/node-gyp/issues/1457
     args.push('--build_v8_with_gn=false')
+    // work around the same kind of bug for node 11
+    args.push('--enable_lto=false')
   }
   if (opts.debug) args.push('--debug')
 
