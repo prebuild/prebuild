@@ -39,6 +39,7 @@
     "nw-gyp": "^3.6.3",
     "osenv": "^0.1.4",
     "rc": "^1.0.3",
+    "recursive-readdir": "^2.2.2",
     "tar-stream": "^1.2.1"
   },
   "devDependencies": {
