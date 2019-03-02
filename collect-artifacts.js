@@ -1,10 +1,7 @@
-var fs = require('fs')
-var path = require('path')
 var error = require('./error')
-var recursive = require("recursive-readdir")
+var recursive = require('recursive-readdir')
 
 module.exports = collectArtifacts
-
 
 function collectArtifacts (release, opts, cb) {
   var fileExp = opts['include-regex']
