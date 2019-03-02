@@ -9,7 +9,7 @@ function collectArtifacts (release, opts, cb) {
     if (err) return cb(err)
 
     var collected = files.filter(function filterByRegex (filename) {
-      return fileExp.test(filename)
+      return fileExp.test(filename.substring(release.length + 1))
     })
 
     if (!collected.length) {
