@@ -23,10 +23,25 @@ test('collect .node and .out', function (t) {
     t.error(err, 'collected files')
     t.equal(collected.length, 2, 'found two files')
 
-    // ensure the files are always in the same order
-    collected.sort()
+    t.deepEqual(collected.sort(), [
+      path.join(release, 'test.node'),
+      path.join(release, 'test.out')
+    ])
+    t.end()
+  })
+})
 
-    t.deepEqual(collected, [
+test('collect recursively', function (t) {
+  var release = path.join(__dirname, 'fixture', 'multiple-files-nested')
+  var opts = {
+    'include-regex': /\.(out|node|lib)$/i
+  }
+  collectArtifacts(release, opts, function (err, collected) {
+    t.error(err, 'collected files')
+    t.equal(collected.length, 3, 'found three files')
+
+    t.deepEqual(collected.sort(), [
+      path.join(release, 'lib', 'test.lib'),
       path.join(release, 'test.node'),
       path.join(release, 'test.out')
     ])
