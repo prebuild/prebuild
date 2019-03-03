@@ -1,3 +1,4 @@
+var path = require('path')
 var error = require('./error')
 var recursive = require('recursive-readdir')
 
@@ -9,7 +10,7 @@ function collectArtifacts (release, opts, cb) {
     if (err) return cb(err)
 
     var collected = files.filter(function filterByRegex (filename) {
-      return fileExp.test(filename.substring(release.length + 1))
+      return fileExp.test(path.relative(release, filename))
     })
 
     if (!collected.length) {
