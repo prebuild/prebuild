@@ -1,16 +1,18 @@
+var fs = require('fs')
 var path = require('path')
 var error = require('./error')
-var recursive = require('recursive-readdir')
 
 module.exports = collectArtifacts
 
 function collectArtifacts (release, opts, cb) {
   var fileExp = opts['include-regex']
-  recursive(release, function (err, files) {
+  fs.readdir(release, function (err, files) {
     if (err) return cb(err)
 
     var collected = files.filter(function filterByRegex (filename) {
-      return fileExp.test(path.relative(release, filename))
+      return fileExp.test(filename)
+    }).map(function addPath (filename) {
+      return path.join(release, filename)
     })
 
     if (!collected.length) {
