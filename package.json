@@ -30,7 +30,7 @@
     "minimist": "^1.1.2",
     "mkdirp": "^0.5.1",
     "napi-build-utils": "^1.0.1",
-    "node-abi": "^2.2.0",
+    "node-abi": "^2.8.0",
     "node-gyp": "^3.0.3",
     "node-ninja": "^1.0.1",
     "noop-logger": "^0.1.0",
