@@ -7,7 +7,7 @@ function runCmake (opts, target, cb) {
 
     var args = ['rebuild']
     args.push('--runtime-version=' + target)
-    args.push('--target_arch=' + opts.arch)
+    args.push('--arch=' + opts.arch)
     args.push('--runtime=' + opts.runtime)
 
     if (opts.debug) args.push('--debug')
