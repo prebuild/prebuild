@@ -18,10 +18,10 @@ function upload (opts, cb) {
 
   var user = url.split('/')[3]
   var repo = url.split('/')[4]
-  var auth = {user: 'x-oauth', token: opts.upload}
+  var auth = { user: 'x-oauth', token: opts.upload }
   var tag = `${tagPrefix}${pkg.version}`
 
-  gh.create(auth, user, repo, {tag_name: tag}, function () {
+  gh.create(auth, user, repo, { tag_name: tag }, function () {
     gh.getByTag(auth, user, repo, tag, function (err, release) {
       if (err) return cb(err)
 
@@ -37,7 +37,7 @@ function upload (opts, cb) {
 
       gh.uploadAssets(auth, user, repo, 'tags/' + tag, filtered, function (err) {
         if (err) return cb(err)
-        cb(null, {new: filtered, old: assets})
+        cb(null, { new: filtered, old: assets })
       })
     })
   })

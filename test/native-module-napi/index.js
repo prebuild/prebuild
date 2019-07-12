@@ -1,1 +1,1 @@
-module.exports = {'hello': require('./build/Release/native').hello}
+module.exports = { hello: require('./build/Release/native').hello }

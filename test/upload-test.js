@@ -52,7 +52,7 @@ test('uploading to GitHub, upload fails if uploadAssets fails', function (t) {
 })
 
 test('uploading to GitHub, only uploading not uploaded files', function (t) {
-  var opts = basicSetup(t, { assets: [{name: 'foo.tar.gz'}, {name: 'baz.tar.gz'}] })
+  var opts = basicSetup(t, { assets: [{ name: 'foo.tar.gz' }, { name: 'baz.tar.gz' }] })
   opts.gh.uploadAssets = function (auth, user, repo, ref, filtered, cb) {
     process.nextTick(cb)
   }
@@ -76,21 +76,21 @@ function basicSetup (t, opts) {
     'tag-prefix': tagPrefix,
     gh: {
       create: function (auth, user, repo, opts, cb) {
-        t.deepEqual(auth, {user: 'x-oauth', token: 't000k3n'}, 'correct auth')
+        t.deepEqual(auth, { user: 'x-oauth', token: 't000k3n' }, 'correct auth')
         t.equal(user, 'ralphtheninja', 'correct user')
         t.equal(repo, 'a-native-module', 'correct repo')
-        t.deepEqual(opts, {tag_name: `${tagPrefix}${pkg.version}`}, 'correct opts')
+        t.deepEqual(opts, { tag_name: `${tagPrefix}${pkg.version}` }, 'correct opts')
         process.nextTick(cb)
       },
       getByTag: function (auth, user, repo, tag, cb) {
-        t.deepEqual(auth, {user: 'x-oauth', token: 't000k3n'}, 'correct auth')
+        t.deepEqual(auth, { user: 'x-oauth', token: 't000k3n' }, 'correct auth')
         t.equal(user, 'ralphtheninja', 'correct user')
         t.equal(repo, 'a-native-module', 'correct repo')
         t.equal(tag, `${tagPrefix}${pkg.version}`, 'correct tag')
-        process.nextTick(function () { cb(null, {assets: assets}) })
+        process.nextTick(function () { cb(null, { assets: assets }) })
       },
       uploadAssets: function (auth, user, repo, ref, _files, cb) {
-        t.deepEqual(auth, {user: 'x-oauth', token: 't000k3n'}, 'correct auth')
+        t.deepEqual(auth, { user: 'x-oauth', token: 't000k3n' }, 'correct auth')
         t.equal(user, 'ralphtheninja', 'correct user')
         t.equal(repo, 'a-native-module', 'correct repo')
         t.equal(ref, `tags/${tagPrefix}${pkg.version}`, 'correct tag')

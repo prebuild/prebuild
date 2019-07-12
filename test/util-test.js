@@ -27,7 +27,7 @@ test.skip('spawn(): no args default to empty array', function (t) {
   cp.spawn = function (cmd, args, opts) {
     t.equal(cmd, 'foo', 'correct command')
     t.same(args, [], 'default args')
-    t.same(opts, {stdio: 'inherit'}, 'inherit stdio')
+    t.same(opts, { stdio: 'inherit' }, 'inherit stdio')
     return {
       on: function (id, cb) {
         t.equal(id, 'exit', 'listener on exit event')
@@ -59,7 +59,7 @@ test.skip('spawn(): callback fires with error on non 0 exit code', function (t) 
 
 test('releaseFolder(): depends on package.json and --debug', function (t) {
   var folder = util.releaseFolder
-  t.equal(folder({pkg: {}}), 'build/Release', 'Release is default')
+  t.equal(folder({ pkg: {} }), 'build/Release', 'Release is default')
   t.equal(folder({
     debug: false,
     pkg: {}

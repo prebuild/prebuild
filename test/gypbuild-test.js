@@ -8,10 +8,10 @@ var osenv = require('osenv')
 test('gyp is invoked with correct arguments, release mode', function (t) {
   t.plan(7)
   var opts = {
-    pkg: {binary: {
+    pkg: { binary: {
       module_name: 'module_name',
       module_path: 'module_path'
-    }},
+    } },
     arch: 'fooarch',
     gyp: {
       parseArgv: function (args) {
@@ -21,9 +21,9 @@ test('gyp is invoked with correct arguments, release mode', function (t) {
         rebuild: function (args, cb) {
           t.deepEqual(args, ['--rebuildarg'], 'correct args')
           opts.gyp.todo = [
-            {name: 'clean', args: ['--cleanarg']},
-            {name: 'configure', args: ['--configurearg']},
-            {name: 'build', args: ['--buildarg']}
+            { name: 'clean', args: ['--cleanarg'] },
+            { name: 'configure', args: ['--configurearg'] },
+            { name: 'build', args: ['--buildarg'] }
           ]
           process.nextTick(cb)
         },
@@ -40,7 +40,7 @@ test('gyp is invoked with correct arguments, release mode', function (t) {
           process.nextTick(cb)
         }
       },
-      todo: [{ name: 'rebuild', args: [ '--rebuildarg' ] }]
+      todo: [{ name: 'rebuild', args: ['--rebuildarg'] }]
     },
     log: noop
   }
