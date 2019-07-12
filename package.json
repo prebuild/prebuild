@@ -44,7 +44,7 @@
   "devDependencies": {
     "a-native-module": "^1.0.0",
     "rimraf": "^2.4.2",
-    "standard": "^10.0.3",
+    "standard": "^13.0.1",
     "tape": "^4.0.1",
     "verify-travis-appveyor": "^2.0.1"
   },
