@@ -31,7 +31,7 @@ function fork (file, cb) {
 }
 
 function exec (cmd, cb) {
-  return execSpawn(cmd, {stdio: 'inherit'}).on('exit', function (code) {
+  return execSpawn(cmd, { stdio: 'inherit' }).on('exit', function (code) {
     if (code === 0) return cb()
     cb(error.spawnFailed(cmd, [], code))
   })

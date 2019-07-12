@@ -72,8 +72,8 @@ test('using --prebuild respects runtime', function (t) {
   ]
   runRc(t, args.join(' '), {}, function (rc) {
     var fixture = [
-      {runtime: 'electron', target: 'X.Y.Z'},
-      {runtime: 'electron', target: 'Z.Y.X'}
+      { runtime: 'electron', target: 'X.Y.Z' },
+      { runtime: 'electron', target: 'Z.Y.X' }
     ]
     t.deepEqual(rc.prebuild, fixture, 'runtime parsed')
     t.end()

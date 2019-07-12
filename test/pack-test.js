@@ -47,7 +47,7 @@ test('resulting file is a gzipped tar archive', function (t) {
 
   var gzipStream
   var _createGzip = zlib.createGzip
-  if (Object.defineProperty) Object.defineProperty(zlib, 'createGzip', {writable: true})
+  if (Object.defineProperty) Object.defineProperty(zlib, 'createGzip', { writable: true })
   zlib.createGzip = function () {
     t.pass('should be called')
     gzipStream = _createGzip()
