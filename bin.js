@@ -72,7 +72,7 @@ function uploadFiles (files) {
     return files.indexOf(file) === index
   })
 
-  buildLog('Uploading ' + uniqueFiles.length + ' prebuilds(s) to Github releases')
+  buildLog('Uploading ' + uniqueFiles.length + ' prebuilds(s) to GitHub releases')
   upload(Object.assign({}, opts, { files: uniqueFiles }), function (err, result) {
     if (err) return onbuilderror(err)
     buildLog('Found ' + result.old.length + ' prebuild(s) on Github')
@@ -81,7 +81,7 @@ function uploadFiles (files) {
         buildLog('-> ' + build)
       })
     }
-    buildLog('Uploaded ' + result.new.length + ' new prebuild(s) to Github')
+    buildLog('Uploaded ' + result.new.length + ' new prebuild(s) to GitHub')
     if (result.new.length) {
       result.new.forEach(function (build) {
         buildLog('-> ' + build)
