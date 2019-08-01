@@ -1,4 +1,4 @@
-add_compile_definitions(NAPI_VERSION=${napi_build_version})
+add_definitions(-DNAPI_VERSION=${napi_build_version})
 
 project (prebuild-napi-test-cmake)
 include_directories(${CMAKE_JS_INC})
