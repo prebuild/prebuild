@@ -4,7 +4,7 @@ var path = require('path')
 var fs = require('fs')
 var rm = require('rimraf')
 
-var cwd = path.join(__dirname, 'native-module-napi')
+var cwd = path.join(__dirname, 'native-module-napi-gyp')
 
 test('can prebuild a gyp napi module for node', function (t) {
   rm.sync(path.join(cwd, 'prebuilds'))
