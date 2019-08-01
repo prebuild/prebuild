@@ -1,6 +1,3 @@
-cmake_minimum_required(VERSION 3.14)
-cmake_policy(SET CMP0042 NEW)
-set (CMAKE_CXX_STANDARD 11)
 add_compile_definitions(NAPI_VERSION=${napi_build_version})
 
 project (prebuild-napi-test-cmake)
