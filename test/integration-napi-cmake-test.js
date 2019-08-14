@@ -7,6 +7,7 @@ var rm = require('rimraf')
 var cwd = path.join(__dirname, 'native-module-napi-cmake')
 
 if (process.arch !== 'ia32') { // see https://github.com/cmake-js/cmake-js/issues/186
+/* eslint-disable indent */
 
 test('can prebuild a cmake napi module for node', function (t) {
   rm.sync(path.join(cwd, 'prebuilds'))
@@ -34,4 +35,5 @@ test('can prebuild a cmake napi module for node with prepack script', function (
   })
 })
 
+/* eslint-enable indent */
 } // see https://github.com/cmake-js/cmake-js/issues/186
