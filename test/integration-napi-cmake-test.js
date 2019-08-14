@@ -6,6 +6,8 @@ var rm = require('rimraf')
 
 var cwd = path.join(__dirname, 'native-module-napi-cmake')
 
+if (process.arch !== 'ia32') { // see https://github.com/cmake-js/cmake-js/issues/186
+
 test('can prebuild a cmake napi module for node', function (t) {
   rm.sync(path.join(cwd, 'prebuilds'))
   var file = 'native-v1.0.0-napi-v1-' + process.platform + '-' + process.arch + '.tar.gz'
@@ -31,3 +33,5 @@ test('can prebuild a cmake napi module for node with prepack script', function (
     t.end()
   })
 })
+
+} // see https://github.com/cmake-js/cmake-js/issues/186
