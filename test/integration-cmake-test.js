@@ -6,7 +6,7 @@ var rm = require('rimraf')
 
 var cwd = path.join(__dirname, 'native-module-cmake')
 
-if (process.arch !== 'ia32') { // see https://github.com/cmake-js/cmake-js/issues/186
+if (process.platform !== 'win32' || process.arch !== 'ia32') { // see https://github.com/cmake-js/cmake-js/issues/186
 /* eslint-disable indent */
 
 test('can prebuild a cmake-js native module for node', function (t) {
