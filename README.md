@@ -154,7 +154,7 @@ Modules that are built against a specific N-API version will continue to operate
 
 ### Defining the `NAPI_VERSION` Value
 
-The N-API header files supplied with Node use the w`NAPI_VERSION` preprocessor value supplied by the user to configure each build to the specific N-API version for which the native add-on is being built. In addition, the module's C/C++ code can use this value to conditionally compile code based on the N-API version it is being compiled against.
+The N-API header files supplied with Node use the `NAPI_VERSION` preprocessor value supplied by the user to configure each build to the specific N-API version for which the native addon is being built. In addition, the module's C/C++ code can use this value to conditionally compile code based on the N-API version it is being compiled against.
 
 `prebuild` supports two backend build systems: [`node-gyp`](https://github.com/nodejs/node-gyp) and [`cmake-js`](https://github.com/cmake-js/cmake-js). The `NAPI_VERSION` value is configured differently for each build system. 
 
