@@ -1,4 +1,4 @@
-var async = require('async')
+var eachSeries = require('each-series-async')
 var fs = require('fs')
 var path = require('path')
 var mkdirp = require('mkdirp')
@@ -19,7 +19,7 @@ function pack (filenames, tarPath, cb) {
     var ws = fs.createWriteStream(tarPath)
     tarStream.pipe(zlib.createGzip({ level: 9 })).pipe(ws)
 
-    async.eachSeries(filenames, function processFile (filename, nextFile) {
+    eachSeries(filenames, function processFile (filename, nextFile) {
       fs.stat(filename, function (err, st) {
         if (err) return nextFile(err)
 
