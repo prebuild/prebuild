@@ -46,7 +46,7 @@
     "rimraf": "^3.0.0",
     "standard": "^13.0.1",
     "tape": "^4.0.1",
-    "verify-travis-appveyor": "^2.0.1"
+    "verify-travis-appveyor": "^3.0.1"
   },
   "bin": {
     "prebuild": "./bin.js"
