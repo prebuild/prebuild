@@ -40,7 +40,7 @@
     "osenv": "^0.1.4",
     "rc": "^1.0.3",
     "run-waterfall": "^1.1.6",
-    "tar-stream": "^1.2.1"
+    "tar-stream": "^2.1.0"
   },
   "devDependencies": {
     "a-native-module": "^1.0.0",
