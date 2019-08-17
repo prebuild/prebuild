@@ -1,1 +1,5 @@
 test
+yarn.lock
+foo
+.travis.yml
+appveyor.yml
