@@ -6,9 +6,12 @@ function runCmake (opts, target, cb) {
     if (err) return cb(err)
 
     var args = ['rebuild']
-    args.push('--runtime-version=' + target)
+    if (opts.runtime !== 'napi') args.push('--runtime-version=' + target)
     args.push('--arch=' + opts.arch)
-    args.push('--runtime=' + opts.runtime)
+    if (opts.runtime !== 'napi') args.push('--runtime=' + opts.runtime)
+    if (opts.runtime === 'napi' && target) {
+      args.push('--CDnapi_build_version=' + target)
+    }
 
     if (opts.debug) args.push('--debug')
 

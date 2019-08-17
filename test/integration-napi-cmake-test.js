@@ -4,9 +4,12 @@ var path = require('path')
 var fs = require('fs')
 var rm = require('rimraf')
 
-var cwd = path.join(__dirname, 'native-module-napi')
+var cwd = path.join(__dirname, 'native-module-napi-cmake')
 
-test('can prebuild a gyp napi module for node', function (t) {
+if (process.arch !== 'ia32') { // see https://github.com/cmake-js/cmake-js/issues/186
+/* eslint-disable indent */
+
+test('can prebuild a cmake napi module for node', function (t) {
   rm.sync(path.join(cwd, 'prebuilds'))
   var file = 'native-v1.0.0-napi-v1-' + process.platform + '-' + process.arch + '.tar.gz'
   var prebuild = path.join(cwd, 'prebuilds', file)
@@ -19,7 +22,7 @@ test('can prebuild a gyp napi module for node', function (t) {
   })
 })
 
-test('can prebuild a gyp napi module for node with prepack script', function (t) {
+test('can prebuild a cmake napi module for node with prepack script', function (t) {
   rm.sync(path.join(cwd, 'prebuilds'))
   var file = 'native-v1.0.0-napi-v1-' + process.platform + '-' + process.arch + '.tar.gz'
   var prebuild = path.join(cwd, 'prebuilds', file)
@@ -31,3 +34,6 @@ test('can prebuild a gyp napi module for node with prepack script', function (t)
     t.end()
   })
 })
+
+/* eslint-enable indent */
+} // see https://github.com/cmake-js/cmake-js/issues/186

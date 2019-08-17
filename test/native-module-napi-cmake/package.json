@@ -1,0 +1,12 @@
+{
+  "name": "native",
+  "version": "1.0.0",
+  "main": "./index.js",
+  "scripts": {
+    "prebuild": "node ../../bin.js --backend cmake-js --runtime napi --verbose",
+    "prebuild-prepack": "node ../../bin.js --backend cmake-js --runtime napi --prepack prepack.js"
+  },
+  "binary": {
+    "napi_versions": [1]
+  }
+}

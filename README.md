@@ -146,13 +146,19 @@ Native modules that are designed to work with [N-API](https://nodejs.org/api/n-a
 "binary": {
   "napi_versions": [2,3]
 }
-``` 
+```
 
-In the absense of a need to compile against a specific N-API version, the value `3` is a good choice as this is the N-API version that was supported when N-API left experimental status. 
+In the absence of a need to compile against a specific N-API version, the value `3` is a good choice as this is the N-API version that was supported when N-API left experimental status. 
 
 Modules that are built against a specific N-API version will continue to operate indefinitely, even as later versions of N-API are introduced. 
 
 ### Defining the `NAPI_VERSION` Value
+
+The N-API header files supplied with Node use the `NAPI_VERSION` preprocessor value supplied by the user to configure each build to the specific N-API version for which the native addon is being built. In addition, the module's C/C++ code can use this value to conditionally compile code based on the N-API version it is being compiled against.
+
+`prebuild` supports two build backends: [`node-gyp`](https://github.com/nodejs/node-gyp) and [`cmake-js`](https://github.com/cmake-js/cmake-js). The `NAPI_VERSION` value is configured differently for each backend. 
+
+#### node-gyp
 
 The following code must be included in the `binding.gyp` file of modules targeting N-API:
 
@@ -162,7 +168,13 @@ The following code must be included in the `binding.gyp` file of modules targeti
 ]
 ```
 
-This define insures that the C preprocessor value `NAPI_VERSION` is communicated to the module's C/C++ code. The N-API header files supplied with Node use this value to configure the build for this specific N-API version. In addition, the module's C/C++ code can use this value to conditionally compile code based on the N-API version it is being compiled against. 
+#### cmake-js
+
+The following line must be included in the `CMakeLists.txt` file of modules targeting N-API:
+
+```cmake
+add_compile_definitions(NAPI_VERSION=${napi_build_version})
+```
 
 ### `prebuild` arguments
 

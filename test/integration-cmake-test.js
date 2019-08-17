@@ -6,6 +6,9 @@ var rm = require('rimraf')
 
 var cwd = path.join(__dirname, 'native-module-cmake')
 
+if (process.platform !== 'win32' || process.arch !== 'ia32') { // see https://github.com/cmake-js/cmake-js/issues/186
+/* eslint-disable indent */
+
 test('can prebuild a cmake-js native module for node', function (t) {
   rm.sync(path.join(cwd, 'prebuilds'))
   var file = 'native-v1.0.0-node-v57-' + process.platform + '-' + process.arch + '.tar.gz'
@@ -46,3 +49,6 @@ test('can prebuild a cmake-js native module for node with silent argument', func
     t.end()
   })
 })
+
+/* eslint-enable indent */
+} // see https://github.com/cmake-js/cmake-js/issues/186
