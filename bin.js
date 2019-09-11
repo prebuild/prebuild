@@ -24,11 +24,6 @@ if (rc.verbose) {
   log.level = 'verbose'
 }
 
-if (!fs.existsSync('package.json')) {
-  log.error('setup', 'No package.json found. Aborting...')
-  process.exit(1)
-}
-
 if (rc.help) {
   console.error(fs.readFileSync(path.join(__dirname, 'help.txt'), 'utf-8'))
   process.exit(0)
