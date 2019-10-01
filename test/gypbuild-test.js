@@ -3,7 +3,8 @@ var runGyp = require('../gypbuild')
 var build = require('../build')
 var util = require('../util')
 var noop = require('noop-logger')
-var osenv = require('osenv')
+var path = require('path')
+var os = require('os')
 
 test('gyp is invoked with correct arguments, release mode', function (t) {
   t.plan(7)
@@ -46,7 +47,7 @@ test('gyp is invoked with correct arguments, release mode', function (t) {
   }
   runGyp(opts, 'x.y.z', function (err) {
     var devDir = opts.gyp.devDir
-    t.equal(devDir.indexOf(osenv.home()), 0, devDir + ' should start with home folder')
+    t.is(devDir, path.join(os.tmpdir(), 'prebuild', 'node'))
     t.error(err, 'no error')
   })
 })

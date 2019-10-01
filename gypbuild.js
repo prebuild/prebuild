@@ -33,6 +33,7 @@ function runGyp (opts, target, cb) {
 
   gyp({
     gyp: opts.gyp,
+    runtime: opts.runtime,
     backend: opts.backend,
     log: opts.log,
     args: args,

@@ -1,6 +1,6 @@
 var assert = require('assert')
 var path = require('path')
-var osenv = require('osenv')
+var os = require('os')
 
 var backends = {
   'node-gyp': require('node-gyp')(),
@@ -25,7 +25,7 @@ function runGyp (opts, cb) {
 
   log.verbose('execute ' + backend + ' with `' + args.join(' ') + '`')
   gyp.parseArgv(args)
-  gyp.devDir = devDir()
+  gyp.devDir = devDir(opts.runtime || 'node')
 
   function runStep () {
     var command = gyp.todo.shift()
@@ -61,8 +61,11 @@ function runGyp (opts, cb) {
   }
 }
 
-function devDir () {
-  return path.resolve(osenv.home(), '.node-gyp')
+function devDir (runtime) {
+  // Since electron and node are reusing the versions now (fx 6.0.0) and
+  // node-gyp only uses the version to store the dev files, they have started
+  // clashing. To work around this we explicitly set devdir to tmpdir/runtime(/target)
+  return path.join(os.tmpdir(), 'prebuild', runtime)
 }
 
 module.exports = runGyp
