@@ -5,6 +5,7 @@ var log = require('npmlog')
 var fs = require('fs')
 var eachSeries = require('each-series-async')
 var napi = require('napi-build-utils')
+var glob = require('glob')
 
 var pkg = require(path.resolve('package.json'))
 var rc = require('./rc')
@@ -41,9 +42,9 @@ var opts = Object.assign({}, rc, { pkg: pkg, log: log, buildLog: buildLog, argv:
 if (napi.isNapiRuntime(rc.runtime)) napi.logMissingNapiVersions(rc.target, rc.prebuild, log)
 
 if (opts['upload-all']) {
-  fs.readdir('prebuilds', function (err, pbFiles) {
+  glob('prebuilds/**/*', { nodir: true }, function (err, pbFiles) {
     if (err) return onbuilderror(err)
-    uploadFiles(pbFiles.map(function (file) { return 'prebuilds/' + file }))
+    uploadFiles(pbFiles)
   })
 } else {
   var files = []
