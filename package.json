@@ -18,7 +18,7 @@
     "devops",
     "electron",
     "node-webkit",
-    "n-api"
+    "node-api"
   ],
   "dependencies": {
     "cmake-js": "~5.2.0",
