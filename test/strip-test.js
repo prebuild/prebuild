@@ -9,7 +9,7 @@ test('strip is noop on windows', function (t) {
   }
   var _platform = util.platform
   util.platform = function () { return 'win32' }
-  strip('foo.node', function (err) {
+  strip(['foo.node'], function (err) {
     util.spawn = _spawn
     util.platform = _platform
     t.error(err, 'no error')
@@ -27,7 +27,7 @@ test('strip gets special args for darwin', function (t) {
   }
   var _platform = util.platform
   util.platform = function () { return 'darwin' }
-  strip('foo.node', function (err) {
+  strip(['foo.node'], function (err) {
     util.spawn = _spawn
     util.platform = _platform
     t.error(err, 'no error')
@@ -45,7 +45,7 @@ test('strip gets special args for linux', function (t) {
   }
   var _platform = util.platform
   util.platform = function () { return 'linux' }
-  strip('foo.node', function (err) {
+  strip(['foo.node'], function (err) {
     util.spawn = _spawn
     util.platform = _platform
     t.error(err, 'no error')
@@ -63,7 +63,29 @@ test('strip gets empty args for other', function (t) {
   }
   var _platform = util.platform
   util.platform = function () { return 'sunos' }
-  strip('foo.node', function (err) {
+  strip(['foo.node'], function (err) {
+    util.spawn = _spawn
+    util.platform = _platform
+    t.error(err, 'no error')
+    t.end()
+  })
+})
+
+test('strip gets special args for linux on multiple files', function (t) {
+  t.plan(5)
+  const collectedFiles = ['foo.node', 'bar.node']
+  var currentFileIndex = 0
+  var _spawn = util.spawn
+  util.spawn = function (cmd, args, cb) {
+    t.equal(cmd, 'strip', 'correct cmd')
+    const expectedFile = collectedFiles[currentFileIndex]
+    t.deepEqual(args, [expectedFile, '--strip-all'], 'correct args')
+    process.nextTick(cb)
+    currentFileIndex++
+  }
+  var _platform = util.platform
+  util.platform = function () { return 'linux' }
+  strip(collectedFiles, function (err) {
     util.spawn = _spawn
     util.platform = _platform
     t.error(err, 'no error')
