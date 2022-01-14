@@ -9,7 +9,7 @@ function strip (file, cb) {
 
 function stripArgs (platform, file) {
   if (platform === 'darwin') return [file, '-Sx']
-  if (platform === 'linux') return [file, '--strip-all']
+  if (['freebsd', 'linux'].includes(platform)) return [file, '--strip-all']
   // TODO find out what args to use for other platforms, e.g. 'sunos'
   return []
 }
