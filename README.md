@@ -148,15 +148,15 @@ Native modules that are designed to work with [Node-API](https://nodejs.org/api/
 }
 ```
 
-In the absence of a need to compile against a specific Node-API version, the value `3` is a good choice as this is the Node-API version that was supported when Node-API left experimental status. 
+In the absence of a need to compile against a specific Node-API version, the value `3` is a good choice as this is the Node-API version that was supported when Node-API left experimental status.
 
-Modules that are built against a specific Node-API version will continue to operate indefinitely, even as later versions of Node-API are introduced. 
+Modules that are built against a specific Node-API version will continue to operate indefinitely, even as later versions of Node-API are introduced.
 
 ### Defining the `NAPI_VERSION` Value
 
 The Node-API header files supplied with Node use the `NAPI_VERSION` preprocessor value supplied by the user to configure each build to the specific Node-API version for which the native addon is being built. In addition, the module's C/C++ code can use this value to conditionally compile code based on the Node-API version it is being compiled against.
 
-`prebuild` supports two build backends: [`node-gyp`](https://github.com/nodejs/node-gyp) and [`cmake-js`](https://github.com/cmake-js/cmake-js). The `NAPI_VERSION` value is configured differently for each backend. 
+`prebuild` supports two build backends: [`node-gyp`](https://github.com/nodejs/node-gyp) and [`cmake-js`](https://github.com/cmake-js/cmake-js). The `NAPI_VERSION` value is configured differently for each backend.
 
 #### node-gyp
 
@@ -180,9 +180,9 @@ add_compile_definitions(NAPI_VERSION=${napi_build_version})
 
 The `--runtime` argument must be `napi` to request Node-API builds. When requesting Node-API builds, the module's `package.json` file _must_ include a `binary` property as described above. And the `binding.gyp` file _must_ include a define for `NAPI_VERSION` as described above.
 
-One or more `--target` arguments may be specified to request builds for specific Node-API versions. Node-API versions are positive integer values. Alternatively, `--all` may be used to request builds for all Node-API versions supported by the module. 
+One or more `--target` arguments may be specified to request builds for specific Node-API versions. Node-API versions are positive integer values. Alternatively, `--all` may be used to request builds for all Node-API versions supported by the module.
 
-In the absence of both `--target` and `--all` arguments, `prebuild` will build the most current version of the module supported by the Node instance performing the build. 
+In the absence of both `--target` and `--all` arguments, `prebuild` will build the most current version of the module supported by the Node instance performing the build.
 
 ## Help
 
@@ -192,6 +192,7 @@ prebuild [options]
 
   --target      -t  version     (version to build or install for)
   --runtime     -r  runtime     (Node runtime [node, napi, electron or node-webkit] to build or install for, default is node)
+  --arch        -a  arch        (architecture to build or install for [default: process.arch])
   --all                         (prebuild for all known abi versions)
   --upload      -u  [gh-token]  (upload prebuilds to github)
   --upload-all  -u  [gh-token]  (upload all files from ./prebuilds folder to github)
