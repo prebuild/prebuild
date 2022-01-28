@@ -3,7 +3,7 @@ var targets = require('node-abi').supportedTargets
 var detectLibc = require('detect-libc')
 var napi = require('napi-build-utils')
 
-var libc = process.env.LIBC || (detectLibc.isNonGlibcLinux && detectLibc.family) || ''
+var libc = process.env.LIBC || (detectLibc.isNonGlibcLinuxSync() && detectLibc.familySync()) || ''
 
 var rc = require('rc')('prebuild', {
   target: process.versions.node,

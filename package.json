@@ -22,7 +22,7 @@
   ],
   "dependencies": {
     "cmake-js": "~5.2.0",
-    "detect-libc": "^1.0.3",
+    "detect-libc": "^2.0.0",
     "each-series-async": "^1.0.1",
     "execspawn": "^1.0.1",
     "ghreleases": "^3.0.2",
