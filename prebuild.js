@@ -51,7 +51,7 @@ function prebuild (opts, target, runtime, callback) {
 
     if (opts.strip) {
       tasks.splice(1, 0, function (filenames, cb) {
-        buildLog('Stripping debug information from ' + filenames)
+        buildLog('Stripping debug information from ' + filenames.join(', '))
         strip(filenames, function (err) {
           if (err) return cb(err)
           cb(null, filenames)
