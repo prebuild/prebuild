@@ -18,7 +18,7 @@ function runGyp (opts, target, cb) {
   args.push('--target_arch=' + opts.arch)
   if (opts.runtime === 'electron') {
     args.push('--runtime=electron')
-    args.push('--dist-url=https://atom.io/download/electron')
+    args.push('--dist-url=https://electronjs.org/headers')
   } else if (opts.runtime === 'node-webkit') {
     args.push('--runtime=node-webkit')
   } else if (opts.runtime === 'node') {
