@@ -41,9 +41,6 @@ jobs:
         if: ${{ startsWith(matrix.os, 'ubuntu') }}
         with:
           python-version: 2.7
-      - name: Configure Windows env
-        run: npm config set msvs_version 2019
-        if: ${{ startsWith(matrix.os, 'windows') }}
         # See https://github.com/nodejs/node-gyp/issues/1574#issuecomment-554187531
       - name: Configure macOS env
         run: |
