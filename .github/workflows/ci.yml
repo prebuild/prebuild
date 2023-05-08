@@ -31,7 +31,7 @@ jobs:
             node: 10
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           submodules: recursive
         # Needed to fix node-webkit prebuilds, see https://github.com/nwjs/node/issues/46
@@ -50,7 +50,7 @@ jobs:
           echo "LDFLAGS=-mmacosx-version-min=10.9" >> $GITHUB_ENV
         if: ${{ startsWith(matrix.os, 'macos') }}
       - name: Use Node.js ${{ matrix.node }}
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node }}
           architecture: ${{ matrix.arch }}
