@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+      - aaaaaand-action-(s)
   pull_request:
 
 jobs:
