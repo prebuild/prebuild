@@ -1,23 +1,25 @@
 name: CI
 
 on:
-  push:
-    branches:
-      - master
-      - aaaaaand-action-(s)
-  pull_request:
+  - push
+  - pull_request
+
+permissions:
+  contents: read
 
 jobs:
   build:
     runs-on: ${{ matrix.os }}
-    permissions: read-all
     strategy:
       fail-fast: false
       matrix:
-        node: [20, 18, 16, 14, 12, 10]
-        os: [windows-2019, macos-latest, ubuntu-latest]
+        node: [18, 16, 14, 12, 10]
+        os: [windows-2019, macos-11, ubuntu-20.04]
         arch: [x64]
         include:
+          - os: windows-2019
+            arch: x86
+            node: 18
           - os: windows-2019
             arch: x86
             node: 16
