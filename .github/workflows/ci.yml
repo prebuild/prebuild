@@ -13,10 +13,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node: [18, 16, 14, 12, 10]
+        node: [20, 18, 16, 14]
         os: [windows-2019, macos-11, ubuntu-20.04]
         arch: [x64]
         include:
+          - os: windows-2019
+            arch: x86
+            node: 20
           - os: windows-2019
             arch: x86
             node: 18
@@ -26,12 +29,6 @@ jobs:
           - os: windows-2019
             arch: x86
             node: 14
-          - os: windows-2019
-            arch: x86
-            node: 12
-          - os: windows-2019
-            arch: x86
-            node: 10
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v3
@@ -40,13 +37,7 @@ jobs:
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
         with:
-          python-version: "3.10"
-        # See https://github.com/nodejs/node-gyp/issues/1574#issuecomment-554187531
-      - name: Configure macOS env
-        run: |
-          echo "CXXFLAGS=-mmacosx-version-min=10.9" >> $GITHUB_ENV
-          echo "LDFLAGS=-mmacosx-version-min=10.9" >> $GITHUB_ENV
-        if: ${{ startsWith(matrix.os, 'macos') }}
+          python-version: "3.11"
       - name: Use Node.js ${{ matrix.node }}
         uses: actions/setup-node@v3
         with:

@@ -9,10 +9,12 @@ var os = require('os')
 test('gyp is invoked with correct arguments, release mode', function (t) {
   t.plan(7)
   var opts = {
-    pkg: { binary: {
-      module_name: 'module_name',
-      module_path: 'module_path'
-    } },
+    pkg: {
+      binary: {
+        module_name: 'module_name',
+        module_path: 'module_path'
+      }
+    },
     arch: 'fooarch',
     gyp: {
       parseArgv: function (args) {
