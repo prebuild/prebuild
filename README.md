@@ -8,9 +8,6 @@ $ npm install -g prebuild
 
 [![npm](https://img.shields.io/npm/v/prebuild.svg)](https://www.npmjs.com/package/prebuild)
 ![Node version](https://img.shields.io/node/v/prebuild.svg)
-[![build status](http://img.shields.io/travis/prebuild/prebuild.svg?style=flat)](http://travis-ci.org/prebuild/prebuild)
-[![Build status](https://ci.appveyor.com/api/projects/status/oy1kk4fpy51net0v/branch/master?svg=true)](https://ci.appveyor.com/project/mathiask88/prebuild)
-[![david](https://david-dm.org/prebuild/prebuild.svg)](https://david-dm.org/prebuild/prebuild)
 [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com/)
 
 ## Features

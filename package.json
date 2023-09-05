@@ -21,32 +21,31 @@
     "node-api"
   ],
   "dependencies": {
-    "cmake-js": "~6.3.0",
-    "detect-libc": "^2.0.0",
+    "cmake-js": "^7.2.1",
+    "detect-libc": "^2.0.1",
     "each-series-async": "^1.0.1",
     "execspawn": "^1.0.1",
     "ghreleases": "^3.0.2",
     "github-from-package": "0.0.0",
-    "glob": "^7.1.6",
-    "minimist": "^1.1.2",
-    "mkdirp": "^0.5.1",
-    "napi-build-utils": "^1.0.1",
-    "node-abi": "^3.0.0",
-    "node-gyp": "^6.0.1",
-    "node-ninja": "^1.0.1",
-    "noop-logger": "^0.1.0",
+    "glob": "^7.2.3",
+    "minimist": "^1.2.8",
+    "napi-build-utils": "^1.0.2",
+    "node-abi": "^3.45.0",
+    "node-gyp": "^9.4.0",
+    "node-ninja": "^1.0.2",
+    "noop-logger": "^0.1.1",
     "npm-which": "^3.0.1",
-    "npmlog": "^4.0.1",
-    "nw-gyp": "^3.6.3",
-    "rc": "^1.0.3",
-    "run-waterfall": "^1.1.6",
-    "tar-stream": "^2.1.0"
+    "npmlog": "^7.0.1",
+    "nw-gyp": "^3.6.6",
+    "rc": "^1.2.8",
+    "run-waterfall": "^1.1.7",
+    "tar-stream": "^3.1.6"
   },
   "devDependencies": {
     "a-native-module": "^1.0.0",
-    "rimraf": "^3.0.0",
-    "standard": "^13.0.1",
-    "tape": "^4.0.1"
+    "rimraf": "^4.4.1",
+    "standard": "^14.3.4",
+    "tape": "^5.6.4"
   },
   "bin": {
     "prebuild": "./bin.js"
@@ -69,6 +68,6 @@
   },
   "homepage": "https://github.com/prebuild/prebuild",
   "engines": {
-    "node": ">=10"
+    "node": "^14.17.0 || ^16.13.0 || >=18.0.0"
   }
 }
