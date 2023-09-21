@@ -18,7 +18,8 @@ test('custom config and aliases', function (t) {
     '--target 13',
     '--runtime electron',
     '--libc testlibc',
-    '--format msvs'
+    '--format msvs',
+    '--prerelease'
   ]
   runRc(t, args.join(' '), {}, function (rc) {
     t.equal(rc.all, false, 'default is not building all targets')
@@ -47,6 +48,7 @@ test('custom config and aliases', function (t) {
     t.equal(rc.libc, 'testlibc', 'libc family')
     t.equal(rc.format, 'msvs', 'correct node-gyp format')
     t.equal(rc['tag-prefix'], 'v', 'correct default tag prefix')
+    t.equal(rc.prerelease, true, 'prerelease is set')
     t.end()
   })
 })
