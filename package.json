@@ -1,6 +1,6 @@
 {
   "name": "prebuild",
-  "version": "12.0.0",
+  "version": "12.1.0",
   "description": "A command line tool for easily making prebuilt binaries for multiple versions of node, electron or node-webkit on a specific platform",
   "scripts": {
     "test": "tape test && npm run lint",
