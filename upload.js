@@ -20,8 +20,9 @@ function upload (opts, cb) {
   var repo = url.split('/')[4]
   var auth = { user: 'x-oauth', token: opts.upload }
   var tag = `${tagPrefix}${pkg.version}`
+  var prerelease = opts.prerelease
 
-  gh.create(auth, user, repo, { tag_name: tag }, function () {
+  gh.create(auth, user, repo, { tag_name: tag, prerelease }, function () {
     gh.getByTag(auth, user, repo, tag, function (err, release) {
       if (err) return cb(err)
 

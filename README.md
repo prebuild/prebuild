@@ -116,6 +116,8 @@ You can use `prebuild --upload-all` to upload all files from the `./prebuilds` f
 
 You can use `prebuild --upload --tag-prefix <prefix>` for specific tag prefixes for the release. The default prefix is `v` and will result in a tag with an appended version number, for example `v1.0.0`. For [lerna](https://github.com/lerna/lerna) you can use the package name e.g. `prebuild --tag-prefix some-package@` and the binaries will be released on the appropriate package's tags, for example `some-package@1.0.0`.
 
+You can use `prebuild --upload --prerelease` to create a prerelease, which will not be shown as the latest release.
+
 ## Create GitHub Token
 
 A GitHub token is needed for two reasons:

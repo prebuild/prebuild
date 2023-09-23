@@ -9,8 +9,8 @@ test('uploading to GitHub, basic use case', function (t) {
   })
 })
 
-test('uploading to GitHub, tag prefix', function (t) {
-  upload(basicSetup(t, { tagPrefix: `${pkg.name}@` }), function (err) {
+test('uploading to GitHub, tag prefix, prerelease', function (t) {
+  upload(basicSetup(t, { tagPrefix: `${pkg.name}@`, prerelease: true }), function (err) {
     t.error(err, 'no error')
     t.end()
   })
@@ -68,18 +68,20 @@ function basicSetup (t, opts) {
   opts = opts || {}
   const assets = opts.assets || []
   const tagPrefix = opts.tagPrefix || 'v'
+  const prerelease = opts.prerelease || false
   var files = ['foo.tar.gz', 'bar.tar.gz', 'baz.tar.gz']
   return {
     pkg: pkg,
     upload: 't000k3n',
     files: files,
     'tag-prefix': tagPrefix,
+    prerelease,
     gh: {
       create: function (auth, user, repo, opts, cb) {
         t.deepEqual(auth, { user: 'x-oauth', token: 't000k3n' }, 'correct auth')
         t.equal(user, 'ralphtheninja', 'correct user')
         t.equal(repo, 'a-native-module', 'correct repo')
-        t.deepEqual(opts, { tag_name: `${tagPrefix}${pkg.version}` }, 'correct opts')
+        t.deepEqual(opts, { tag_name: `${tagPrefix}${pkg.version}`, prerelease }, 'correct opts')
         process.nextTick(cb)
       },
       getByTag: function (auth, user, repo, tag, cb) {

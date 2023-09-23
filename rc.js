@@ -19,7 +19,8 @@ var rc = require('rc')('prebuild', {
   backend: 'node-gyp',
   format: false,
   'include-regex': '\\.node$',
-  'tag-prefix': 'v'
+  'tag-prefix': 'v',
+  prerelease: false
 }, minimist(process.argv, {
   alias: {
     target: 't',
