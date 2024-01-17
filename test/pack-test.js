@@ -1,11 +1,11 @@
-var test = require('tape')
-var fs = require('fs')
-var path = require('path')
-var pack = require('../pack')
-var zlib = require('zlib')
-var tar = require('tar-stream')
+const test = require('tape')
+const fs = require('fs')
+const path = require('path')
+const pack = require('../pack')
+const zlib = require('zlib')
+const tar = require('tar-stream')
 
-var output = path.join(__dirname, 'prebuilds')
+const output = path.join(__dirname, 'prebuilds')
 
 test('missing file calls back with error', function (t) {
   pack('thisfilesurelydoesnotexists', 'foo', function (err) {
@@ -20,37 +20,37 @@ test('resulting file is a gzipped tar archive', function (t) {
 
   t.equal(fs.existsSync(output), false, 'no output folder')
 
-  var filename = path.join(__dirname, 'pack-test.js')
-  var tarPath = output + '/@scope/modulename-pack-test.tar.gz'
+  const filename = path.join(__dirname, 'pack-test.js')
+  const tarPath = output + '/@scope/modulename-pack-test.tar.gz'
 
-  var _stat = fs.stat
+  const _stat = fs.stat
   fs.stat = function (fpath, cb) {
     t.equal(fs.existsSync(output), true, 'created output folder')
     t.equal(fpath, filename, 'correct filename')
     _stat(fpath, cb)
   }
 
-  var resultStream
-  var _createWriteStream = fs.createWriteStream
+  let resultStream
+  const _createWriteStream = fs.createWriteStream
   fs.createWriteStream = function (path) {
     t.equal(path, tarPath, 'correct tar path')
     resultStream = _createWriteStream(path)
     return resultStream
   }
 
-  var _createReadStream = fs.createReadStream
+  const _createReadStream = fs.createReadStream
   fs.createReadStream = function (path) {
     t.equal(path, filename, 'correct filename')
     return _createReadStream(path)
   }
 
-  var gzipStream
-  var _createGzip = zlib.createGzip
+  let gzipStream
+  const _createGzip = zlib.createGzip
   if (Object.defineProperty) Object.defineProperty(zlib, 'createGzip', { writable: true })
   zlib.createGzip = function () {
     t.pass('should be called')
     gzipStream = _createGzip()
-    var _pipe = gzipStream.pipe.bind(gzipStream)
+    const _pipe = gzipStream.pipe.bind(gzipStream)
     gzipStream.pipe = function (stream) {
       t.deepEqual(stream, resultStream, 'piping to correct stream')
       return _pipe(stream)
@@ -58,13 +58,13 @@ test('resulting file is a gzipped tar archive', function (t) {
     return gzipStream
   }
 
-  var tarStream
-  var _pack = tar.pack
+  let tarStream
+  const _pack = tar.pack
   tar.pack = function () {
     t.pass('should be called')
     tarStream = _pack()
 
-    var _entry = tarStream.entry.bind(tarStream)
+    const _entry = tarStream.entry.bind(tarStream)
     tarStream.entry = function (opts) {
       t.equal(opts.name, filename.replace(/\\/g, '/').replace(/:/g, '_'), 'correct filename')
       t.notEqual(opts.size, undefined, '.size is set')
@@ -74,13 +74,13 @@ test('resulting file is a gzipped tar archive', function (t) {
       return _entry(opts)
     }
 
-    var _pipe = tarStream.pipe.bind(tarStream)
+    const _pipe = tarStream.pipe.bind(tarStream)
     tarStream.pipe = function (stream) {
       t.deepEqual(stream, gzipStream, 'piping to correct stream')
       return _pipe(stream)
     }
 
-    var _finalize = tarStream.finalize.bind(tarStream)
+    const _finalize = tarStream.finalize.bind(tarStream)
     tarStream.finalize = function () {
       t.pass('should be called')
       return _finalize()

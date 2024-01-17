@@ -1,11 +1,11 @@
-var spawn = require('child_process').spawn
-var which = require('npm-which')(process.cwd())
+const spawn = require('child_process').spawn
+const which = require('npm-which')(process.cwd())
 
 function runCmake (opts, target, cb) {
   which('cmake-js', function (err, cmakeJsPath) {
     if (err) return cb(err)
 
-    var args = ['rebuild']
+    const args = ['rebuild']
     if (opts.runtime !== 'napi') args.push('--runtime-version=' + target)
     args.push('--arch=' + opts.arch)
     if (opts.runtime !== 'napi') args.push('--runtime=' + opts.runtime)
@@ -15,8 +15,8 @@ function runCmake (opts, target, cb) {
 
     if (opts.debug) args.push('--debug')
 
-    var foundRest = false
-    for (var arg of opts.argv) {
+    let foundRest = false
+    for (const arg of opts.argv) {
       if (arg === '--') {
         foundRest = true
       } else if (foundRest) {
@@ -24,7 +24,7 @@ function runCmake (opts, target, cb) {
       }
     }
 
-    var proc = spawn(cmakeJsPath, args, process.platform === 'win32' ? { shell: true } : undefined)
+    const proc = spawn(cmakeJsPath, args, process.platform === 'win32' ? { shell: true } : undefined)
     proc.stdout.pipe(process.stdout)
     proc.stderr.pipe(process.stderr)
     proc.on('exit', function (code) {

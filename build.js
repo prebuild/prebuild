@@ -1,16 +1,16 @@
-var noop = require('noop-logger')
-var releaseFolder = require('./util').releaseFolder
-var gypbuild = require('./gypbuild')
-var cmakebuild = require('./cmakebuild')
-var collectArtifacts = require('./collect-artifacts')
-var util = require('./util')
+const noop = require('noop-logger')
+const releaseFolder = require('./util').releaseFolder
+const gypbuild = require('./gypbuild')
+const cmakebuild = require('./cmakebuild')
+const collectArtifacts = require('./collect-artifacts')
+const util = require('./util')
 
 function build (opts, version, cb) {
-  var log = opts.log || noop
+  const log = opts.log || noop
 
-  var run = function () {
-    var release = releaseFolder(opts, version)
-    var build = opts.backend === 'cmake-js' ? cmakebuild : gypbuild
+  const run = function () {
+    const release = releaseFolder(opts, version)
+    const build = opts.backend === 'cmake-js' ? cmakebuild : gypbuild
 
     log.verbose('starting build process ' + opts.backend)
     build(opts, version, function (err) {
