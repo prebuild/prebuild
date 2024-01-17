@@ -13,8 +13,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node: [20, 18, 16, 14]
-        os: [windows-2019, macos-11, ubuntu-20.04]
+        node: [20, 18, 16]
+        os: [windows-2019, macos-11, ubuntu-22.04]
         arch: [x64]
         include:
           - os: windows-2019
@@ -26,9 +26,6 @@ jobs:
           - os: windows-2019
             arch: x86
             node: 16
-          - os: windows-2019
-            arch: x86
-            node: 14
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v3
