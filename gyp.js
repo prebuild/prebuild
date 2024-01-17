@@ -40,16 +40,14 @@ function runGyp (opts, cb) {
       }
     }
 
-    gyp.commands[command.name](command.args, function (err) {
-      if (err) {
-        log.error(command.name + ' error')
-        log.error('stack', err.stack)
-        log.error('not ok')
-        return cb(err)
-      }
-
+    gyp.commands[command.name](command.args).then(function () {
       log.verbose('ok')
       process.nextTick(runStep)
+    }, function (err) {
+      log.error(command.name + ' error')
+      log.error('stack', err.stack)
+      log.error('not ok')
+      return cb(err)
     })
   }
 
