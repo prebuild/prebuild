@@ -1,6 +1,6 @@
-var test = require('tape')
-var upload = require('../upload')
-var pkg = require('a-native-module/package')
+const test = require('tape')
+const upload = require('../upload')
+const pkg = require('a-native-module/package')
 
 test('uploading to GitHub, basic use case', function (t) {
   upload(basicSetup(t), function (err) {
@@ -17,7 +17,7 @@ test('uploading to GitHub, tag prefix, prerelease', function (t) {
 })
 
 test('uploading to GitHub, failing to create release works', function (t) {
-  var opts = basicSetup(t)
+  const opts = basicSetup(t)
   opts.gh.create = function (auth, user, repo, opts, cb) {
     process.nextTick(cb.bind(null, new Error('failed to create github release')))
   }
@@ -28,8 +28,8 @@ test('uploading to GitHub, failing to create release works', function (t) {
 })
 
 test('uploading to GitHub, upload fails if getByTag fails', function (t) {
-  var opts = basicSetup(t)
-  var error = new Error('getByTag failed miserably, buu huu')
+  const opts = basicSetup(t)
+  const error = new Error('getByTag failed miserably, buu huu')
   opts.gh.getByTag = function (auth, user, repo, tag, cb) {
     process.nextTick(cb.bind(null, error))
   }
@@ -40,8 +40,8 @@ test('uploading to GitHub, upload fails if getByTag fails', function (t) {
 })
 
 test('uploading to GitHub, upload fails if uploadAssets fails', function (t) {
-  var opts = basicSetup(t)
-  var error = new Error('uploadAssets failed miserably, buu huu')
+  const opts = basicSetup(t)
+  const error = new Error('uploadAssets failed miserably, buu huu')
   opts.gh.uploadAssets = function (auth, user, repo, ref, _files, cb) {
     process.nextTick(cb.bind(null, error))
   }
@@ -52,7 +52,7 @@ test('uploading to GitHub, upload fails if uploadAssets fails', function (t) {
 })
 
 test('uploading to GitHub, only uploading not uploaded files', function (t) {
-  var opts = basicSetup(t, { assets: [{ name: 'foo.tar.gz' }, { name: 'baz.tar.gz' }] })
+  const opts = basicSetup(t, { assets: [{ name: 'foo.tar.gz' }, { name: 'baz.tar.gz' }] })
   opts.gh.uploadAssets = function (auth, user, repo, ref, filtered, cb) {
     process.nextTick(cb)
   }
@@ -69,11 +69,11 @@ function basicSetup (t, opts) {
   const assets = opts.assets || []
   const tagPrefix = opts.tagPrefix || 'v'
   const prerelease = opts.prerelease || false
-  var files = ['foo.tar.gz', 'bar.tar.gz', 'baz.tar.gz']
+  const files = ['foo.tar.gz', 'bar.tar.gz', 'baz.tar.gz']
   return {
-    pkg: pkg,
+    pkg,
     upload: 't000k3n',
-    files: files,
+    files,
     'tag-prefix': tagPrefix,
     prerelease,
     gh: {
@@ -89,7 +89,7 @@ function basicSetup (t, opts) {
         t.equal(user, 'ralphtheninja', 'correct user')
         t.equal(repo, 'a-native-module', 'correct repo')
         t.equal(tag, `${tagPrefix}${pkg.version}`, 'correct tag')
-        process.nextTick(function () { cb(null, { assets: assets }) })
+        process.nextTick(function () { cb(null, { assets }) })
       },
       uploadAssets: function (auth, user, repo, ref, _files, cb) {
         t.deepEqual(auth, { user: 'x-oauth', token: 't000k3n' }, 'correct auth')

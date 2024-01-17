@@ -1,10 +1,10 @@
-var collectArtifacts = require('../collect-artifacts')
-var rc = require('../rc')
-var test = require('tape')
-var path = require('path')
+const collectArtifacts = require('../collect-artifacts')
+const rc = require('../rc')
+const test = require('tape')
+const path = require('path')
 
 test('normal mode, only collect .node', function (t) {
-  var release = path.join(__dirname, 'fixture', 'multiple-files')
+  const release = path.join(__dirname, 'fixture', 'multiple-files')
 
   collectArtifacts(release, rc, function (err, collected) {
     t.error(err, 'collected file')
@@ -15,8 +15,8 @@ test('normal mode, only collect .node', function (t) {
 })
 
 test('collect .node and .out', function (t) {
-  var release = path.join(__dirname, 'fixture', 'multiple-files')
-  var opts = {
+  const release = path.join(__dirname, 'fixture', 'multiple-files')
+  const opts = {
     'include-regex': /\.(out|node)$/i
   }
   collectArtifacts(release, opts, function (err, collected) {

@@ -1,18 +1,18 @@
 #!/usr/bin/env node
 
-var path = require('path')
-var log = require('npmlog')
-var fs = require('fs')
-var eachSeries = require('each-series-async')
-var napi = require('napi-build-utils')
-var { glob } = require('glob')
+const path = require('path')
+const log = require('npmlog')
+const fs = require('fs')
+const eachSeries = require('each-series-async')
+const napi = require('napi-build-utils')
+const { glob } = require('glob')
 
-var pkg = require(path.resolve('package.json'))
-var rc = require('./rc')
-var prebuild = require('./prebuild')
-var upload = require('./upload')
+const pkg = require(path.resolve('package.json'))
+const rc = require('./rc')
+const prebuild = require('./prebuild')
+const upload = require('./upload')
 
-var prebuildVersion = require('./package.json').version
+const prebuildVersion = require('./package.json').version
 if (rc.version) {
   console.log(prebuildVersion)
   process.exit(0)
@@ -36,15 +36,15 @@ log.info('begin', 'Prebuild version', prebuildVersion)
 delete process.env.NVM_IOJS_ORG_MIRROR
 delete process.env.NVM_NODEJS_ORG_MIRROR
 
-var buildLog = log.info.bind(log, 'build')
-var opts = Object.assign({}, rc, { pkg: pkg, log: log, buildLog: buildLog, argv: process.argv })
+const buildLog = log.info.bind(log, 'build')
+const opts = Object.assign({}, rc, { pkg, log, buildLog, argv: process.argv })
 
 if (napi.isNapiRuntime(rc.runtime)) napi.logMissingNapiVersions(rc.target, rc.prebuild, log)
 
 if (opts['upload-all']) {
   glob('prebuilds/**/*', { nodir: true }).then(uploadFiles, onbuilderror)
 } else {
-  var files = []
+  const files = []
   eachSeries(opts.prebuild, function (target, next) {
     prebuild(opts, target.target, target.runtime, function (err, tarGz) {
       if (err) return next(err)
@@ -61,7 +61,7 @@ if (opts['upload-all']) {
 function uploadFiles (files) {
   // NOTE(robinwassen): Only include unique files
   // See: https://github.com/prebuild/prebuild/issues/221
-  var uniqueFiles = files.filter(function (file, index) {
+  const uniqueFiles = files.filter(function (file, index) {
     return files.indexOf(file) === index
   })
 

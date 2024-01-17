@@ -1,14 +1,14 @@
-var test = require('tape')
-var runGyp = require('../gypbuild')
-var build = require('../build')
-var util = require('../util')
-var noop = require('noop-logger')
-var path = require('path')
-var os = require('os')
+const test = require('tape')
+const runGyp = require('../gypbuild')
+const build = require('../build')
+const util = require('../util')
+const noop = require('noop-logger')
+const path = require('path')
+const os = require('os')
 
 test('gyp is invoked with correct arguments, release mode', function (t) {
   t.plan(7)
-  var opts = {
+  const opts = {
     pkg: {
       binary: {
         module_name: 'module_name',
@@ -56,7 +56,7 @@ test('gyp is invoked with correct arguments, release mode', function (t) {
     log: noop
   }
   runGyp(opts, 'x.y.z', function (err) {
-    var devDir = opts.gyp.devDir
+    const devDir = opts.gyp.devDir
     t.is(devDir, path.join(os.tmpdir(), 'prebuild', 'node'))
     t.error(err, 'no error')
   })
@@ -64,7 +64,7 @@ test('gyp is invoked with correct arguments, release mode', function (t) {
 
 test('gyp is invoked with correct arguments, debug mode', function (t) {
   t.plan(2)
-  var opts = {
+  const opts = {
     arch: 'fooarch',
     debug: true,
     gyp: {
@@ -86,12 +86,12 @@ test('gyp is invoked with correct arguments, debug mode', function (t) {
 
 test('--preinstall script is spawned, calls back with error if fails', function (t) {
   t.plan(2)
-  var _run = util.run
+  const _run = util.run
   util.run = function (cmd, cb) {
     t.equal(cmd, 'somescript.sh', 'correct script')
     process.nextTick(cb.bind(null, new Error('some error')))
   }
-  var opts = {
+  const opts = {
     preinstall: 'somescript.sh',
     log: noop
   }

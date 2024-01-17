@@ -1,7 +1,7 @@
-var path = require('path')
-var cp = require('child_process')
-var execSpawn = require('execspawn')
-var error = require('./error')
+const path = require('path')
+const cp = require('child_process')
+const execSpawn = require('execspawn')
+const error = require('./error')
 
 function getTarPath (opts, abi) {
   return path.join('prebuilds', [
@@ -50,8 +50,8 @@ function platform () {
 }
 
 function releaseFolder (opts, version) {
-  var type = (opts.debug ? 'Debug' : 'Release')
-  var binary = opts.pkg.binary
+  const type = (opts.debug ? 'Debug' : 'Release')
+  const binary = opts.pkg.binary
   if (opts.backend === 'node-ninja') {
     return (binary && binary.module_path) || 'build/' + version + '/' + type
   } else {

@@ -1,8 +1,8 @@
-var util = require('./util')
+const util = require('./util')
 
 function strip (files, cb) {
   // TODO no support on windows, noop
-  var platform = util.platform()
+  const platform = util.platform()
   if (platform === 'win32') return process.nextTick(cb)
 
   stripFiles(files, platform, cb)
