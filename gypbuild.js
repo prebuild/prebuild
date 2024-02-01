@@ -15,7 +15,7 @@ function runGyp (opts, target, cb) {
   } else {
     args.push('--target=' + target)
   }
-  args.push('--target_arch=' + opts.arch)
+  args.push('--arch=' + opts.arch)
   if (opts.runtime === 'electron') {
     args.push('--runtime=electron')
     args.push('--dist-url=https://electronjs.org/headers')

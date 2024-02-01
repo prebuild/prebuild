@@ -18,7 +18,7 @@ test('gyp is invoked with correct arguments, release mode', function (t) {
     arch: 'fooarch',
     gyp: {
       parseArgv: function (args) {
-        t.deepEqual(args, ['node', 'index.js', 'rebuild', '--target=x.y.z', '--target_arch=fooarch'], 'correct arguments')
+        t.deepEqual(args, ['node', 'index.js', 'rebuild', '--target=x.y.z', '--arch=fooarch'], 'correct arguments')
       },
       commands: {
         rebuild: function (args) {
@@ -69,7 +69,7 @@ test('gyp is invoked with correct arguments, debug mode', function (t) {
     debug: true,
     gyp: {
       parseArgv: function (args) {
-        t.deepEqual(args, ['node', 'index.js', 'rebuild', '--target=x.y.z', '--target_arch=fooarch', '--debug'], 'correct arguments')
+        t.deepEqual(args, ['node', 'index.js', 'rebuild', '--target=x.y.z', '--arch=fooarch', '--debug'], 'correct arguments')
       },
       commands: {
         rebuild: function (args) {
