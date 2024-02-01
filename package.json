@@ -31,7 +31,7 @@
     "minimist": "^1.2.8",
     "napi-build-utils": "^1.0.2",
     "node-abi": "^3.47.0",
-    "node-gyp": "^9.4.0",
+    "node-gyp": "^10.0.1",
     "node-ninja": "^1.0.2",
     "noop-logger": "^0.1.1",
     "npm-which": "^3.0.1",
@@ -68,6 +68,6 @@
   },
   "homepage": "https://github.com/prebuild/prebuild",
   "engines": {
-    "node": "^14.17.0 || ^16.13.0 || >=18.0.0"
+    "node": "^16.14.0 || >=18.0.0"
   }
 }

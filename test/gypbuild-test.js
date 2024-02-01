@@ -21,26 +21,34 @@ test('gyp is invoked with correct arguments, release mode', function (t) {
         t.deepEqual(args, ['node', 'index.js', 'rebuild', '--target=x.y.z', '--target_arch=fooarch'], 'correct arguments')
       },
       commands: {
-        rebuild: function (args, cb) {
+        rebuild: function (args) {
           t.deepEqual(args, ['--rebuildarg'], 'correct args')
           opts.gyp.todo = [
             { name: 'clean', args: ['--cleanarg'] },
             { name: 'configure', args: ['--configurearg'] },
             { name: 'build', args: ['--buildarg'] }
           ]
-          process.nextTick(cb)
+          return new Promise(function (resolve) {
+            process.nextTick(resolve)
+          })
         },
-        clean: function (args, cb) {
+        clean: function (args) {
           t.deepEqual(args, ['--cleanarg'], 'correct args')
-          process.nextTick(cb)
+          return new Promise(function (resolve) {
+            process.nextTick(resolve)
+          })
         },
-        configure: function (args, cb) {
+        configure: function (args) {
           t.deepEqual(args, ['--configurearg', '-Dmodule_name=module_name', '-Dmodule_path=module_path'], 'correct args')
-          process.nextTick(cb)
+          return new Promise(function (resolve) {
+            process.nextTick(resolve)
+          })
         },
-        build: function (args, cb) {
+        build: function (args) {
           t.deepEqual(args, ['--buildarg'], 'correct args')
-          process.nextTick(cb)
+          return new Promise(function (resolve) {
+            process.nextTick(resolve)
+          })
         }
       },
       todo: [{ name: 'rebuild', args: ['--rebuildarg'] }]
@@ -64,15 +72,16 @@ test('gyp is invoked with correct arguments, debug mode', function (t) {
         t.deepEqual(args, ['node', 'index.js', 'rebuild', '--target=x.y.z', '--target_arch=fooarch', '--debug'], 'correct arguments')
       },
       commands: {
-        rebuild: function (args, cb) {
+        rebuild: function (args) {
           t.deepEqual(args, ['--rebuildarg'], 'correct args')
+          return Promise.resolve()
         }
       },
       todo: [{ name: 'rebuild', args: ['--rebuildarg'] }]
     },
     log: noop
   }
-  runGyp(opts, 'x.y.z')
+  runGyp(opts, 'x.y.z', function () {})
 })
 
 test('--preinstall script is spawned, calls back with error if fails', function (t) {
