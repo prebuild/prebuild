@@ -22,7 +22,7 @@ jobs:
             node: 20
           - os: windows-2019
             arch: x86
-            node: 18
+            node: "18.18.2" # pinned to avoid 18.19.0 and npm 10
           - os: windows-2019
             arch: x86
             node: 16
