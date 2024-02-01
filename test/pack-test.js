@@ -1,6 +1,5 @@
 var test = require('tape')
 var fs = require('fs')
-var rmrf = require('rimraf')
 var path = require('path')
 var pack = require('../pack')
 var zlib = require('zlib')
@@ -17,7 +16,7 @@ test('missing file calls back with error', function (t) {
 
 test('resulting file is a gzipped tar archive', function (t) {
   t.plan(17)
-  rmrf.sync(output)
+  fs.rmSync(output, { recursive: true, force: true })
 
   t.equal(fs.existsSync(output), false, 'no output folder')
 
