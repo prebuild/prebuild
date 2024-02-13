@@ -1,16 +1,16 @@
-var fs = require('fs')
-var waterfall = require('run-waterfall')
-var getAbi = require('node-abi').getAbi
-var getTarget = require('node-abi').getTarget
-var napi = require('napi-build-utils')
-var getTarPath = require('./util').getTarPath
-var build = require('./build')
-var strip = require('./strip')
-var pack = require('./pack')
+const fs = require('fs')
+const waterfall = require('run-waterfall')
+const getAbi = require('node-abi').getAbi
+const getTarget = require('node-abi').getTarget
+const napi = require('napi-build-utils')
+const getTarPath = require('./util').getTarPath
+const build = require('./build')
+const strip = require('./strip')
+const pack = require('./pack')
 
 function prebuild (opts, target, runtime, callback) {
-  var pkg = opts.pkg
-  var buildLog = opts.buildLog || function () {}
+  const pkg = opts.pkg
+  const buildLog = opts.buildLog || function () {}
   opts.target = target
   opts.runtime = runtime
 
@@ -18,21 +18,21 @@ function prebuild (opts, target, runtime, callback) {
     opts.backend = 'nw-gyp'
   }
 
-  var buildLogMessage = 'Preparing to prebuild ' + pkg.name + '@' + pkg.version + ' for ' + runtime + ' ' + target + ' on ' + opts.platform + '-' + opts.arch + ' using ' + opts.backend
+  let buildLogMessage = 'Preparing to prebuild ' + pkg.name + '@' + pkg.version + ' for ' + runtime + ' ' + target + ' on ' + opts.platform + '-' + opts.arch + ' using ' + opts.backend
   if (opts.libc && opts.libc.length > 0) buildLogMessage += 'using libc ' + opts.libc
   buildLog(buildLogMessage)
 
   // --target can be target or abi
   if (!napi.isNapiRuntime(runtime)) target = getTarget(target, runtime)
-  var abi = getAbi(target, runtime)
+  const abi = getAbi(target, runtime)
 
-  var tarPath = getTarPath(opts, abi)
+  const tarPath = getTarPath(opts, abi)
   fs.stat(tarPath, function (err, st) {
     if (!err && !opts.force) {
       buildLog(tarPath + ' exists, skipping build')
       return callback(null, tarPath)
     }
-    var tasks = [
+    const tasks = [
       function (cb) {
         build(opts, target, function (err, filenames) {
           if (err) return cb(err)
