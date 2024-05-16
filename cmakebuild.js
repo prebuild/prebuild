@@ -24,7 +24,7 @@ function runCmake (opts, target, cb) {
       }
     }
 
-    var proc = spawn(cmakeJsPath, args)
+    var proc = spawn(cmakeJsPath, args, process.platform === 'win32' ? { shell: true } : undefined)
     proc.stdout.pipe(process.stdout)
     proc.stderr.pipe(process.stderr)
     proc.on('exit', function (code) {
