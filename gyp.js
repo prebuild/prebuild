@@ -1,26 +1,26 @@
-var assert = require('assert')
-var path = require('path')
-var os = require('os')
+const assert = require('assert')
+const path = require('path')
+const os = require('os')
 
-var backends = {
+const backends = {
   'node-gyp': require('node-gyp')(),
   'node-ninja': require('node-ninja')(),
   'nw-gyp': require('nw-gyp')()
 }
 
 // Use system installed node-gyp for other JS engines
-var jsEngine = process.jsEngine || 'v8'
+const jsEngine = process.jsEngine || 'v8'
 if (jsEngine !== 'v8') {
   backends['node-gyp'] = require(path.join(
     path.dirname(process.execPath), 'node_modules/npm/node_modules/node-gyp'))()
 }
 
 function runGyp (opts, cb) {
-  var backend = opts.backend || 'node-gyp'
-  var gyp = opts.gyp || backends[backend]
+  const backend = opts.backend || 'node-gyp'
+  const gyp = opts.gyp || backends[backend]
   assert(gyp, 'missing backend')
-  var log = opts.log
-  var args = opts.args
+  const log = opts.log
+  const args = opts.args
   assert(Array.isArray(args), 'args must be an array')
 
   log.verbose('execute ' + backend + ' with `' + args.join(' ') + '`')
@@ -28,7 +28,7 @@ function runGyp (opts, cb) {
   gyp.devDir = devDir(opts.runtime || 'node')
 
   function runStep () {
-    var command = gyp.todo.shift()
+    const command = gyp.todo.shift()
     if (!command) {
       return cb()
     }

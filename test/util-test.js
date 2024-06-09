@@ -1,14 +1,14 @@
-var test = require('tape')
-var cp = require('child_process')
-var EventEmitter = require('events').EventEmitter
-var util = require('../util')
-var error = require('../error')
-var path = require('path')
+const test = require('tape')
+const cp = require('child_process')
+const EventEmitter = require('events').EventEmitter
+const util = require('../util')
+const error = require('../error')
+const path = require('path')
 
-var spawn = util.spawn
+const spawn = util.spawn
 
 test('getTarPath based on package.json and rc config', function (t) {
-  var opts = {
+  const opts = {
     pkg: {
       name: 'foo',
       version: 'X.Y.Z'
@@ -16,7 +16,7 @@ test('getTarPath based on package.json and rc config', function (t) {
     platform: 'fakeos',
     arch: 'x64'
   }
-  var tarPath = util.getTarPath(opts, 314)
+  const tarPath = util.getTarPath(opts, 314)
   t.equal(tarPath, path.join('prebuilds', 'foo-vX.Y.Z-node-v314-fakeos-x64.tar.gz'), 'correct tar path')
   t.end()
 })
@@ -58,7 +58,7 @@ test.skip('spawn(): callback fires with error on non 0 exit code', function (t) 
 })
 
 test('releaseFolder(): depends on package.json and --debug', function (t) {
-  var folder = util.releaseFolder
+  const folder = util.releaseFolder
   t.equal(folder({ pkg: {} }), 'build/Release', 'Release is default')
   t.equal(folder({
     debug: false,
