@@ -27,17 +27,6 @@ test('can prebuild a gyp native module for electron', function (t) {
   })
 })
 
-test.skip('can prebuild a gyp native module for node-webkit', function (t) {
-  fs.rmSync(path.join(cwd, 'prebuilds'), { recursive: true, force: true })
-  var file = 'native-v1.0.0-node-webkit-v59-' + process.platform + '-' + process.arch + '.tar.gz'
-  var prebuild = path.join(cwd, 'prebuilds', file)
-  exec('npm run prebuild-node-webkit', { cwd: cwd }, function (error, stdout, stderr) {
-    t.equal(error, null)
-    t.equal(fs.existsSync(prebuild), true)
-    t.end()
-  })
-})
-
 test('can prebuild a gyp native module for node with prepack script', function (t) {
   fs.rmSync(path.join(cwd, 'prebuilds'), { recursive: true, force: true })
   var file = 'native-v1.0.0-node-v57-' + process.platform + '-' + process.arch + '.tar.gz'

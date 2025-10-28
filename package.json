@@ -1,7 +1,7 @@
 {
   "name": "prebuild",
   "version": "13.0.1",
-  "description": "A command line tool for easily making prebuilt binaries for multiple versions of node, electron or node-webkit on a specific platform",
+  "description": "A command line tool for easily making prebuilt binaries for multiple versions of node or electron on a specific platform",
   "scripts": {
     "test": "tape test && npm run lint",
     "lint": "standard"
@@ -17,7 +17,6 @@
     "bindings",
     "devops",
     "electron",
-    "node-webkit",
     "node-api"
   ],
   "dependencies": {
@@ -32,11 +31,9 @@
     "napi-build-utils": "^1.0.2",
     "node-abi": "^3.54.0",
     "node-gyp": "^10.0.1",
-    "node-ninja": "^1.0.2",
     "noop-logger": "^0.1.1",
     "npm-which": "^3.0.1",
     "npmlog": "^7.0.1",
-    "nw-gyp": "^3.6.6",
     "rc": "^1.2.8",
     "run-waterfall": "^1.1.7",
     "tar-stream": "^3.1.7"

@@ -1,6 +1,6 @@
 # prebuild
 
-> A command line tool for easily making prebuilt binaries for multiple versions of [Node.js](https://nodejs.org/en/), [Node-API](https://nodejs.org/api/n-api.html#n_api_node_api), [Electron](http://electron.atom.io/) and [NW.js](https://nwjs.io/) on a specific platform.
+> A command line tool for easily making prebuilt binaries for multiple versions of [Node.js](https://nodejs.org/en/), [Node-API](https://nodejs.org/api/n-api.html#n_api_node_api) and [Electron](http://electron.atom.io/).
 
 ```
 $ npm install -g prebuild
@@ -12,7 +12,7 @@ $ npm install -g prebuild
 
 ## Features
 
-* Builds native modules for any version of Node.js, Node-API, Electron or NW.js, without having to switch between different versions to do so. This works by only downloading the correct headers and telling `node-gyp` to use those instead of the ones installed on your system.
+* Builds native modules for any version of Node.js, Node-API or Electron, without having to switch between different versions to do so. This works by only downloading the correct headers and telling `node-gyp` to use those instead of the ones installed on your system.
 * Upload (`--upload`) prebuilt binaries to GitHub.
 * Support for stripping (`--strip`) debug information. Strip command defaults to `strip` but can be overridden by the `STRIP` environment variable.
 * Install prebuilt modules via [`prebuild-install`](https://github.com/prebuild/prebuild-install).
@@ -43,12 +43,6 @@ To build against Electron headers, do:
 
 ```
 prebuild -t 1.4.10 -r electron
-```
-
-To build against NW.js headers, do:
-
-```
-prebuild -t 0.26.6 -r node-webkit
 ```
 
 See [`allTargets`](https://github.com/lgeiger/node-abi#usage) for all available versions.
@@ -190,7 +184,7 @@ $ prebuild -h
 prebuild [options]
 
   --target      -t  version     (version to build or install for)
-  --runtime     -r  runtime     (Node runtime [node, napi, electron or node-webkit] to build or install for, default is node)
+  --runtime     -r  runtime     (Node runtime [node, napi or electron] to build or install for, default is node)
   --arch        -a  arch        (architecture to build or install for [default: process.arch])
   --all                         (prebuild for all known abi versions)
   --upload      -u  [gh-token]  (upload prebuilds to github)
@@ -222,7 +216,7 @@ Options:
 - `.log` (optional)
 - `.preinstall` (optional)
 - `.gyp` Provide a custom `node-gyp` instance (optional)
-- `.backend` Provide a custom `node-gyp` instance via string. Alternatives are `'node-gyp'`, `'node-ninja'`, `'nw-gyp'` and `'cmake-js'` (optional, defaults to `'node-gyp'`)
+- `.backend` Provide a custom `node-gyp` instance via string. Alternatives are `'node-gyp'` and `'cmake-js'` (optional, defaults to `'node-gyp'`)
 - `.args` Additional command line arguments to `node-gyp` (optional)
 - `.debug` Pass in `--debug` on command line to gyp backend (optional)
 

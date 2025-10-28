@@ -52,11 +52,7 @@ function platform () {
 function releaseFolder (opts, version) {
   var type = (opts.debug ? 'Debug' : 'Release')
   var binary = opts.pkg.binary
-  if (opts.backend === 'node-ninja') {
-    return (binary && binary.module_path) || 'build/' + version + '/' + type
-  } else {
-    return (binary && binary.module_path) || 'build/' + type
-  }
+  return (binary && binary.module_path) || 'build/' + type
 }
 
 exports.getTarPath = getTarPath
