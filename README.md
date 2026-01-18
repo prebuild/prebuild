@@ -1,5 +1,8 @@
 # prebuild
 
+> [!IMPORTANT]
+> This module is deprecated and no longer maintained. The `prebuild-install` module will soon follow. Please see [prebuild/prebuild-install#216](https://github.com/prebuild/prebuild-install/issues/216) for discussion and alternatives. Thank you!
+
 > A command line tool for easily making prebuilt binaries for multiple versions of [Node.js](https://nodejs.org/en/), [Node-API](https://nodejs.org/api/n-api.html#n_api_node_api), [Electron](http://electron.atom.io/) and [NW.js](https://nwjs.io/) on a specific platform.
 
 ```
