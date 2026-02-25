@@ -2,14 +2,7 @@ var napi = require('napi-build-utils')
 var gyp = require('./gyp')
 
 function runGyp (opts, target, cb) {
-  var args = ['node', 'index.js']
-  if (opts.backend === 'node-ninja') {
-    args.push('configure')
-    args.push('build')
-    args.push('--builddir=build/' + target)
-  } else {
-    args.push('rebuild')
-  }
+  const args = ['node', 'index.js', 'rebuild']
   if (napi.isNapiRuntime(opts.runtime)) {
     args.push('--napi_build_version=' + target)
   } else {

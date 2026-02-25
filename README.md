@@ -225,7 +225,7 @@ Options:
 - `.log` (optional)
 - `.preinstall` (optional)
 - `.gyp` Provide a custom `node-gyp` instance (optional)
-- `.backend` Provide a custom `node-gyp` instance via string. Alternatives are `'node-gyp'`, `'node-ninja'`, `'nw-gyp'` and `'cmake-js'` (optional, defaults to `'node-gyp'`)
+- `.backend` Provide a custom `node-gyp` instance via string. Alternatives are `'node-gyp'`, `'nw-gyp'` and `'cmake-js'` (optional, defaults to `'node-gyp'`)
 - `.args` Additional command line arguments to `node-gyp` (optional)
 - `.debug` Pass in `--debug` on command line to gyp backend (optional)
 

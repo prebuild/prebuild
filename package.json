@@ -32,7 +32,6 @@
     "napi-build-utils": "^1.0.2",
     "node-abi": "^3.54.0",
     "node-gyp": "^10.0.1",
-    "node-ninja": "^1.0.2",
     "noop-logger": "^0.1.1",
     "npm-which": "^3.0.1",
     "npmlog": "^7.0.1",
