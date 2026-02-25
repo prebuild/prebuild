@@ -1,10 +1,10 @@
-var test = require('tape')
-var path = require('path')
-var exec = require('child_process').exec
-var targets = require('node-abi').supportedTargets
+const test = require('tape')
+const path = require('path')
+const exec = require('child_process').exec
+const targets = require('node-abi').supportedTargets
 
 test('custom config and aliases', function (t) {
-  var args = [
+  const args = [
     '--arch ARCH',
     '--platform PLATFORM',
     '--upload t00k3n',
@@ -54,7 +54,7 @@ test('custom config and aliases', function (t) {
 })
 
 test('using --all will build for all targets', function (t) {
-  var args = [
+  const args = [
     '--target vX.Y.Z',
     '--target vZ.Y.X',
     '--all'
@@ -67,13 +67,13 @@ test('using --all will build for all targets', function (t) {
 })
 
 test('using --prebuild respects runtime', function (t) {
-  var args = [
+  const args = [
     '--target X.Y.Z',
     '--target Z.Y.X',
     '--runtime electron'
   ]
   runRc(t, args.join(' '), {}, function (rc) {
-    var fixture = [
+    const fixture = [
       { runtime: 'electron', target: 'X.Y.Z' },
       { runtime: 'electron', target: 'Z.Y.X' }
     ]
@@ -83,7 +83,7 @@ test('using --prebuild respects runtime', function (t) {
 })
 
 test('using --upload-all will set token for --upload', function (t) {
-  var args = ['--upload-all t00k3n']
+  const args = ['--upload-all t00k3n']
   runRc(t, args.join(' '), {}, function (rc) {
     t.equal(rc.upload, 't00k3n', 'upload should have the same token set')
     t.end()
@@ -91,7 +91,7 @@ test('using --upload-all will set token for --upload', function (t) {
 })
 
 test('using --tag-prefix will set the tag prefix', function (t) {
-  var args = ['--tag-prefix @scoped/package@']
+  const args = ['--tag-prefix @scoped/package@']
   runRc(t, args.join(' '), {}, function (rc) {
     t.equal(rc['tag-prefix'], '@scoped/package@', 'tag prefix should be set')
     t.end()
@@ -99,12 +99,12 @@ test('using --tag-prefix will set the tag prefix', function (t) {
 })
 
 function runRc (t, args, env, cb) {
-  var cmd = 'node ' + path.resolve(__dirname, '..', 'rc.js') + ' ' + args
+  const cmd = 'node ' + path.resolve(__dirname, '..', 'rc.js') + ' ' + args
   env = Object.assign({}, process.env, env)
-  exec(cmd, { env: env }, function (err, stdout, stderr) {
+  exec(cmd, { env }, function (err, stdout, stderr) {
     t.error(err, 'no error')
     t.equal(stderr.length, 0, 'no stderr')
-    var result
+    let result
     try {
       result = JSON.parse(stdout.toString())
       t.pass('json parsed correctly')
