@@ -175,6 +175,9 @@ The following code must be included in the `binding.gyp` file of modules targeti
 The following line must be included in the `CMakeLists.txt` file of modules targeting Node-API:
 
 ```cmake
+if(NOT napi_build_version)
+    set(napi_build_version 3)
+endif()
 add_compile_definitions(NAPI_VERSION=${napi_build_version})
 ```
 
